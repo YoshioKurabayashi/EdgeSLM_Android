@@ -1,0 +1,6 @@
+[matmul_act] verdict=ready_for_convert
+  OK S2_preprocess
+  OK S4_quantize
+  OK C-1  計算ノード間を直接流れる float テンソルはない
+  OK C-5  BatchNormalization なし
+  -> work\ops\matmul_act\status_prepare_a8w8.json

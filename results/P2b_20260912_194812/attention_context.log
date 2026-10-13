@@ -1,0 +1,23 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\attention\attention_a16w8_qdq.onnx --preserve_io_datatype --output_path work\ops\attention\ctx\attention.dlc
+  OK  0.07 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\attention\ctx\attention.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file attention_ctx --output_dir work\ops\attention\ctx\ctx_attention --htp_socs sm8350
+  FAILED. ログ末尾:
+    qnn-context-binary-generator pid:17920
+        36.9ms [ ERROR ] WindowsFileIO couldn't open libcdsprpc.dll
+        91.0ms [ ERROR ]  <E> [4294967295] has incorrect Value 68, expected >= 73.
+    
+        91.0ms [ ERROR ]  <E> QnnBackend_validateOpConfig failed 3110
+    
+        91.0ms [ ERROR ]  <E> Failed to validate op att_qk with error 0xc26
+    
+        53.1ms [ ERROR ] Exception encountered: Validate OpConfig failed: QNN_OP_PACKAGE_ERROR_VALIDATION_FAILURE: Op configuration failed validation
+        53.1ms [ ERROR ] Failed to successfully compose graph
+        53.1ms [ ERROR ] Graph composer failed, no graphs were created
+        91.0ms [ ERROR ] Failed in QnnSystemDlc_composeGraphs() with error code 1002
+        91.0ms [ ERROR ] Received nullptr for graphsInput.
+        91.0ms [ ERROR ] Failed to copy graph infos while composing graphs from dlc.
+        91.0ms [ ERROR ] ComposeGraphs Failed with error = 1
+    Graph Compose failure
+    Cache binary for SM8350 copied to work\ops\attention\ctx\ctx_attention/attention_ctx.SM8350

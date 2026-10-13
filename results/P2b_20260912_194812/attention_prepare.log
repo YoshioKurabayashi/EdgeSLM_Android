@@ -1,0 +1,7 @@
+WARNING:root:The original model opset version is 17, which does not support 16-bit integer quantization natively. Please update the model to opset >= 21. Automatically update the model to opset 21. Please verify the quantized model.
+[attention] verdict=ready_for_convert
+  OK S2_preprocess
+  OK S4_quantize
+  OK C-1  計算ノード間を直接流れる float テンソルはない
+  OK C-5  BatchNormalization なし
+  -> work\ops\attention\status_prepare_a16w8.json

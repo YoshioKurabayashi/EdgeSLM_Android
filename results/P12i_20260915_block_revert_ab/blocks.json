@@ -1,0 +1,856 @@
+{
+ "L0-13/other": [
+  {
+   "source": "mul_41",
+   "layer": 2,
+   "scale_name": "mul_41_scale"
+  },
+  {
+   "source": "linear_20",
+   "layer": 2,
+   "scale_name": "linear_20_scale"
+  }
+ ],
+ "L0-13/residual": [
+  {
+   "source": "add_26",
+   "layer": 2,
+   "scale_name": "add_26_scale"
+  },
+  {
+   "source": "add_33",
+   "layer": 3,
+   "scale_name": "add_33_scale"
+  },
+  {
+   "source": "add_35",
+   "layer": 3,
+   "scale_name": "add_35_scale"
+  },
+  {
+   "source": "add_42",
+   "layer": 4,
+   "scale_name": "add_42_scale"
+  },
+  {
+   "source": "add_44",
+   "layer": 4,
+   "scale_name": "add_44_scale"
+  },
+  {
+   "source": "add_51",
+   "layer": 5,
+   "scale_name": "add_51_scale"
+  },
+  {
+   "source": "add_53",
+   "layer": 5,
+   "scale_name": "add_53_scale"
+  },
+  {
+   "source": "add_60",
+   "layer": 6,
+   "scale_name": "add_60_scale"
+  },
+  {
+   "source": "add_62",
+   "layer": 6,
+   "scale_name": "add_62_scale"
+  },
+  {
+   "source": "add_69",
+   "layer": 7,
+   "scale_name": "add_69_scale"
+  },
+  {
+   "source": "add_71",
+   "layer": 7,
+   "scale_name": "add_71_scale"
+  },
+  {
+   "source": "add_78",
+   "layer": 8,
+   "scale_name": "add_78_scale"
+  },
+  {
+   "source": "add_80",
+   "layer": 8,
+   "scale_name": "add_80_scale"
+  },
+  {
+   "source": "add_87",
+   "layer": 9,
+   "scale_name": "add_87_scale"
+  },
+  {
+   "source": "add_89",
+   "layer": 9,
+   "scale_name": "add_89_scale"
+  },
+  {
+   "source": "add_96",
+   "layer": 10,
+   "scale_name": "add_96_scale"
+  },
+  {
+   "source": "add_98",
+   "layer": 10,
+   "scale_name": "add_98_scale"
+  },
+  {
+   "source": "add_105",
+   "layer": 11,
+   "scale_name": "add_105_scale"
+  },
+  {
+   "source": "add_107",
+   "layer": 11,
+   "scale_name": "add_107_scale"
+  },
+  {
+   "source": "add_114",
+   "layer": 12,
+   "scale_name": "add_114_scale"
+  },
+  {
+   "source": "add_116",
+   "layer": 12,
+   "scale_name": "add_116_scale"
+  },
+  {
+   "source": "add_123",
+   "layer": 13,
+   "scale_name": "add_123_scale"
+  },
+  {
+   "source": "add_125",
+   "layer": 13,
+   "scale_name": "add_125_scale"
+  }
+ ],
+ "L0-13/rmsnorm_aux": [
+  {
+   "source": "node_pow_13_abs",
+   "layer": 3,
+   "scale_name": "node_pow_13_abs_scale"
+  },
+  {
+   "source": "node_pow_13_maxr",
+   "layer": 3,
+   "scale_name": "node_pow_13_maxr_scale"
+  },
+  {
+   "source": "node_pow_13_max",
+   "layer": 3,
+   "scale_name": "node_pow_13_max_scale"
+  },
+  {
+   "source": "node_pow_16_abs",
+   "layer": 3,
+   "scale_name": "node_pow_16_abs_scale"
+  },
+  {
+   "source": "node_pow_16_maxr",
+   "layer": 3,
+   "scale_name": "node_pow_16_maxr_scale"
+  },
+  {
+   "source": "node_pow_16_max",
+   "layer": 3,
+   "scale_name": "node_pow_16_max_scale"
+  },
+  {
+   "source": "node_pow_17_abs",
+   "layer": 4,
+   "scale_name": "node_pow_17_abs_scale"
+  },
+  {
+   "source": "node_pow_17_maxr",
+   "layer": 4,
+   "scale_name": "node_pow_17_maxr_scale"
+  },
+  {
+   "source": "node_pow_17_max",
+   "layer": 4,
+   "scale_name": "node_pow_17_max_scale"
+  },
+  {
+   "source": "node_pow_20_abs",
+   "layer": 4,
+   "scale_name": "node_pow_20_abs_scale"
+  },
+  {
+   "source": "node_pow_20_maxr",
+   "layer": 4,
+   "scale_name": "node_pow_20_maxr_scale"
+  },
+  {
+   "source": "node_pow_20_max",
+   "layer": 4,
+   "scale_name": "node_pow_20_max_scale"
+  },
+  {
+   "source": "node_pow_21_abs",
+   "layer": 5,
+   "scale_name": "node_pow_21_abs_scale"
+  },
+  {
+   "source": "node_pow_21_maxr",
+   "layer": 5,
+   "scale_name": "node_pow_21_maxr_scale"
+  },
+  {
+   "source": "node_pow_21_max",
+   "layer": 5,
+   "scale_name": "node_pow_21_max_scale"
+  },
+  {
+   "source": "node_pow_24_abs",
+   "layer": 5,
+   "scale_name": "node_pow_24_abs_scale"
+  },
+  {
+   "source": "node_pow_24_maxr",
+   "layer": 5,
+   "scale_name": "node_pow_24_maxr_scale"
+  },
+  {
+   "source": "node_pow_24_max",
+   "layer": 5,
+   "scale_name": "node_pow_24_max_scale"
+  },
+  {
+   "source": "node_pow_25_abs",
+   "layer": 6,
+   "scale_name": "node_pow_25_abs_scale"
+  },
+  {
+   "source": "node_pow_25_maxr",
+   "layer": 6,
+   "scale_name": "node_pow_25_maxr_scale"
+  },
+  {
+   "source": "node_pow_25_max",
+   "layer": 6,
+   "scale_name": "node_pow_25_max_scale"
+  },
+  {
+   "source": "node_pow_28_abs",
+   "layer": 6,
+   "scale_name": "node_pow_28_abs_scale"
+  },
+  {
+   "source": "node_pow_28_maxr",
+   "layer": 6,
+   "scale_name": "node_pow_28_maxr_scale"
+  },
+  {
+   "source": "node_pow_28_max",
+   "layer": 6,
+   "scale_name": "node_pow_28_max_scale"
+  },
+  {
+   "source": "node_pow_29_abs",
+   "layer": 7,
+   "scale_name": "node_pow_29_abs_scale"
+  },
+  {
+   "source": "node_pow_29_maxr",
+   "layer": 7,
+   "scale_name": "node_pow_29_maxr_scale"
+  },
+  {
+   "source": "node_pow_29_max",
+   "layer": 7,
+   "scale_name": "node_pow_29_max_scale"
+  },
+  {
+   "source": "node_pow_32_abs",
+   "layer": 7,
+   "scale_name": "node_pow_32_abs_scale"
+  },
+  {
+   "source": "node_pow_32_maxr",
+   "layer": 7,
+   "scale_name": "node_pow_32_maxr_scale"
+  },
+  {
+   "source": "node_pow_32_max",
+   "layer": 7,
+   "scale_name": "node_pow_32_max_scale"
+  },
+  {
+   "source": "node_pow_33_abs",
+   "layer": 8,
+   "scale_name": "node_pow_33_abs_scale"
+  },
+  {
+   "source": "node_pow_33_maxr",
+   "layer": 8,
+   "scale_name": "node_pow_33_maxr_scale"
+  },
+  {
+   "source": "node_pow_33_max",
+   "layer": 8,
+   "scale_name": "node_pow_33_max_scale"
+  },
+  {
+   "source": "node_pow_36_abs",
+   "layer": 8,
+   "scale_name": "node_pow_36_abs_scale"
+  },
+  {
+   "source": "node_pow_36_maxr",
+   "layer": 8,
+   "scale_name": "node_pow_36_maxr_scale"
+  },
+  {
+   "source": "node_pow_36_max",
+   "layer": 8,
+   "scale_name": "node_pow_36_max_scale"
+  },
+  {
+   "source": "node_pow_37_abs",
+   "layer": 9,
+   "scale_name": "node_pow_37_abs_scale"
+  },
+  {
+   "source": "node_pow_37_maxr",
+   "layer": 9,
+   "scale_name": "node_pow_37_maxr_scale"
+  },
+  {
+   "source": "node_pow_37_max",
+   "layer": 9,
+   "scale_name": "node_pow_37_max_scale"
+  },
+  {
+   "source": "node_pow_40_abs",
+   "layer": 9,
+   "scale_name": "node_pow_40_abs_scale"
+  },
+  {
+   "source": "node_pow_40_maxr",
+   "layer": 9,
+   "scale_name": "node_pow_40_maxr_scale"
+  },
+  {
+   "source": "node_pow_40_max",
+   "layer": 9,
+   "scale_name": "node_pow_40_max_scale"
+  },
+  {
+   "source": "node_pow_41_abs",
+   "layer": 10,
+   "scale_name": "node_pow_41_abs_scale"
+  },
+  {
+   "source": "node_pow_41_maxr",
+   "layer": 10,
+   "scale_name": "node_pow_41_maxr_scale"
+  },
+  {
+   "source": "node_pow_41_max",
+   "layer": 10,
+   "scale_name": "node_pow_41_max_scale"
+  },
+  {
+   "source": "node_pow_44_abs",
+   "layer": 10,
+   "scale_name": "node_pow_44_abs_scale"
+  },
+  {
+   "source": "node_pow_44_maxr",
+   "layer": 10,
+   "scale_name": "node_pow_44_maxr_scale"
+  },
+  {
+   "source": "node_pow_44_max",
+   "layer": 10,
+   "scale_name": "node_pow_44_max_scale"
+  },
+  {
+   "source": "node_pow_45_abs",
+   "layer": 11,
+   "scale_name": "node_pow_45_abs_scale"
+  },
+  {
+   "source": "node_pow_45_maxr",
+   "layer": 11,
+   "scale_name": "node_pow_45_maxr_scale"
+  },
+  {
+   "source": "node_pow_45_max",
+   "layer": 11,
+   "scale_name": "node_pow_45_max_scale"
+  },
+  {
+   "source": "node_pow_48_abs",
+   "layer": 11,
+   "scale_name": "node_pow_48_abs_scale"
+  },
+  {
+   "source": "node_pow_48_maxr",
+   "layer": 11,
+   "scale_name": "node_pow_48_maxr_scale"
+  },
+  {
+   "source": "node_pow_48_max",
+   "layer": 11,
+   "scale_name": "node_pow_48_max_scale"
+  },
+  {
+   "source": "node_pow_49_abs",
+   "layer": 12,
+   "scale_name": "node_pow_49_abs_scale"
+  },
+  {
+   "source": "node_pow_49_maxr",
+   "layer": 12,
+   "scale_name": "node_pow_49_maxr_scale"
+  },
+  {
+   "source": "node_pow_49_max",
+   "layer": 12,
+   "scale_name": "node_pow_49_max_scale"
+  },
+  {
+   "source": "node_pow_52_abs",
+   "layer": 12,
+   "scale_name": "node_pow_52_abs_scale"
+  },
+  {
+   "source": "node_pow_52_maxr",
+   "layer": 12,
+   "scale_name": "node_pow_52_maxr_scale"
+  },
+  {
+   "source": "node_pow_52_max",
+   "layer": 12,
+   "scale_name": "node_pow_52_max_scale"
+  },
+  {
+   "source": "node_pow_53_abs",
+   "layer": 13,
+   "scale_name": "node_pow_53_abs_scale"
+  },
+  {
+   "source": "node_pow_53_maxr",
+   "layer": 13,
+   "scale_name": "node_pow_53_maxr_scale"
+  },
+  {
+   "source": "node_pow_53_max",
+   "layer": 13,
+   "scale_name": "node_pow_53_max_scale"
+  },
+  {
+   "source": "node_pow_56_abs",
+   "layer": 13,
+   "scale_name": "node_pow_56_abs_scale"
+  },
+  {
+   "source": "node_pow_56_maxr",
+   "layer": 13,
+   "scale_name": "node_pow_56_maxr_scale"
+  },
+  {
+   "source": "node_pow_56_max",
+   "layer": 13,
+   "scale_name": "node_pow_56_max_scale"
+  }
+ ],
+ "L14-20/rmsnorm_aux": [
+  {
+   "source": "node_pow_57_abs",
+   "layer": 14,
+   "scale_name": "node_pow_57_abs_scale"
+  },
+  {
+   "source": "node_pow_57_maxr",
+   "layer": 14,
+   "scale_name": "node_pow_57_maxr_scale"
+  },
+  {
+   "source": "node_pow_57_max",
+   "layer": 14,
+   "scale_name": "node_pow_57_max_scale"
+  },
+  {
+   "source": "node_pow_60_abs",
+   "layer": 14,
+   "scale_name": "node_pow_60_abs_scale"
+  },
+  {
+   "source": "node_pow_60_maxr",
+   "layer": 14,
+   "scale_name": "node_pow_60_maxr_scale"
+  },
+  {
+   "source": "node_pow_60_max",
+   "layer": 14,
+   "scale_name": "node_pow_60_max_scale"
+  },
+  {
+   "source": "node_pow_61_abs",
+   "layer": 15,
+   "scale_name": "node_pow_61_abs_scale"
+  },
+  {
+   "source": "node_pow_61_maxr",
+   "layer": 15,
+   "scale_name": "node_pow_61_maxr_scale"
+  },
+  {
+   "source": "node_pow_61_max",
+   "layer": 15,
+   "scale_name": "node_pow_61_max_scale"
+  },
+  {
+   "source": "node_pow_64_abs",
+   "layer": 15,
+   "scale_name": "node_pow_64_abs_scale"
+  },
+  {
+   "source": "node_pow_64_maxr",
+   "layer": 15,
+   "scale_name": "node_pow_64_maxr_scale"
+  },
+  {
+   "source": "node_pow_64_max",
+   "layer": 15,
+   "scale_name": "node_pow_64_max_scale"
+  },
+  {
+   "source": "node_pow_65_abs",
+   "layer": 16,
+   "scale_name": "node_pow_65_abs_scale"
+  },
+  {
+   "source": "node_pow_65_maxr",
+   "layer": 16,
+   "scale_name": "node_pow_65_maxr_scale"
+  },
+  {
+   "source": "node_pow_65_max",
+   "layer": 16,
+   "scale_name": "node_pow_65_max_scale"
+  },
+  {
+   "source": "node_pow_68_abs",
+   "layer": 16,
+   "scale_name": "node_pow_68_abs_scale"
+  },
+  {
+   "source": "node_pow_68_maxr",
+   "layer": 16,
+   "scale_name": "node_pow_68_maxr_scale"
+  },
+  {
+   "source": "node_pow_68_max",
+   "layer": 16,
+   "scale_name": "node_pow_68_max_scale"
+  },
+  {
+   "source": "node_pow_69_abs",
+   "layer": 17,
+   "scale_name": "node_pow_69_abs_scale"
+  },
+  {
+   "source": "node_pow_69_maxr",
+   "layer": 17,
+   "scale_name": "node_pow_69_maxr_scale"
+  },
+  {
+   "source": "node_pow_69_max",
+   "layer": 17,
+   "scale_name": "node_pow_69_max_scale"
+  },
+  {
+   "source": "node_pow_72_abs",
+   "layer": 17,
+   "scale_name": "node_pow_72_abs_scale"
+  },
+  {
+   "source": "node_pow_72_maxr",
+   "layer": 17,
+   "scale_name": "node_pow_72_maxr_scale"
+  },
+  {
+   "source": "node_pow_72_max",
+   "layer": 17,
+   "scale_name": "node_pow_72_max_scale"
+  },
+  {
+   "source": "node_pow_73_abs",
+   "layer": 18,
+   "scale_name": "node_pow_73_abs_scale"
+  },
+  {
+   "source": "node_pow_73_maxr",
+   "layer": 18,
+   "scale_name": "node_pow_73_maxr_scale"
+  },
+  {
+   "source": "node_pow_73_max",
+   "layer": 18,
+   "scale_name": "node_pow_73_max_scale"
+  },
+  {
+   "source": "node_pow_76_abs",
+   "layer": 18,
+   "scale_name": "node_pow_76_abs_scale"
+  },
+  {
+   "source": "node_pow_76_maxr",
+   "layer": 18,
+   "scale_name": "node_pow_76_maxr_scale"
+  },
+  {
+   "source": "node_pow_76_max",
+   "layer": 18,
+   "scale_name": "node_pow_76_max_scale"
+  },
+  {
+   "source": "node_pow_77_abs",
+   "layer": 19,
+   "scale_name": "node_pow_77_abs_scale"
+  },
+  {
+   "source": "node_pow_77_maxr",
+   "layer": 19,
+   "scale_name": "node_pow_77_maxr_scale"
+  },
+  {
+   "source": "node_pow_77_max",
+   "layer": 19,
+   "scale_name": "node_pow_77_max_scale"
+  },
+  {
+   "source": "node_pow_80_abs",
+   "layer": 19,
+   "scale_name": "node_pow_80_abs_scale"
+  },
+  {
+   "source": "node_pow_80_maxr",
+   "layer": 19,
+   "scale_name": "node_pow_80_maxr_scale"
+  },
+  {
+   "source": "node_pow_80_max",
+   "layer": 19,
+   "scale_name": "node_pow_80_max_scale"
+  },
+  {
+   "source": "node_pow_81_abs",
+   "layer": 20,
+   "scale_name": "node_pow_81_abs_scale"
+  },
+  {
+   "source": "node_pow_81_maxr",
+   "layer": 20,
+   "scale_name": "node_pow_81_maxr_scale"
+  },
+  {
+   "source": "node_pow_81_max",
+   "layer": 20,
+   "scale_name": "node_pow_81_max_scale"
+  },
+  {
+   "source": "node_pow_84_abs",
+   "layer": 20,
+   "scale_name": "node_pow_84_abs_scale"
+  },
+  {
+   "source": "node_pow_84_maxr",
+   "layer": 20,
+   "scale_name": "node_pow_84_maxr_scale"
+  },
+  {
+   "source": "node_pow_84_max",
+   "layer": 20,
+   "scale_name": "node_pow_84_max_scale"
+  }
+ ],
+ "L14-20/residual": [
+  {
+   "source": "add_132",
+   "layer": 14,
+   "scale_name": "add_132_scale"
+  },
+  {
+   "source": "add_134",
+   "layer": 14,
+   "scale_name": "add_134_scale"
+  },
+  {
+   "source": "add_141",
+   "layer": 15,
+   "scale_name": "add_141_scale"
+  },
+  {
+   "source": "add_143",
+   "layer": 15,
+   "scale_name": "add_143_scale"
+  },
+  {
+   "source": "add_150",
+   "layer": 16,
+   "scale_name": "add_150_scale"
+  },
+  {
+   "source": "add_152",
+   "layer": 16,
+   "scale_name": "add_152_scale"
+  },
+  {
+   "source": "add_159",
+   "layer": 17,
+   "scale_name": "add_159_scale"
+  },
+  {
+   "source": "add_161",
+   "layer": 17,
+   "scale_name": "add_161_scale"
+  },
+  {
+   "source": "add_168",
+   "layer": 18,
+   "scale_name": "add_168_scale"
+  },
+  {
+   "source": "add_170",
+   "layer": 18,
+   "scale_name": "add_170_scale"
+  },
+  {
+   "source": "add_177",
+   "layer": 19,
+   "scale_name": "add_177_scale"
+  },
+  {
+   "source": "add_179",
+   "layer": 19,
+   "scale_name": "add_179_scale"
+  },
+  {
+   "source": "add_186",
+   "layer": 20,
+   "scale_name": "add_186_scale"
+  },
+  {
+   "source": "add_188",
+   "layer": 20,
+   "scale_name": "add_188_scale"
+  }
+ ],
+ "L21-27/rmsnorm_aux": [
+  {
+   "source": "node_pow_85_abs",
+   "layer": 21,
+   "scale_name": "node_pow_85_abs_scale"
+  },
+  {
+   "source": "node_pow_85_maxr",
+   "layer": 21,
+   "scale_name": "node_pow_85_maxr_scale"
+  },
+  {
+   "source": "node_pow_85_max",
+   "layer": 21,
+   "scale_name": "node_pow_85_max_scale"
+  },
+  {
+   "source": "node_pow_88_abs",
+   "layer": 21,
+   "scale_name": "node_pow_88_abs_scale"
+  },
+  {
+   "source": "node_pow_88_maxr",
+   "layer": 21,
+   "scale_name": "node_pow_88_maxr_scale"
+  },
+  {
+   "source": "node_pow_88_max",
+   "layer": 21,
+   "scale_name": "node_pow_88_max_scale"
+  },
+  {
+   "source": "node_pow_89_abs",
+   "layer": 22,
+   "scale_name": "node_pow_89_abs_scale"
+  },
+  {
+   "source": "node_pow_89_maxr",
+   "layer": 22,
+   "scale_name": "node_pow_89_maxr_scale"
+  },
+  {
+   "source": "node_pow_89_max",
+   "layer": 22,
+   "scale_name": "node_pow_89_max_scale"
+  },
+  {
+   "source": "node_pow_92_abs",
+   "layer": 22,
+   "scale_name": "node_pow_92_abs_scale"
+  },
+  {
+   "source": "node_pow_92_maxr",
+   "layer": 22,
+   "scale_name": "node_pow_92_maxr_scale"
+  },
+  {
+   "source": "node_pow_92_max",
+   "layer": 22,
+   "scale_name": "node_pow_92_max_scale"
+  },
+  {
+   "source": "node_pow_93_abs",
+   "layer": 23,
+   "scale_name": "node_pow_93_abs_scale"
+  },
+  {
+   "source": "node_pow_93_maxr",
+   "layer": 23,
+   "scale_name": "node_pow_93_maxr_scale"
+  },
+  {
+   "source": "node_pow_93_max",
+   "layer": 23,
+   "scale_name": "node_pow_93_max_scale"
+  },
+  {
+   "source": "node_pow_96_abs",
+   "layer": 23,
+   "scale_name": "node_pow_96_abs_scale"
+  },
+  {
+   "source": "node_pow_96_maxr",
+   "layer": 23,
+   "scale_name": "node_pow_96_maxr_scale"
+  },
+  {
+   "source": "node_pow_96_max",
+   "layer": 23,
+   "scale_name": "node_pow_96_max_scale"
+  }
+ ],
+ "L21-27/residual": [
+  {
+   "source": "add_195",
+   "layer": 21,
+   "scale_name": "add_195_scale"
+  },
+  {
+   "source": "add_197",
+   "layer": 21,
+   "scale_name": "add_197_scale"
+  },
+  {
+   "source": "add_204",
+   "layer": 22,
+   "scale_name": "add_204_scale"
+  }
+ ]
+}

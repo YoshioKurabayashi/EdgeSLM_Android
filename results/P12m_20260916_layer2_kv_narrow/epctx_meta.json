@@ -1,0 +1,102 @@
+{
+ "epctx_path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\work\\q3_l2\\l2ctl_narrow_epctx.onnx",
+ "bytes": 15992730,
+ "context_bytes": 15991912,
+ "embed_mode": 1,
+ "context_file": null,
+ "inputs": [
+  {
+   "name": "add_17",
+   "shape": [
+    1,
+    1,
+    1024
+   ],
+   "dtype": "float"
+  },
+  {
+   "name": "past_k_2",
+   "shape": [
+    1,
+    8,
+    256,
+    128
+   ],
+   "dtype": "float"
+  },
+  {
+   "name": "past_v_2",
+   "shape": [
+    1,
+    8,
+    256,
+    128
+   ],
+   "dtype": "float"
+  },
+  {
+   "name": "cos",
+   "shape": [
+    1,
+    1,
+    1,
+    128
+   ],
+   "dtype": "float"
+  },
+  {
+   "name": "sin",
+   "shape": [
+    1,
+    1,
+    1,
+    128
+   ],
+   "dtype": "float"
+  },
+  {
+   "name": "attn_mask",
+   "shape": [
+    1,
+    1,
+    1,
+    256
+   ],
+   "dtype": "float"
+  }
+ ],
+ "outputs": [
+  {
+   "name": "add_26_QuantizeLinear_Output",
+   "shape": [
+    1,
+    1,
+    1024
+   ],
+   "dtype": "uint16"
+  },
+  {
+   "name": "present_k_2",
+   "shape": [
+    1,
+    8,
+    256,
+    128
+   ],
+   "dtype": "float"
+  },
+  {
+   "name": "present_v_2",
+   "shape": [
+    1,
+    8,
+    256,
+    128
+   ],
+   "dtype": "float"
+  }
+ ],
+ "ep_sdk_version": "2.48.0",
+ "partition_name": "QNNExecutionProvider_QNN_0",
+ "source": "QNNExecutionProvider"
+}

@@ -1,0 +1,28 @@
+{
+  "job_id": "p3_p2swap",
+  "task": "bench",
+  "model": "models/ops/qwen_p2swap_epctx.onnx",
+  "ep": {
+    "provider": "QNN",
+    "backend": "libQnnHtp.so",
+    "options": {
+      "offload_graph_io_quantization": "0",
+      "qnn_context_priority": "high"
+    },
+    "session": {
+      "intra_op_num_threads": 1,
+      "log_severity_level": 2
+    }
+  },
+  "protocol": {
+    "warmup": 3,
+    "iterations": 10
+  },
+  "input": {
+    "kind": "random",
+    "seed": 0,
+    "int_max": {
+      "input_ids": 151935
+    }
+  }
+}

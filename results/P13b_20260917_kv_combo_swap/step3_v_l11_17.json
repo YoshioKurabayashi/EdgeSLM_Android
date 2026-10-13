@@ -1,0 +1,11 @@
+{
+ "decision_top1_token": 78685,
+ "margin": {
+  "oracle_control": -1.0209808349609375,
+  "V_L11-17": 1.3282852172851562
+ },
+ "delta_vs_oracle": {
+  "oracle_control": 0.0,
+  "V_L11-17": 2.3492660522460938
+ }
+}

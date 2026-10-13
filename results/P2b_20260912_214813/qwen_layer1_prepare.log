@@ -1,0 +1,3 @@
+[qwen_layer1] verdict=fail_S2_preprocess
+  NG S2_preprocess  TypeError: object of type 'NoneType' has no len()
+  -> work\ops\qwen_layer1\status_prepare_a16w8_mixed.json

@@ -1,0 +1,44 @@
+# --- large intermediate outputs (regenerable; do not commit) ---
+work/
+*.data
+*.onnx
+*.dlc
+*.npz
+*.npy
+*.bin
+*.raw
+*.safetensors
+*.pt
+*.mp4
+*.zip
+
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pytest_tmp/
+.ruff_cache/
+
+# --- Android build outputs / SDK binaries (copy again from the QNN SDK) ---
+.gradle/
+build/
+.cxx/
+local.properties
+*.apk
+*.aab
+*.aar
+*.so
+jniLibs/
+.idea/
+*.iml
+
+# --- secrets / local ---
+.env
+.env.*
+!.env.example
+.tmp_adb_check
+
+# --- third-party clone (has its own repository) ---
+third_party/

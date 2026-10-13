@@ -1,0 +1,9 @@
+{
+ "removed_nodes": [
+  "linear_20_QuantizeLinear",
+  "linear_20_DequantizeLinear"
+ ],
+ "rewired": "node_add_26.input <- linear_20 (bypass linear_20_DequantizeLinear_Output)",
+ "source_sha256": "6ce931af751e1586d80216e1ed3dda9fead51e19393c1a19dc9261ad78ddf8b8",
+ "model_sha256": "3e99b0b6f64ce87b351cb76443eeaa63bccca5a484d064791268ea713114824e"
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "top1_agreement": 0.0625,
+    "top5_overlap": 0.06931818181818182,
+    "kl_fp32_to_quant": 9.611185931038523,
+    "rank_of_fp32_top1_mean": 31219.49431818182,
+    "rank_of_fp32_top1_p95": 122726.5,
+    "logits_rel_l2": 1.3972834886473198,
+    "positions": 176,
+    "pattern": "none",
+    "excluded_nodes": 0
+  },
+  {
+    "top1_agreement": 0.0625,
+    "top5_overlap": 0.06818181818181818,
+    "kl_fp32_to_quant": 9.592048473351019,
+    "rank_of_fp32_top1_mean": 31443.93181818182,
+    "rank_of_fp32_top1_p95": 122726.5,
+    "logits_rel_l2": 1.3954635297226958,
+    "positions": 176,
+    "pattern": "residual",
+    "excluded_nodes": 43
+  },
+  {
+    "top1_agreement": 0.7443181818181818,
+    "top5_overlap": 0.7488636363636364,
+    "kl_fp32_to_quant": 0.13001031776634073,
+    "rank_of_fp32_top1_mean": 1.5340909090909092,
+    "rank_of_fp32_top1_p95": 4.0,
+    "logits_rel_l2": 0.15287933450651836,
+    "positions": 176,
+    "pattern": "rmsnorm",
+    "excluded_nodes": 52
+  },
+  {
+    "top1_agreement": 0.8011363636363636,
+    "top5_overlap": 0.7909090909090909,
+    "kl_fp32_to_quant": 0.08707822967466593,
+    "rank_of_fp32_top1_mean": 1.3465909090909092,
+    "rank_of_fp32_top1_p95": 3.0,
+    "logits_rel_l2": 0.12589271597714483,
+    "positions": 176,
+    "pattern": "residual+rmsnorm",
+    "excluded_nodes": 95
+  },
+  {
+    "top1_agreement": 0.0625,
+    "top5_overlap": 0.06931818181818182,
+    "kl_fp32_to_quant": 9.611185931038523,
+    "rank_of_fp32_top1_mean": 31219.49431818182,
+    "rank_of_fp32_top1_p95": 122726.5,
+    "logits_rel_l2": 1.3972834886473198,
+    "positions": 176,
+    "pattern": "matmul_act",
+    "excluded_nodes": 12
+  }
+]

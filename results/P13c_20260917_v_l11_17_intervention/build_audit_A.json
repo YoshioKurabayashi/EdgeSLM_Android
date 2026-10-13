@@ -1,0 +1,156 @@
+[
+ {
+  "layer": 11,
+  "scale_name": "cat_47_scale",
+  "new_scale": 0.0007536355988122523,
+  "new_zero": 30434,
+  "dtype": "uint16",
+  "represented": [
+   -22.936145814252086,
+   26.453363153908867
+  ]
+ },
+ {
+  "layer": 11,
+  "scale_name": "repeat_interleave_23_scale_u8",
+  "new_scale": 0.19436883926391602,
+  "new_zero": 118,
+  "dtype": "uint8",
+  "represented": [
+   -22.93552303314209,
+   26.628530979156494
+  ]
+ },
+ {
+  "layer": 12,
+  "scale_name": "cat_51_scale",
+  "new_scale": 0.0014694532146677375,
+  "new_zero": 32237,
+  "dtype": "uint16",
+  "represented": [
+   -47.37076328124385,
+   48.92985314200632
+  ]
+ },
+ {
+  "layer": 12,
+  "scale_name": "repeat_interleave_25_scale_u8",
+  "new_scale": 0.3789592683315277,
+  "new_zero": 125,
+  "dtype": "uint8",
+  "represented": [
+   -47.369908541440964,
+   49.2647048830986
+  ]
+ },
+ {
+  "layer": 13,
+  "scale_name": "cat_55_scale",
+  "new_scale": 0.001376630854792893,
+  "new_zero": 33106,
+  "dtype": "uint16",
+  "represented": [
+   -45.57474107877351,
+   44.642761990078725
+  ]
+ },
+ {
+  "layer": 13,
+  "scale_name": "repeat_interleave_27_scale_u8",
+  "new_scale": 0.354298859834671,
+  "new_zero": 129,
+  "dtype": "uint8",
+  "represented": [
+   -45.70455291867256,
+   44.64165633916855
+  ]
+ },
+ {
+  "layer": 14,
+  "scale_name": "cat_59_scale",
+  "new_scale": 0.0014652700629085302,
+  "new_zero": 38961,
+  "dtype": "uint16",
+  "represented": [
+   -57.08838692097925,
+   38.93808665173128
+  ]
+ },
+ {
+  "layer": 14,
+  "scale_name": "repeat_interleave_29_scale_u8",
+  "new_scale": 0.3780396580696106,
+  "new_zero": 152,
+  "dtype": "uint8",
+  "represented": [
+   -57.46202802658081,
+   38.93808478116989
+  ]
+ },
+ {
+  "layer": 15,
+  "scale_name": "cat_63_scale",
+  "new_scale": 0.0005068025784566998,
+  "new_zero": 29844,
+  "dtype": "uint16",
+  "represented": [
+   -15.12501615146175,
+   18.088290827698074
+  ]
+ },
+ {
+  "layer": 15,
+  "scale_name": "repeat_interleave_31_scale_u8",
+  "new_scale": 0.1303880661725998,
+  "new_zero": 116,
+  "dtype": "uint8",
+  "represented": [
+   -15.125015676021576,
+   18.12394119799137
+  ]
+ },
+ {
+  "layer": 16,
+  "scale_name": "cat_67_scale",
+  "new_scale": 0.0005106086609885097,
+  "new_zero": 27046,
+  "dtype": "uint16",
+  "represented": [
+   -13.809921845095232,
+   19.652816752786748
+  ]
+ },
+ {
+  "layer": 16,
+  "scale_name": "repeat_interleave_33_scale_u8",
+  "new_scale": 0.13152305781841278,
+  "new_zero": 105,
+  "dtype": "uint8",
+  "represented": [
+   -13.809921070933342,
+   19.728458672761917
+  ]
+ },
+ {
+  "layer": 17,
+  "scale_name": "cat_71_scale",
+  "new_scale": 0.0006907059578225017,
+  "new_zero": 32865,
+  "dtype": "uint16",
+  "represented": [
+   -22.700051303836517,
+   22.56536364206113
+  ]
+ },
+ {
+  "layer": 17,
+  "scale_name": "repeat_interleave_35_scale_u8",
+  "new_scale": 0.17767541110515594,
+  "new_zero": 128,
+  "dtype": "uint8",
+  "represented": [
+   -22.74245262145996,
+   22.564777210354805
+  ]
+ }
+]

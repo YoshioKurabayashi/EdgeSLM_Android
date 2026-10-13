@@ -1,0 +1,14 @@
+EdgeSLM_Android P0-b NDKクロスビルド検証
+取得時刻: 2026-09-12 15:02:47
+NDK: 21.4.7075529 / driver: aarch64-linux-android26-clang.cmd
+
+--- 1. コンパイラの存在確認 ---
+OK: D:/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android26-clang.cmd
+
+--- 2. ソース生成 ---
+OK: /d/AI/source/n_chap5/EdgeSLM_Android/build/p0b/hello_arm64.c
+
+--- 3. クロスコンパイル ---
+clang: error: no such file or directory: '/d/AI/source/n_chap5/EdgeSLM_Android/build/p0b/hello_arm64.c'
+clang: error: no input files
+ERROR: コンパイル失敗

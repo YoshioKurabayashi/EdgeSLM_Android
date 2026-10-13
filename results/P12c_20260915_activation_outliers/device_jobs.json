@@ -1,0 +1,150 @@
+{
+  "files": [
+    "hid_000_add_17_QuantizeLinear_Output.bin",
+    "hid_000_add_26_QuantizeLinear_Output.bin",
+    "hid_000_add_35_QuantizeLinear_Output.bin",
+    "hid_000_add_44_QuantizeLinear_Output.bin",
+    "hid_000_add_53_QuantizeLinear_Output.bin",
+    "hid_000_add_8_QuantizeLinear_Output.bin",
+    "l14_000_add_125_QuantizeLinear_Output.bin",
+    "l14_000_add_53_QuantizeLinear_Output.bin",
+    "l14_000_present_k_6.bin",
+    "l14_000_present_v_6.bin",
+    "l6v_000_linear_44_QuantizeLinear_Output.bin",
+    "l6v_000_mul_85_QuantizeLinear_Output.bin",
+    "l6v_000_present_v_6.bin"
+  ],
+  "jobs": {
+    "hid": {
+      "job_id": "hid",
+      "task": "infer",
+      "model": "models/ops/hid_epctx.onnx",
+      "ep": {
+        "provider": "QNN",
+        "backend": "libQnnHtp.so",
+        "options": {
+          "offload_graph_io_quantization": "0",
+          "qnn_context_priority": "high"
+        },
+        "session": {
+          "intra_op_num_threads": 1,
+          "log_severity_level": 2
+        }
+      },
+      "output": {
+        "dir": "out"
+      },
+      "batches": [
+        {
+          "id": "000",
+          "inputs": {
+            "input_ids": "inputs/hid_input_ids.bin",
+            "cos": "inputs/hid_cos.bin",
+            "sin": "inputs/hid_sin.bin",
+            "attn_mask": "inputs/hid_attn_mask.bin",
+            "past_k_0": "inputs/hid_past_k_0.bin",
+            "past_v_0": "inputs/hid_past_v_0.bin",
+            "past_k_1": "inputs/hid_past_k_1.bin",
+            "past_v_1": "inputs/hid_past_v_1.bin",
+            "past_k_2": "inputs/hid_past_k_2.bin",
+            "past_v_2": "inputs/hid_past_v_2.bin",
+            "past_k_3": "inputs/hid_past_k_3.bin",
+            "past_v_3": "inputs/hid_past_v_3.bin",
+            "past_k_4": "inputs/hid_past_k_4.bin",
+            "past_v_4": "inputs/hid_past_v_4.bin",
+            "past_k_5": "inputs/hid_past_k_5.bin",
+            "past_v_5": "inputs/hid_past_v_5.bin"
+          }
+        }
+      ]
+    },
+    "l14": {
+      "job_id": "l14",
+      "task": "infer",
+      "model": "models/ops/l14_epctx.onnx",
+      "ep": {
+        "provider": "QNN",
+        "backend": "libQnnHtp.so",
+        "options": {
+          "offload_graph_io_quantization": "0",
+          "qnn_context_priority": "high"
+        },
+        "session": {
+          "intra_op_num_threads": 1,
+          "log_severity_level": 2
+        }
+      },
+      "output": {
+        "dir": "out"
+      },
+      "batches": [
+        {
+          "id": "000",
+          "inputs": {
+            "input_ids": "inputs/l14_input_ids.bin",
+            "cos": "inputs/l14_cos.bin",
+            "sin": "inputs/l14_sin.bin",
+            "attn_mask": "inputs/l14_attn_mask.bin",
+            "past_k_0": "inputs/l14_past_k_0.bin",
+            "past_v_0": "inputs/l14_past_v_0.bin",
+            "past_k_1": "inputs/l14_past_k_1.bin",
+            "past_v_1": "inputs/l14_past_v_1.bin",
+            "past_k_2": "inputs/l14_past_k_2.bin",
+            "past_v_2": "inputs/l14_past_v_2.bin",
+            "past_k_3": "inputs/l14_past_k_3.bin",
+            "past_v_3": "inputs/l14_past_v_3.bin",
+            "past_k_4": "inputs/l14_past_k_4.bin",
+            "past_v_4": "inputs/l14_past_v_4.bin",
+            "past_k_5": "inputs/l14_past_k_5.bin",
+            "past_v_5": "inputs/l14_past_v_5.bin",
+            "past_k_6": "inputs/l14_past_k_6.bin",
+            "past_v_6": "inputs/l14_past_v_6.bin",
+            "past_k_7": "inputs/l14_past_k_7.bin",
+            "past_v_7": "inputs/l14_past_v_7.bin",
+            "past_k_8": "inputs/l14_past_k_8.bin",
+            "past_v_8": "inputs/l14_past_v_8.bin",
+            "past_k_9": "inputs/l14_past_k_9.bin",
+            "past_v_9": "inputs/l14_past_v_9.bin",
+            "past_k_10": "inputs/l14_past_k_10.bin",
+            "past_v_10": "inputs/l14_past_v_10.bin",
+            "past_k_11": "inputs/l14_past_k_11.bin",
+            "past_v_11": "inputs/l14_past_v_11.bin",
+            "past_k_12": "inputs/l14_past_k_12.bin",
+            "past_v_12": "inputs/l14_past_v_12.bin",
+            "past_k_13": "inputs/l14_past_k_13.bin",
+            "past_v_13": "inputs/l14_past_v_13.bin"
+          }
+        }
+      ]
+    },
+    "l6v": {
+      "job_id": "l6v",
+      "task": "infer",
+      "model": "models/ops/l6v_epctx.onnx",
+      "ep": {
+        "provider": "QNN",
+        "backend": "libQnnHtp.so",
+        "options": {
+          "offload_graph_io_quantization": "0",
+          "qnn_context_priority": "high"
+        },
+        "session": {
+          "intra_op_num_threads": 1,
+          "log_severity_level": 2
+        }
+      },
+      "output": {
+        "dir": "out"
+      },
+      "batches": [
+        {
+          "id": "000",
+          "inputs": {
+            "add_53": "inputs/l6v_add_53.bin",
+            "past_v_6": "inputs/l6v_past_v_6.bin"
+          }
+        }
+      ]
+    }
+  }
+}

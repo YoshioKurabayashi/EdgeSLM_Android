@@ -1,0 +1,49 @@
+{
+ "tag": "ML",
+ "tensors": [
+  "mul_41",
+  "linear_20"
+ ],
+ "changed_groups": 2,
+ "changes": [
+  {
+   "sources": [
+    "mul_41"
+   ],
+   "scale_name": "mul_41_scale",
+   "zero_name": "mul_41_zero_point",
+   "scale": 0.00037498539313673973,
+   "zero": 39798,
+   "dtype": "uint16",
+   "observed": [
+    -9.949111938476562,
+    6.433968544006348
+   ],
+   "represented": [
+    -14.923668676055968,
+    9.65099906316027
+   ]
+  },
+  {
+   "sources": [
+    "linear_20"
+   ],
+   "scale_name": "linear_20_scale",
+   "zero_name": "linear_20_zero_point",
+   "scale": 0.00017944365390576422,
+   "zero": 21833,
+   "dtype": "uint16",
+   "observed": [
+    -2.6117844581604004,
+    5.228030681610107
+   ],
+   "represented": [
+    -3.9177932957245503,
+    7.842046562989708
+   ]
+  }
+ ],
+ "source_sha256": "6ce931af751e1586d80216e1ed3dda9fead51e19393c1a19dc9261ad78ddf8b8",
+ "model_sha256": "2a3cff9ca99704af9a780f8d92e1d5018b4323244be3da1a3219b74cd2d7841d",
+ "node_sha256": "a2b5018d5ff0ab50d8398478281fe074ed01d111c769ef03607495966d621dd2"
+}

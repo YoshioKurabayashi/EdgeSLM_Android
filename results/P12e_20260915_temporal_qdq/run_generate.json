@@ -1,0 +1,15 @@
+{
+  "phase": "generate",
+  "started_utc": "2026-09-15T11:49:26Z",
+  "script_sha256": "733b97332aceb029fe17088b31b15d75ea5e88a3457ee44a77d3430cbd32839b",
+  "python": "3.12.11 (main, Jun 26 2025, 21:17:44) [MSC v.1944 64 bit (AMD64)]",
+  "numpy": "2.5.3",
+  "onnx": "1.22.0",
+  "onnxruntime": "1.30.0",
+  "providers": [
+    "CPUExecutionProvider"
+  ],
+  "intra_op_threads": 4,
+  "margin": 1.5,
+  "max_new": 32
+}

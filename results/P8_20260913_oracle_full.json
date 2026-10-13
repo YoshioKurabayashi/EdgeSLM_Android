@@ -1,0 +1,44 @@
+[
+  {
+    "case": "none",
+    "spec": "none",
+    "pairs_removed": 0,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6797163684873166,
+      "rank_of_fp32_top1_mean": 1908.75,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.31191376059850767,
+      "positions": 48
+    }
+  },
+  {
+    "case": "完全に外す",
+    "spec": "完全に外す:Abs,Add,Concat,Gather,MatMul,Mul,Neg,Pow,Reciprocal,ReduceMax,ReduceMean,Reshape,Sigmoid,Slice,Softmax,Sqrt,Transpose,Unsqueeze,@in=past_,@t=cos,@t=sin,@t=attn_mask,@weights",
+    "pairs_removed": 2376,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8708333333333332,
+      "kl_fp32_to_quant": 0.6975456342903885,
+      "rank_of_fp32_top1_mean": 2407.5625,
+      "rank_of_fp32_top1_p95": 10876.299999999988,
+      "logits_rel_l2": 0.2983397122479217,
+      "positions": 48
+    }
+  },
+  {
+    "case": "cos_sin_maskのみ",
+    "spec": "cos_sin_maskのみ:@t=cos,@t=sin,@t=attn_mask",
+    "pairs_removed": 3,
+    "metrics": {
+      "top1_agreement": 0.6666666666666666,
+      "top5_overlap": 0.8291666666666666,
+      "kl_fp32_to_quant": 0.6772173881899911,
+      "rank_of_fp32_top1_mean": 1908.8125,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.3116069109200451,
+      "positions": 48
+    }
+  }
+]

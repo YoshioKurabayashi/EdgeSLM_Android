@@ -1,0 +1,28 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\rope_fused\rope_fused_a16w8_qdq.onnx --preserve_io_datatype --output_path work\ops\rope_fused\ctx\rope_fused.dlc
+  FAILED. ログ末尾:
+    Traceback (most recent call last):
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\bin\x86_64-windows-msvc\qairt-converter", line 383, in main
+        backend.serialize(optimized_graph, is_qairt=True, backend_info_obj=backend_info_obj)
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\python\qti\aisw\converters\qnn_backend\ir_to_dlc.py", line 666, in serialize
+        cpp_graph = self.get_ir_graph(graph)
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\python\qti\aisw\converters\qnn_backend\qnn_backend_base.py", line 644, in get_ir_graph
+        raise e
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\python\qti\aisw\converters\qnn_backend\qnn_backend_base.py", line 625, in get_ir_graph
+        QnnTranslations.apply_method_to_all_ops(BackendTranslationBase.ADD_OP_TO_BACKEND, graph, self)
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\python\qti\aisw\converters\common\converter_ir\translation.py", line 90, in apply_method_to_all_ops
+        self.apply_method_to_op(node.op.type, method_name, node, graph, *args, **kwargs)
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\python\qti\aisw\converters\common\converter_ir\translation.py", line 67, in apply_method_to_op
+        return translation.apply_method(method_name, *args, **kwargs)
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\python\qti\aisw\converters\common\converter_ir\translation.py", line 20, in apply_method
+        return self.indexed_methods[method_name](*args, **kwargs)
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\python\qti\aisw\converters\qnn_backend\qnn_translations.py", line 2799, in add_op_to_backend
+        backend.add_node(node.op.name, ir_graph.QNN_OP_ROTARY_EMBEDDING,
+      File "D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\python\qti\aisw\converters\qnn_backend\ir_to_dlc.py", line 280, in add_node
+        if not self.model.add_node(node_name, node_type, node_package_name, tensor_params, scalar_params,
+    RuntimeError: modeltools::IrGraph::validateQnnOpConfig: Failed QNN validation for rope with error
+    Validating Input[1] of ID 3.
+    Validating tensor 1 and 3 have the same Datatype.
+    Tensor 1 and 3 have mismatching datatypes. 0x232 != 0x32.
+    Op specific validation failed.
+    

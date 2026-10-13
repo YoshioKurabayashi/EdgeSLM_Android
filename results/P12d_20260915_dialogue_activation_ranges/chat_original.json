@@ -1,0 +1,2446 @@
+{
+  "name": "chat_original",
+  "tokens": 107,
+  "window": 256,
+  "meta": {
+    "kind": "greedy_dialogue",
+    "turns": [
+      {
+        "turn": 0,
+        "prompt_start": 0,
+        "new_prompt_tokens": 41,
+        "generated_ids": [
+          75639,
+          38780,
+          125574,
+          29412,
+          17,
+          17,
+          26381,
+          19655,
+          113654,
+          130225,
+          1773
+        ],
+        "text": "エアコンを22度に設定できます。",
+        "stop_id_not_consumed": 151645,
+        "max_new": 64
+      },
+      {
+        "turn": 1,
+        "prompt_start": 52,
+        "new_prompt_tokens": 18,
+        "generated_ids": [
+          78685,
+          125193,
+          29412,
+          133619,
+          32441,
+          1773
+        ],
+        "text": "音楽をかけてます。",
+        "stop_id_not_consumed": 151645,
+        "max_new": 64
+      },
+      {
+        "turn": 2,
+        "prompt_start": 76,
+        "new_prompt_tokens": 22,
+        "generated_ids": [
+          29713,
+          136644,
+          15322,
+          17,
+          17,
+          26381,
+          130130,
+          78621,
+          1773
+        ],
+        "text": "さっきは22度にしてました。",
+        "stop_id_not_consumed": 151645,
+        "max_new": 64
+      }
+    ],
+    "note": "Each emitted non-stop token is consumed; stop token is consumed once as next turn prefix."
+  },
+  "checks": [
+    {
+      "position": 0,
+      "logits_rel_l2": 0.0,
+      "top1_same": true,
+      "layer_3_rel_l2": 0.0,
+      "layer_6_rel_l2": 0.0
+    },
+    {
+      "position": 40,
+      "logits_rel_l2": 1.1270003133981145e-06,
+      "top1_same": true,
+      "layer_3_rel_l2": 1.2452086383205657e-06,
+      "layer_6_rel_l2": 1.3047971215204757e-06
+    },
+    {
+      "position": 100,
+      "logits_rel_l2": 1.1102805565346376e-06,
+      "top1_same": true,
+      "layer_3_rel_l2": 7.042347213197193e-07,
+      "layer_6_rel_l2": 1.1109264144739225e-06
+    }
+  ],
+  "rows": [
+    {
+      "position": 0,
+      "token_id": 151644,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 1,
+      "evicted": 0,
+      "layer_3": {
+        "min": -190.38951110839844,
+        "max": 8141.0419921875,
+        "max_abs_channel": 35,
+        "channel_35": 8141.0419921875,
+        "abs_gt_1000": 1
+      },
+      "layer_6": {
+        "min": -191.55593872070312,
+        "max": 8139.80126953125,
+        "max_abs_channel": 35,
+        "channel_35": 8139.80126953125,
+        "abs_gt_1000": 1
+      }
+    },
+    {
+      "position": 1,
+      "token_id": 8948,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 2,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.3249523639678955,
+        "max": 10.10649299621582,
+        "max_abs_channel": 35,
+        "channel_35": 10.10649299621582,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.079929351806641,
+        "max": 16.821395874023438,
+        "max_abs_channel": 35,
+        "channel_35": 16.821395874023438,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 2,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 3,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.893122673034668,
+        "max": 5.861393928527832,
+        "max_abs_channel": 35,
+        "channel_35": 5.861393928527832,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.7560553550720215,
+        "max": 11.297185897827148,
+        "max_abs_channel": 35,
+        "channel_35": 11.297185897827148,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 3,
+      "token_id": 126855,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 4,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.4118881225585938,
+        "max": 6.190590858459473,
+        "max_abs_channel": 35,
+        "channel_35": 6.190590858459473,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.670343399047852,
+        "max": 9.36722183227539,
+        "max_abs_channel": 35,
+        "channel_35": 9.36722183227539,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 4,
+      "token_id": 15322,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 5,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.8467235565185547,
+        "max": 4.60986328125,
+        "max_abs_channel": 35,
+        "channel_35": 4.60986328125,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.799387454986572,
+        "max": 10.376594543457031,
+        "max_abs_channel": 35,
+        "channel_35": 10.376594543457031,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 5,
+      "token_id": 102107,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 6,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.563478946685791,
+        "max": 5.989088535308838,
+        "max_abs_channel": 35,
+        "channel_35": 5.989088535308838,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.443755149841309,
+        "max": 11.709150314331055,
+        "max_abs_channel": 35,
+        "channel_35": 11.709150314331055,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 6,
+      "token_id": 103319,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 7,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.510265827178955,
+        "max": 1.7969329357147217,
+        "max_abs_channel": 23,
+        "channel_35": 1.7969329357147217,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.649555683135986,
+        "max": 6.530627250671387,
+        "max_abs_channel": 35,
+        "channel_35": 6.530627250671387,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 7,
+      "token_id": 38780,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 8,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.0589535236358643,
+        "max": 6.801373481750488,
+        "max_abs_channel": 35,
+        "channel_35": 6.801373481750488,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.967733860015869,
+        "max": 9.712983131408691,
+        "max_abs_channel": 35,
+        "channel_35": 9.712983131408691,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 8,
+      "token_id": 56107,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 9,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.4716219902038574,
+        "max": 2.077669143676758,
+        "max_abs_channel": 180,
+        "channel_35": -0.29021453857421875,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.256340026855469,
+        "max": 3.6902377605438232,
+        "max_abs_channel": 23,
+        "channel_35": 3.5049948692321777,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 9,
+      "token_id": 124730,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 10,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.130918502807617,
+        "max": 1.9030150175094604,
+        "max_abs_channel": 23,
+        "channel_35": 0.033865898847579956,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.373963356018066,
+        "max": 3.659193515777588,
+        "max_abs_channel": 23,
+        "channel_35": 3.1901416778564453,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 10,
+      "token_id": 51314,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 11,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.701862096786499,
+        "max": 1.6948515176773071,
+        "max_abs_channel": 23,
+        "channel_35": 1.2656562328338623,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.766263484954834,
+        "max": 6.172173023223877,
+        "max_abs_channel": 35,
+        "channel_35": 6.172173023223877,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 11,
+      "token_id": 37541,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 12,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.6204848289489746,
+        "max": 5.015913009643555,
+        "max_abs_channel": 35,
+        "channel_35": 5.015913009643555,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.435109615325928,
+        "max": 9.292736053466797,
+        "max_abs_channel": 35,
+        "channel_35": 9.292736053466797,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 12,
+      "token_id": 1773,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 13,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.42069935798645,
+        "max": 5.9703168869018555,
+        "max_abs_channel": 35,
+        "channel_35": 5.9703168869018555,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.114331245422363,
+        "max": 11.875899314880371,
+        "max_abs_channel": 35,
+        "channel_35": 11.875899314880371,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 13,
+      "token_id": 99534,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 14,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.0967111587524414,
+        "max": 5.333884239196777,
+        "max_abs_channel": 35,
+        "channel_35": 5.333884239196777,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.502047538757324,
+        "max": 8.735736846923828,
+        "max_abs_channel": 35,
+        "channel_35": 8.735736846923828,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 14,
+      "token_id": 46784,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 15,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.5485165119171143,
+        "max": 1.7674033641815186,
+        "max_abs_channel": 0,
+        "channel_35": 1.7674033641815186,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.928676128387451,
+        "max": 5.626891136169434,
+        "max_abs_channel": 35,
+        "channel_35": 5.626891136169434,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 15,
+      "token_id": 99590,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 16,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.536221504211426,
+        "max": 4.024148941040039,
+        "max_abs_channel": 35,
+        "channel_35": 4.024148941040039,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.890583038330078,
+        "max": 7.187812805175781,
+        "max_abs_channel": 35,
+        "channel_35": 7.187812805175781,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 16,
+      "token_id": 126600,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 17,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.837594747543335,
+        "max": 3.2028250694274902,
+        "max_abs_channel": 35,
+        "channel_35": 3.2028250694274902,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.683650970458984,
+        "max": 8.360568046569824,
+        "max_abs_channel": 35,
+        "channel_35": 8.360568046569824,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 17,
+      "token_id": 71215,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 18,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.991295337677002,
+        "max": 4.180251598358154,
+        "max_abs_channel": 35,
+        "channel_35": 4.180251598358154,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.61083984375,
+        "max": 7.7885332107543945,
+        "max_abs_channel": 35,
+        "channel_35": 7.7885332107543945,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 18,
+      "token_id": 1773,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 19,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.4408655166625977,
+        "max": 5.804759502410889,
+        "max_abs_channel": 35,
+        "channel_35": 5.804759502410889,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.793025016784668,
+        "max": 11.117304801940918,
+        "max_abs_channel": 35,
+        "channel_35": 11.117304801940918,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 19,
+      "token_id": 151645,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 20,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.639585018157959,
+        "max": 6.810223579406738,
+        "max_abs_channel": 30,
+        "channel_35": 5.315049648284912,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -7.819479942321777,
+        "max": 11.573740005493164,
+        "max_abs_channel": 30,
+        "channel_35": 10.03271198272705,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 20,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 21,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.17421555519104,
+        "max": 5.9714179039001465,
+        "max_abs_channel": 35,
+        "channel_35": 5.9714179039001465,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.5438551902771,
+        "max": 12.263123512268066,
+        "max_abs_channel": 35,
+        "channel_35": 12.263123512268066,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 21,
+      "token_id": 151644,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 22,
+      "evicted": 0,
+      "layer_3": {
+        "min": -4.929112911224365,
+        "max": 6.132672309875488,
+        "max_abs_channel": 30,
+        "channel_35": 1.5772855281829834,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -7.01038932800293,
+        "max": 8.454291343688965,
+        "max_abs_channel": 30,
+        "channel_35": 4.903975963592529,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 22,
+      "token_id": 872,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 23,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.819417953491211,
+        "max": 4.955258846282959,
+        "max_abs_channel": 35,
+        "channel_35": 4.955258846282959,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.0587639808654785,
+        "max": 10.294685363769531,
+        "max_abs_channel": 35,
+        "channel_35": 10.294685363769531,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 23,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 24,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.9860527515411377,
+        "max": 5.707263946533203,
+        "max_abs_channel": 35,
+        "channel_35": 5.707263946533203,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.0522918701171875,
+        "max": 12.579181671142578,
+        "max_abs_channel": 35,
+        "channel_35": 12.579181671142578,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 24,
+      "token_id": 75639,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 25,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.632202625274658,
+        "max": 9.270828247070312,
+        "max_abs_channel": 35,
+        "channel_35": 9.270828247070312,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.3080644607543945,
+        "max": 12.387057304382324,
+        "max_abs_channel": 35,
+        "channel_35": 12.387057304382324,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 25,
+      "token_id": 38780,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 26,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.7696603536605835,
+        "max": 1.529697299003601,
+        "max_abs_channel": 9,
+        "channel_35": 0.6189699769020081,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.579756021499634,
+        "max": 2.7674245834350586,
+        "max_abs_channel": 62,
+        "channel_35": 2.7674245834350586,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 26,
+      "token_id": 125574,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 27,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.9718046188354492,
+        "max": 2.8390440940856934,
+        "max_abs_channel": 35,
+        "channel_35": 2.8390440940856934,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.371766090393066,
+        "max": 6.560680389404297,
+        "max_abs_channel": 35,
+        "channel_35": 6.560680389404297,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 27,
+      "token_id": 29412,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 28,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.522339105606079,
+        "max": 6.627697944641113,
+        "max_abs_channel": 35,
+        "channel_35": 6.627697944641113,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.6920084953308105,
+        "max": 10.662541389465332,
+        "max_abs_channel": 35,
+        "channel_35": 10.662541389465332,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 28,
+      "token_id": 17,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 29,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.0057356357574463,
+        "max": 7.051700592041016,
+        "max_abs_channel": 35,
+        "channel_35": 7.051700592041016,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.3364765644073486,
+        "max": 12.181950569152832,
+        "max_abs_channel": 35,
+        "channel_35": 12.181950569152832,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 29,
+      "token_id": 17,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 30,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.076212167739868,
+        "max": 4.892016887664795,
+        "max_abs_channel": 35,
+        "channel_35": 4.892016887664795,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.352379322052002,
+        "max": 9.879888534545898,
+        "max_abs_channel": 35,
+        "channel_35": 9.879888534545898,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 30,
+      "token_id": 26381,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 31,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.001493453979492,
+        "max": 3.119427442550659,
+        "max_abs_channel": 35,
+        "channel_35": 3.119427442550659,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.104176044464111,
+        "max": 6.499295711517334,
+        "max_abs_channel": 35,
+        "channel_35": 6.499295711517334,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 31,
+      "token_id": 130130,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 32,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.9225330352783203,
+        "max": 4.401514530181885,
+        "max_abs_channel": 35,
+        "channel_35": 4.401514530181885,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.007503509521484,
+        "max": 6.538331031799316,
+        "max_abs_channel": 35,
+        "channel_35": 6.538331031799316,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 32,
+      "token_id": 151645,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 33,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.4074931144714355,
+        "max": 6.078393459320068,
+        "max_abs_channel": 23,
+        "channel_35": 6.078393459320068,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -7.585308074951172,
+        "max": 10.235623359680176,
+        "max_abs_channel": 30,
+        "channel_35": 10.19469165802002,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 33,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 34,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.907088279724121,
+        "max": 5.663332462310791,
+        "max_abs_channel": 35,
+        "channel_35": 5.663332462310791,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.378902435302734,
+        "max": 13.583267211914062,
+        "max_abs_channel": 35,
+        "channel_35": 13.583267211914062,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 34,
+      "token_id": 151644,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 35,
+      "evicted": 0,
+      "layer_3": {
+        "min": -4.7433977127075195,
+        "max": 5.915805816650391,
+        "max_abs_channel": 30,
+        "channel_35": 2.535348892211914,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.572838306427002,
+        "max": 8.01623821258545,
+        "max_abs_channel": 30,
+        "channel_35": 6.575931549072266,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 35,
+      "token_id": 77091,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 36,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.253965139389038,
+        "max": 5.925424575805664,
+        "max_abs_channel": 35,
+        "channel_35": 5.925424575805664,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.77830696105957,
+        "max": 13.330842971801758,
+        "max_abs_channel": 35,
+        "channel_35": 13.330842971801758,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 36,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 37,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.303239583969116,
+        "max": 5.732336044311523,
+        "max_abs_channel": 35,
+        "channel_35": 5.732336044311523,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.21856689453125,
+        "max": 11.869023323059082,
+        "max_abs_channel": 35,
+        "channel_35": 11.869023323059082,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 37,
+      "token_id": 151667,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 38,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.47224235534668,
+        "max": 7.510463714599609,
+        "max_abs_channel": 30,
+        "channel_35": 5.371523857116699,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -8.572646141052246,
+        "max": 11.407363891601562,
+        "max_abs_channel": 30,
+        "channel_35": 8.851808547973633,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 38,
+      "token_id": 271,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 39,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.382153034210205,
+        "max": 6.031550884246826,
+        "max_abs_channel": 35,
+        "channel_35": 6.031550884246826,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.83947229385376,
+        "max": 11.483257293701172,
+        "max_abs_channel": 35,
+        "channel_35": 11.483257293701172,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 39,
+      "token_id": 151668,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 40,
+      "evicted": 0,
+      "layer_3": {
+        "min": -5.302628517150879,
+        "max": 6.722535133361816,
+        "max_abs_channel": 30,
+        "channel_35": 5.578818321228027,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.58424711227417,
+        "max": 11.125205039978027,
+        "max_abs_channel": 30,
+        "channel_35": 9.330900192260742,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 40,
+      "token_id": 271,
+      "phase": "prompt",
+      "turn": 0,
+      "valid_tokens": 41,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.170184373855591,
+        "max": 6.003891944885254,
+        "max_abs_channel": 35,
+        "channel_35": 6.003891944885254,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.797750473022461,
+        "max": 10.52605152130127,
+        "max_abs_channel": 35,
+        "channel_35": 10.52605152130127,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 41,
+      "token_id": 75639,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 42,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.5481159687042236,
+        "max": 9.462312698364258,
+        "max_abs_channel": 35,
+        "channel_35": 9.462312698364258,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.995979309082031,
+        "max": 12.650728225708008,
+        "max_abs_channel": 35,
+        "channel_35": 12.650728225708008,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 42,
+      "token_id": 38780,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 43,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.9073712825775146,
+        "max": 1.3914796113967896,
+        "max_abs_channel": 9,
+        "channel_35": 1.3914796113967896,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.7493982315063477,
+        "max": 3.572533130645752,
+        "max_abs_channel": 9,
+        "channel_35": 3.572533130645752,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 43,
+      "token_id": 125574,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 44,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.03145694732666,
+        "max": 3.3451504707336426,
+        "max_abs_channel": 35,
+        "channel_35": 3.3451504707336426,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.08885383605957,
+        "max": 7.756383895874023,
+        "max_abs_channel": 35,
+        "channel_35": 7.756383895874023,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 44,
+      "token_id": 29412,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 45,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.6504106521606445,
+        "max": 7.337650299072266,
+        "max_abs_channel": 35,
+        "channel_35": 7.337650299072266,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.1849212646484375,
+        "max": 11.155884742736816,
+        "max_abs_channel": 35,
+        "channel_35": 11.155884742736816,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 45,
+      "token_id": 17,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 46,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.911617398262024,
+        "max": 7.5576558113098145,
+        "max_abs_channel": 35,
+        "channel_35": 7.5576558113098145,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -2.721391201019287,
+        "max": 11.769916534423828,
+        "max_abs_channel": 35,
+        "channel_35": 11.769916534423828,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 46,
+      "token_id": 17,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 47,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.8595744371414185,
+        "max": 5.468660831451416,
+        "max_abs_channel": 35,
+        "channel_35": 5.468660831451416,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -2.99182391166687,
+        "max": 10.181519508361816,
+        "max_abs_channel": 35,
+        "channel_35": 10.181519508361816,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 47,
+      "token_id": 26381,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 48,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.073521614074707,
+        "max": 4.162786960601807,
+        "max_abs_channel": 35,
+        "channel_35": 4.162786960601807,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.83125376701355,
+        "max": 8.013669967651367,
+        "max_abs_channel": 35,
+        "channel_35": 8.013669967651367,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 48,
+      "token_id": 19655,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 49,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.9299302101135254,
+        "max": 5.462875843048096,
+        "max_abs_channel": 35,
+        "channel_35": 5.462875843048096,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.5620293617248535,
+        "max": 8.148019790649414,
+        "max_abs_channel": 35,
+        "channel_35": 8.148019790649414,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 49,
+      "token_id": 113654,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 50,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.300363063812256,
+        "max": 7.091882705688477,
+        "max_abs_channel": 35,
+        "channel_35": 7.091882705688477,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.4539294242858887,
+        "max": 10.444923400878906,
+        "max_abs_channel": 35,
+        "channel_35": 10.444923400878906,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 50,
+      "token_id": 130225,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 51,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.4651038646698,
+        "max": 6.562105178833008,
+        "max_abs_channel": 35,
+        "channel_35": 6.562105178833008,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.162700653076172,
+        "max": 10.248287200927734,
+        "max_abs_channel": 35,
+        "channel_35": 10.248287200927734,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 51,
+      "token_id": 1773,
+      "phase": "generated",
+      "turn": 0,
+      "valid_tokens": 52,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.345008373260498,
+        "max": 6.432056903839111,
+        "max_abs_channel": 35,
+        "channel_35": 6.432056903839111,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.739202499389648,
+        "max": 12.159561157226562,
+        "max_abs_channel": 35,
+        "channel_35": 12.159561157226562,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 52,
+      "token_id": 151645,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 53,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.204567909240723,
+        "max": 6.760420799255371,
+        "max_abs_channel": 35,
+        "channel_35": 6.760420799255371,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -7.288660049438477,
+        "max": 11.352402687072754,
+        "max_abs_channel": 35,
+        "channel_35": 11.352402687072754,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 53,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 54,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.076997995376587,
+        "max": 6.155298709869385,
+        "max_abs_channel": 35,
+        "channel_35": 6.155298709869385,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.1113762855529785,
+        "max": 11.664939880371094,
+        "max_abs_channel": 35,
+        "channel_35": 11.664939880371094,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 54,
+      "token_id": 151644,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 55,
+      "evicted": 0,
+      "layer_3": {
+        "min": -4.756176471710205,
+        "max": 5.957363128662109,
+        "max_abs_channel": 30,
+        "channel_35": 3.001800298690796,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.590817451477051,
+        "max": 7.824509620666504,
+        "max_abs_channel": 35,
+        "channel_35": 7.824509620666504,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 55,
+      "token_id": 872,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 56,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.7487300634384155,
+        "max": 5.52019739151001,
+        "max_abs_channel": 35,
+        "channel_35": 5.52019739151001,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.758284091949463,
+        "max": 9.80027961730957,
+        "max_abs_channel": 35,
+        "channel_35": 9.80027961730957,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 56,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 57,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.7399988174438477,
+        "max": 6.11072301864624,
+        "max_abs_channel": 35,
+        "channel_35": 6.11072301864624,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.015420913696289,
+        "max": 13.03266716003418,
+        "max_abs_channel": 35,
+        "channel_35": 13.03266716003418,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 57,
+      "token_id": 78685,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 58,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.7428479194641113,
+        "max": 5.49754524230957,
+        "max_abs_channel": 35,
+        "channel_35": 5.49754524230957,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.613002300262451,
+        "max": 9.580400466918945,
+        "max_abs_channel": 35,
+        "channel_35": 9.580400466918945,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 58,
+      "token_id": 125193,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 59,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.7641940116882324,
+        "max": 3.4792826175689697,
+        "max_abs_channel": 35,
+        "channel_35": 3.4792826175689697,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.165655136108398,
+        "max": 9.915230751037598,
+        "max_abs_channel": 35,
+        "channel_35": 9.915230751037598,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 59,
+      "token_id": 29412,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 60,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.7695627212524414,
+        "max": 7.654608726501465,
+        "max_abs_channel": 35,
+        "channel_35": 7.654608726501465,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.303260326385498,
+        "max": 10.513492584228516,
+        "max_abs_channel": 35,
+        "channel_35": 10.513492584228516,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 60,
+      "token_id": 133619,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 61,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.7631313800811768,
+        "max": 5.172301292419434,
+        "max_abs_channel": 35,
+        "channel_35": 5.172301292419434,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.470939636230469,
+        "max": 8.58731460571289,
+        "max_abs_channel": 35,
+        "channel_35": 8.58731460571289,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 61,
+      "token_id": 151645,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 62,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.39571475982666,
+        "max": 6.653829097747803,
+        "max_abs_channel": 35,
+        "channel_35": 6.653829097747803,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -7.5280985832214355,
+        "max": 11.259272575378418,
+        "max_abs_channel": 35,
+        "channel_35": 11.259272575378418,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 62,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 63,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.95296311378479,
+        "max": 6.145631790161133,
+        "max_abs_channel": 35,
+        "channel_35": 6.145631790161133,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.709875583648682,
+        "max": 13.19035530090332,
+        "max_abs_channel": 35,
+        "channel_35": 13.19035530090332,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 63,
+      "token_id": 151644,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 64,
+      "evicted": 0,
+      "layer_3": {
+        "min": -4.8708977699279785,
+        "max": 6.0456695556640625,
+        "max_abs_channel": 30,
+        "channel_35": 3.572524309158325,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.729502201080322,
+        "max": 8.687518119812012,
+        "max_abs_channel": 35,
+        "channel_35": 8.687518119812012,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 64,
+      "token_id": 77091,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 65,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.051820755004883,
+        "max": 6.104184627532959,
+        "max_abs_channel": 35,
+        "channel_35": 6.104184627532959,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.5699243545532227,
+        "max": 12.441567420959473,
+        "max_abs_channel": 35,
+        "channel_35": 12.441567420959473,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 65,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 66,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.936413288116455,
+        "max": 5.906929969787598,
+        "max_abs_channel": 35,
+        "channel_35": 5.906929969787598,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.726934909820557,
+        "max": 12.699932098388672,
+        "max_abs_channel": 35,
+        "channel_35": 12.699932098388672,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 66,
+      "token_id": 151667,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 67,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.4381866455078125,
+        "max": 7.424565315246582,
+        "max_abs_channel": 30,
+        "channel_35": 6.302772521972656,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -8.17532730102539,
+        "max": 10.64113998413086,
+        "max_abs_channel": 30,
+        "channel_35": 9.75747299194336,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 67,
+      "token_id": 271,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 68,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.174856185913086,
+        "max": 6.188612461090088,
+        "max_abs_channel": 35,
+        "channel_35": 6.188612461090088,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.6782355308532715,
+        "max": 11.665876388549805,
+        "max_abs_channel": 35,
+        "channel_35": 11.665876388549805,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 68,
+      "token_id": 151668,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 69,
+      "evicted": 0,
+      "layer_3": {
+        "min": -5.200103759765625,
+        "max": 6.465365409851074,
+        "max_abs_channel": 30,
+        "channel_35": 6.093290328979492,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.321995258331299,
+        "max": 10.21578311920166,
+        "max_abs_channel": 30,
+        "channel_35": 9.908374786376953,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 69,
+      "token_id": 271,
+      "phase": "prompt",
+      "turn": 1,
+      "valid_tokens": 70,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.0484790802001953,
+        "max": 6.162967205047607,
+        "max_abs_channel": 35,
+        "channel_35": 6.162967205047607,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.603985786437988,
+        "max": 10.801905632019043,
+        "max_abs_channel": 35,
+        "channel_35": 10.801905632019043,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 70,
+      "token_id": 78685,
+      "phase": "generated",
+      "turn": 1,
+      "valid_tokens": 71,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.84308123588562,
+        "max": 6.536120414733887,
+        "max_abs_channel": 35,
+        "channel_35": 6.536120414733887,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.5880537033081055,
+        "max": 10.96959400177002,
+        "max_abs_channel": 35,
+        "channel_35": 10.96959400177002,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 71,
+      "token_id": 125193,
+      "phase": "generated",
+      "turn": 1,
+      "valid_tokens": 72,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.8075294494628906,
+        "max": 3.939516305923462,
+        "max_abs_channel": 35,
+        "channel_35": 3.939516305923462,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.18648624420166,
+        "max": 10.133028984069824,
+        "max_abs_channel": 35,
+        "channel_35": 10.133028984069824,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 72,
+      "token_id": 29412,
+      "phase": "generated",
+      "turn": 1,
+      "valid_tokens": 73,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.8246512413024902,
+        "max": 7.81704044342041,
+        "max_abs_channel": 35,
+        "channel_35": 7.81704044342041,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.3119611740112305,
+        "max": 11.119710922241211,
+        "max_abs_channel": 35,
+        "channel_35": 11.119710922241211,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 73,
+      "token_id": 133619,
+      "phase": "generated",
+      "turn": 1,
+      "valid_tokens": 74,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.7258124351501465,
+        "max": 5.101406097412109,
+        "max_abs_channel": 35,
+        "channel_35": 5.101406097412109,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.399256706237793,
+        "max": 8.845893859863281,
+        "max_abs_channel": 35,
+        "channel_35": 8.845893859863281,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 74,
+      "token_id": 32441,
+      "phase": "generated",
+      "turn": 1,
+      "valid_tokens": 75,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.765164375305176,
+        "max": 4.334517478942871,
+        "max_abs_channel": 35,
+        "channel_35": 4.334517478942871,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.718622207641602,
+        "max": 9.075130462646484,
+        "max_abs_channel": 35,
+        "channel_35": 9.075130462646484,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 75,
+      "token_id": 1773,
+      "phase": "generated",
+      "turn": 1,
+      "valid_tokens": 76,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.2384870052337646,
+        "max": 6.854029655456543,
+        "max_abs_channel": 35,
+        "channel_35": 6.854029655456543,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.6086106300354,
+        "max": 12.449525833129883,
+        "max_abs_channel": 35,
+        "channel_35": 12.449525833129883,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 76,
+      "token_id": 151645,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 77,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.256827354431152,
+        "max": 7.249055862426758,
+        "max_abs_channel": 35,
+        "channel_35": 7.249055862426758,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -7.392730712890625,
+        "max": 12.188448905944824,
+        "max_abs_channel": 35,
+        "channel_35": 12.188448905944824,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 77,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 78,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.099807024002075,
+        "max": 6.490082263946533,
+        "max_abs_channel": 35,
+        "channel_35": 6.490082263946533,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.953575134277344,
+        "max": 12.002349853515625,
+        "max_abs_channel": 35,
+        "channel_35": 12.002349853515625,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 78,
+      "token_id": 151644,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 79,
+      "evicted": 0,
+      "layer_3": {
+        "min": -4.824679851531982,
+        "max": 5.837782382965088,
+        "max_abs_channel": 30,
+        "channel_35": 3.601936101913452,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.647555351257324,
+        "max": 8.666293144226074,
+        "max_abs_channel": 35,
+        "channel_35": 8.666293144226074,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 79,
+      "token_id": 872,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 80,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.7802823781967163,
+        "max": 5.769381999969482,
+        "max_abs_channel": 35,
+        "channel_35": 5.769381999969482,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.8672409057617188,
+        "max": 9.996050834655762,
+        "max_abs_channel": 35,
+        "channel_35": 9.996050834655762,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 80,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 81,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.7261698246002197,
+        "max": 6.381319046020508,
+        "max_abs_channel": 35,
+        "channel_35": 6.381319046020508,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.818808078765869,
+        "max": 13.244466781616211,
+        "max_abs_channel": 35,
+        "channel_35": 13.244466781616211,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 81,
+      "token_id": 29713,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 82,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.551241874694824,
+        "max": 7.625305652618408,
+        "max_abs_channel": 35,
+        "channel_35": 7.625305652618408,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.955939292907715,
+        "max": 12.30048656463623,
+        "max_abs_channel": 35,
+        "channel_35": 12.30048656463623,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 82,
+      "token_id": 136644,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 83,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.0595712661743164,
+        "max": 2.03012752532959,
+        "max_abs_channel": 23,
+        "channel_35": 2.03012752532959,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.576751708984375,
+        "max": 7.901522159576416,
+        "max_abs_channel": 35,
+        "channel_35": 7.901522159576416,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 83,
+      "token_id": 140940,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 84,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.969362497329712,
+        "max": 4.672847270965576,
+        "max_abs_channel": 35,
+        "channel_35": 4.672847270965576,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.462440013885498,
+        "max": 10.682329177856445,
+        "max_abs_channel": 35,
+        "channel_35": 10.682329177856445,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 84,
+      "token_id": 19655,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 85,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.319438934326172,
+        "max": 5.096639156341553,
+        "max_abs_channel": 35,
+        "channel_35": 5.096639156341553,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.203825950622559,
+        "max": 7.049736976623535,
+        "max_abs_channel": 35,
+        "channel_35": 7.049736976623535,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 85,
+      "token_id": 54951,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 86,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.772660732269287,
+        "max": 5.485055446624756,
+        "max_abs_channel": 35,
+        "channel_35": 5.485055446624756,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.082658767700195,
+        "max": 7.9992594718933105,
+        "max_abs_channel": 35,
+        "channel_35": 7.9992594718933105,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 86,
+      "token_id": 41791,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 87,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.472928524017334,
+        "max": 2.81042742729187,
+        "max_abs_channel": 35,
+        "channel_35": 2.81042742729187,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.684926509857178,
+        "max": 6.422788619995117,
+        "max_abs_channel": 35,
+        "channel_35": 6.422788619995117,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 87,
+      "token_id": 75522,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 88,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.452467918395996,
+        "max": 3.065058708190918,
+        "max_abs_channel": 35,
+        "channel_35": 3.065058708190918,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.333495140075684,
+        "max": 7.369321346282959,
+        "max_abs_channel": 35,
+        "channel_35": 7.369321346282959,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 88,
+      "token_id": 11319,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 89,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.9349005222320557,
+        "max": 5.830390453338623,
+        "max_abs_channel": 35,
+        "channel_35": 5.830390453338623,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.499475002288818,
+        "max": 11.638090133666992,
+        "max_abs_channel": 35,
+        "channel_35": 11.638090133666992,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 89,
+      "token_id": 151645,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 90,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.366374492645264,
+        "max": 7.338693618774414,
+        "max_abs_channel": 35,
+        "channel_35": 7.338693618774414,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -7.53363561630249,
+        "max": 12.638448715209961,
+        "max_abs_channel": 35,
+        "channel_35": 12.638448715209961,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 90,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 91,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.9514198303222656,
+        "max": 6.374904155731201,
+        "max_abs_channel": 35,
+        "channel_35": 6.374904155731201,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.092339038848877,
+        "max": 13.10610294342041,
+        "max_abs_channel": 35,
+        "channel_35": 13.10610294342041,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 91,
+      "token_id": 151644,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 92,
+      "evicted": 0,
+      "layer_3": {
+        "min": -4.926012992858887,
+        "max": 5.928485870361328,
+        "max_abs_channel": 30,
+        "channel_35": 3.9066386222839355,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.703373908996582,
+        "max": 9.22665786743164,
+        "max_abs_channel": 35,
+        "channel_35": 9.22665786743164,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 92,
+      "token_id": 77091,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 93,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.0404441356658936,
+        "max": 6.311741828918457,
+        "max_abs_channel": 35,
+        "channel_35": 6.311741828918457,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.4924116134643555,
+        "max": 12.296257019042969,
+        "max_abs_channel": 35,
+        "channel_35": 12.296257019042969,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 93,
+      "token_id": 198,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 94,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.8471381664276123,
+        "max": 6.158434867858887,
+        "max_abs_channel": 35,
+        "channel_35": 6.158434867858887,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.562770366668701,
+        "max": 12.55936336517334,
+        "max_abs_channel": 35,
+        "channel_35": 12.55936336517334,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 94,
+      "token_id": 151667,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 95,
+      "evicted": 0,
+      "layer_3": {
+        "min": -6.462835311889648,
+        "max": 7.324048042297363,
+        "max_abs_channel": 30,
+        "channel_35": 6.661413192749023,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -8.201319694519043,
+        "max": 10.452269554138184,
+        "max_abs_channel": 30,
+        "channel_35": 10.352294921875,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 95,
+      "token_id": 271,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 96,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.148209571838379,
+        "max": 6.325541973114014,
+        "max_abs_channel": 35,
+        "channel_35": 6.325541973114014,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.516355991363525,
+        "max": 11.645622253417969,
+        "max_abs_channel": 35,
+        "channel_35": 11.645622253417969,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 96,
+      "token_id": 151668,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 97,
+      "evicted": 0,
+      "layer_3": {
+        "min": -5.240307331085205,
+        "max": 6.4940900802612305,
+        "max_abs_channel": 35,
+        "channel_35": 6.4940900802612305,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -6.462324619293213,
+        "max": 10.388054847717285,
+        "max_abs_channel": 35,
+        "channel_35": 10.388054847717285,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 97,
+      "token_id": 271,
+      "phase": "prompt",
+      "turn": 2,
+      "valid_tokens": 98,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.0212650299072266,
+        "max": 6.277093410491943,
+        "max_abs_channel": 35,
+        "channel_35": 6.277093410491943,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.456548690795898,
+        "max": 10.860637664794922,
+        "max_abs_channel": 35,
+        "channel_35": 10.860637664794922,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 98,
+      "token_id": 29713,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 99,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.4918715953826904,
+        "max": 7.776408672332764,
+        "max_abs_channel": 35,
+        "channel_35": 7.776408672332764,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.364863395690918,
+        "max": 13.349139213562012,
+        "max_abs_channel": 35,
+        "channel_35": 13.349139213562012,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 99,
+      "token_id": 136644,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 100,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.044517993927002,
+        "max": 2.338125228881836,
+        "max_abs_channel": 35,
+        "channel_35": 2.338125228881836,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.225155830383301,
+        "max": 9.133570671081543,
+        "max_abs_channel": 35,
+        "channel_35": 9.133570671081543,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 100,
+      "token_id": 15322,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 101,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.626488447189331,
+        "max": 7.341215133666992,
+        "max_abs_channel": 35,
+        "channel_35": 7.341215133666992,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.248729705810547,
+        "max": 12.427754402160645,
+        "max_abs_channel": 35,
+        "channel_35": 12.427754402160645,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 101,
+      "token_id": 17,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 102,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.9362157583236694,
+        "max": 8.243873596191406,
+        "max_abs_channel": 35,
+        "channel_35": 8.243873596191406,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.1270859241485596,
+        "max": 12.558296203613281,
+        "max_abs_channel": 35,
+        "channel_35": 12.558296203613281,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 102,
+      "token_id": 17,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 103,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.9936445951461792,
+        "max": 6.138302326202393,
+        "max_abs_channel": 35,
+        "channel_35": 6.138302326202393,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.200868606567383,
+        "max": 11.270700454711914,
+        "max_abs_channel": 35,
+        "channel_35": 11.270700454711914,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 103,
+      "token_id": 26381,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 104,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.1542611122131348,
+        "max": 4.677350044250488,
+        "max_abs_channel": 35,
+        "channel_35": 4.677350044250488,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.212260723114014,
+        "max": 8.54507827758789,
+        "max_abs_channel": 35,
+        "channel_35": 8.54507827758789,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 104,
+      "token_id": 130130,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 105,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.995258092880249,
+        "max": 5.308084487915039,
+        "max_abs_channel": 35,
+        "channel_35": 5.308084487915039,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.348387718200684,
+        "max": 7.8819193840026855,
+        "max_abs_channel": 35,
+        "channel_35": 7.8819193840026855,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 105,
+      "token_id": 78621,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 106,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.0777618885040283,
+        "max": 3.3118162155151367,
+        "max_abs_channel": 35,
+        "channel_35": 3.3118162155151367,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -5.3961501121521,
+        "max": 8.98270320892334,
+        "max_abs_channel": 35,
+        "channel_35": 8.98270320892334,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 106,
+      "token_id": 1773,
+      "phase": "generated",
+      "turn": 2,
+      "valid_tokens": 107,
+      "evicted": 0,
+      "layer_3": {
+        "min": -3.1752536296844482,
+        "max": 6.9999613761901855,
+        "max_abs_channel": 35,
+        "channel_35": 6.9999613761901855,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.253592491149902,
+        "max": 12.944365501403809,
+        "max_abs_channel": 35,
+        "channel_35": 12.944365501403809,
+        "abs_gt_1000": 0
+      }
+    }
+  ]
+}

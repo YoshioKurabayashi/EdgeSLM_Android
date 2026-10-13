@@ -1,0 +1,16 @@
+{
+ "baseline": {
+  "host_vs_htp_real_rel": 0.2194507694828819,
+  "code_max_diff": 2,
+  "strict_no_cpu_fallback": true,
+  "ort_run_ms": 2.774948000907898
+ },
+ "narrow_mul41_linear20": {
+  "host_vs_htp_real_rel": 0.08609427197613169,
+  "code_max_diff": 1,
+  "strict_no_cpu_fallback": true,
+  "ort_run_ms": 2.82989501953125
+ },
+ "p12j_reference_baseline_real_rel_0.2209": 0.2209,
+ "improved": true
+}

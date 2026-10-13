@@ -1,0 +1,14 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\qwen_layer1\qwen_layer1_a8w8_qdq.onnx --preserve_io_datatype --output_path work\ops\qwen_layer1\ctx\qwen_layer1.dlc
+  OK  14.34 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\qwen_layer1\ctx\qwen_layer1.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file qwen_layer1_ctx --output_dir work\ops\qwen_layer1\ctx\ctx_qwen_layer1 --htp_socs sm8350
+  OK  qwen_layer1_ctx.SM8350.bin  14.44 MiB
+=== S7: qnn-context-binary-utility（socModel の検証用メタデータ） ===
+  OK  work/ops/qwen_layer1/ctx/qwen_layer1_meta.json
+
+生成物:
+  DLC : work/ops/qwen_layer1/ctx/qwen_layer1.dlc
+  BIN : work/ops/qwen_layer1/ctx/ctx_qwen_layer1/qwen_layer1_ctx.SM8350.bin
+  META: work/ops/qwen_layer1/ctx/qwen_layer1_meta.json
+  CMD : work/ops/qwen_layer1/ctx/qwen_layer1_commands.txt

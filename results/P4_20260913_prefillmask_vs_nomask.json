@@ -1,0 +1,79 @@
+{
+  "samples": 8,
+  "mask_input_ok": 6,
+  "no_mask_ok": 6,
+  "rows": [
+    {
+      "prompt": "The capital city of France is",
+      "n_valid": 6,
+      "truth": " Paris",
+      "mask_input": " Paris",
+      "mask_input_ok": true,
+      "no_mask": " Paris",
+      "no_mask_ok": true
+    },
+    {
+      "prompt": "The capital city of Japan is Tokyo. The capital of France is",
+      "n_valid": 13,
+      "truth": " Paris",
+      "mask_input": " Paris",
+      "mask_input_ok": true,
+      "no_mask": " Paris",
+      "no_mask_ok": true
+    },
+    {
+      "prompt": "Tokyo is",
+      "n_valid": 3,
+      "truth": " a",
+      "mask_input": " a",
+      "mask_input_ok": true,
+      "no_mask": " a",
+      "no_mask_ok": true
+    },
+    {
+      "prompt": "Water boils at",
+      "n_valid": 3,
+      "truth": " ",
+      "mask_input": " ",
+      "mask_input_ok": true,
+      "no_mask": " ",
+      "no_mask_ok": true
+    },
+    {
+      "prompt": "The largest planet in our solar system is",
+      "n_valid": 8,
+      "truth": " __",
+      "mask_input": " the",
+      "mask_input_ok": false,
+      "no_mask": " the",
+      "no_mask_ok": false
+    },
+    {
+      "prompt": "Two plus two equals",
+      "n_valid": 4,
+      "truth": "\n",
+      "mask_input": " four",
+      "mask_input_ok": false,
+      "no_mask": " one",
+      "no_mask_ok": false
+    },
+    {
+      "prompt": "The sun rises in the",
+      "n_valid": 5,
+      "truth": " east",
+      "mask_input": " east",
+      "mask_input_ok": true,
+      "no_mask": " east",
+      "no_mask_ok": true
+    },
+    {
+      "prompt": "Python is a programming",
+      "n_valid": 4,
+      "truth": " language",
+      "mask_input": " language",
+      "mask_input_ok": true,
+      "no_mask": " language",
+      "no_mask_ok": true
+    }
+  ]
+}

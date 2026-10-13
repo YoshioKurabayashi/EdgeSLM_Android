@@ -1,0 +1,86 @@
+[
+  {
+    "case": "none",
+    "spec": "none",
+    "pairs_removed": 0,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6797163684873166,
+      "rank_of_fp32_top1_mean": 1908.75,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.31191376059850767,
+      "positions": 48
+    }
+  },
+  {
+    "case": "cache_io",
+    "spec": "cache_io:@in=past_,@out=present_",
+    "pairs_removed": 96,
+    "metrics": {
+      "top1_agreement": 0.6666666666666666,
+      "top5_overlap": 0.8166666666666668,
+      "kl_fp32_to_quant": 0.6802726344027507,
+      "rank_of_fp32_top1_mean": 1908.8125,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.3116028990936607,
+      "positions": 48
+    }
+  },
+  {
+    "case": "concat_slice",
+    "spec": "concat_slice:Concat,Slice",
+    "pairs_removed": 288,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8041666666666667,
+      "kl_fp32_to_quant": 0.6787543001508628,
+      "rank_of_fp32_top1_mean": 1908.7916666666667,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.3106922883924706,
+      "positions": 48
+    }
+  },
+  {
+    "case": "softmax",
+    "spec": "softmax:Softmax",
+    "pairs_removed": 24,
+    "metrics": {
+      "top1_agreement": 0.7083333333333334,
+      "top5_overlap": 0.8250000000000001,
+      "kl_fp32_to_quant": 0.6813168319456692,
+      "rank_of_fp32_top1_mean": 1908.7708333333333,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.3130821426603023,
+      "positions": 48
+    }
+  },
+  {
+    "case": "rmsnorm",
+    "spec": "rmsnorm:Pow,ReduceMean,Sqrt",
+    "pairs_removed": 147,
+    "metrics": {
+      "top1_agreement": 0.6458333333333334,
+      "top5_overlap": 0.8166666666666668,
+      "kl_fp32_to_quant": 0.6791095566035682,
+      "rank_of_fp32_top1_mean": 1896.4375,
+      "rank_of_fp32_top1_p95": 6267.599999999994,
+      "logits_rel_l2": 0.31178029254894146,
+      "positions": 48
+    }
+  },
+  {
+    "case": "matmul",
+    "spec": "matmul:MatMul",
+    "pairs_removed": 217,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8249999999999998,
+      "kl_fp32_to_quant": 0.7062079120610919,
+      "rank_of_fp32_top1_mean": 2200.5833333333335,
+      "rank_of_fp32_top1_p95": 10751.149999999983,
+      "logits_rel_l2": 0.3173854142991223,
+      "positions": 48
+    }
+  }
+]

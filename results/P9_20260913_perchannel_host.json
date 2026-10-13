@@ -1,0 +1,22 @@
+{
+  "per-tensor W8（従来）": {
+    "top1_agreement": 0.7368421052631579,
+    "top5_overlap": 0.768421052631579,
+    "kl_fp32_to_quant": 0.12786418856826198,
+    "rank_of_fp32_top1_mean": 1.4210526315789473,
+    "rank_of_fp32_top1_p95": 3.099999999999998,
+    "logits_rel_l2": 0.1856822346971896,
+    "positions": 19,
+    "cosine": 0.982629572657466
+  },
+  "per-channel W8（新）": {
+    "top1_agreement": 1.0,
+    "top5_overlap": 0.8,
+    "kl_fp32_to_quant": 0.04060001343940838,
+    "rank_of_fp32_top1_mean": 1.0,
+    "rank_of_fp32_top1_p95": 1.0,
+    "logits_rel_l2": 0.09986227091636588,
+    "positions": 19,
+    "cosine": 0.9950213940427498
+  }
+}

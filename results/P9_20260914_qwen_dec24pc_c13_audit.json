@@ -1,0 +1,13 @@
+{
+  "before": {
+    "count": 49,
+    "n_unsafe": 49,
+    "total_over": 10936
+  },
+  "after": {
+    "count": 49,
+    "n_unsafe": 0,
+    "total_over": 0
+  },
+  "worst_requant_rel_l2": 8.388041781445602e-05
+}

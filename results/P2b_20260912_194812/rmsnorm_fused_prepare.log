@@ -1,0 +1,5 @@
+[rmsnorm_fused] verdict=fail_S2_preprocess
+  NG S2_preprocess  ValidationError: No Op registered for SimplifiedLayerNormalization with domain_version of 17
+
+==> Context: Bad node spec for node. Name: rms OpType: SimplifiedL
+  -> work\ops\rmsnorm_fused\status_prepare_a16w8.json

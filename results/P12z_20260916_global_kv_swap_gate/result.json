@@ -1,0 +1,9 @@
+{
+ "decision_top1_token": 78685,
+ "margin": {
+  "oracle_oracle": -1.0209808349609375,
+  "baseline_oracle": 0.8387641906738281,
+  "oracle_baseline": 1.1807785034179688,
+  "baseline_baseline": 3.13741397857666
+ }
+}

@@ -1,0 +1,3 @@
+name	S2_S4	S5_convert	S6_context	S8_epctx	verdict	detail
+matmul_weight	OK	OK	OK	OK	ready_for_device	
+matmul_act	OK	OK	NG	-	fail_S6_context	    87.7ms [ ERROR ] WindowsFileIO couldn't open libcdsprpc.dll

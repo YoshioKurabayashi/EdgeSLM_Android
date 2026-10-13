@@ -1,0 +1,64 @@
+ZipDepth リポジトリ検証
+取得時刻: 2026-09-12 15:55:05
+対象: /d/AI/source/n_chap5/EdgeSLM_Android/third_party/ZipDepth-SM8350
+
+=== 1. リポジトリ基本情報 ===
+commit 77651fedc7bfed7fed57b122c7f6f8a2ee8d8d00
+authored Tue Jul 14 18:27:53 2026 +0900
+subject Merge branch 'main' of https://github.com/meh301/ZipDepth-Quantized-Qualcomm-QNN-SM8350
+総サイズ: 322M
+
+=== 2. LFS 実体の SHA-256 照合（DEPENDENCIES.md を期待値とする） ===
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/assets/zipdepth.onnx                        0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/libs/onnxruntime-android-qnn-1.27.0.aar              0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/jniLibs/arm64-v8a/libQnnHtp.so              0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/jniLibs/arm64-v8a/libQnnHtpPrepare.so       0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/jniLibs/arm64-v8a/libQnnHtpV68Skel.so       0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/jniLibs/arm64-v8a/libQnnHtpV68Stub.so       0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/jniLibs/arm64-v8a/libQnnSystem.so           0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/assets/models/zd_a16w8_320.onnx             0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/assets/models/zd_a16w8_288.onnx             0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/assets/models/zd_a8w8_384.onnx              0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/assets/models/zd_a8w8_320.onnx              0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/assets/models/zd_a8w8_288.onnx              0.00 MiB
+scripts/p1_verify_zipdepth.sh: line 69: bc: command not found
+  OK        app/src/main/assets/models/zd_a8w8_256.onnx              0.00 MiB
+
+  照合結果: OK=13  NG=0  (うち LFS ポインタのまま=0)
+
+=== 3. ビルド前提の確認 ===
+  リポジトリの要求: AGP=8.7.3 / gradle-8.13-bin / NDK=21.4.7075529 / compileSdk=34 / CMake=3.22.1
+  OK      NDK 21.4.7075529           D:/Android/sdk/ndk/21.4.7075529
+  OK      platforms android-34       D:/Android/sdk/platforms/android-34
+  OK      cmake 3.22.1               D:/Android/sdk/cmake/3.22.1
+  OK      build-tools                D:/Android/sdk/build-tools
+  OK      JDK 17                     D:/Android/jdk17/bin/java.exe
+
+=== 4. local.properties ===
+  既存:
+    # EdgeSLM_Android 用に生成（2026-09-12）
+    # Gradle が Android SDK を見つけるための設定。プロパティファイルでは \ がエスケープ文字に
+    # なるため / を使う。NDK は gradle.properties の ndk.version で 21.4.7075529 に固定されており、
+    # sdk.dir 配下の ndk/21.4.7075529 が使われる。
+    sdk.dir=D:/Android/sdk
+
+=== 5. 次のアクション（JVM を使うためユーザー実行が必要） ===
+  PowerShell で:
+    $env:JAVA_HOME="D:\Android\jdk17"
+    cd D:\AI\source\n_chap5\EdgeSLM_Android\third_party\ZipDepth-SM8350
+    .\gradlew.bat assembleDebug
+
+  初回は Gradle 8.13 本体(約130MB)と AGP/Kotlin/OpenCV の依存取得が走るため
+  数分〜十数分かかる。以降はキャッシュされる。

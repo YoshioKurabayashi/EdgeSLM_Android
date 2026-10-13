@@ -1,0 +1,14 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\expand_only\expand_only_a16w8_mixed_qdq.onnx --preserve_io_datatype --output_path work\ops\expand_only\ctx\expand_only.dlc
+  OK  0.02 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\expand_only\ctx\expand_only.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file expand_only_ctx --output_dir work\ops\expand_only\ctx\ctx_expand_only --htp_socs sm8350
+  OK  expand_only_ctx.SM8350.bin  0.05 MiB
+=== S7: qnn-context-binary-utility（socModel の検証用メタデータ） ===
+  OK  work/ops/expand_only/ctx/expand_only_meta.json
+
+生成物:
+  DLC : work/ops/expand_only/ctx/expand_only.dlc
+  BIN : work/ops/expand_only/ctx/ctx_expand_only/expand_only_ctx.SM8350.bin
+  META: work/ops/expand_only/ctx/expand_only_meta.json
+  CMD : work/ops/expand_only/ctx/expand_only_commands.txt

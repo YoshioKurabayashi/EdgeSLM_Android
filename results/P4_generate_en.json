@@ -1,0 +1,25 @@
+{
+  "prompt": "The capital city of Japan is Tokyo. The capital city of France is",
+  "device_text": " Paris. The capital city of",
+  "device_tokens": [
+    12095,
+    13,
+    576,
+    6722,
+    3283,
+    315
+  ],
+  "seconds": 28.8,
+  "window": 16,
+  "fp32_text": " Paris. The capital city of",
+  "fp32_tokens": [
+    12095,
+    13,
+    576,
+    6722,
+    3283,
+    315
+  ],
+  "token_match": 6,
+  "compared": 6
+}

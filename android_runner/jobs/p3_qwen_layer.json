@@ -1,0 +1,17 @@
+{
+  "job_id": "p3_qwen_layer1",
+  "task": "op_check",
+  "model": "models/ops/qwen_layer1_a16w8_mixed_epctx.onnx",
+  "ep": {
+    "provider": "QNN",
+    "backend": "libQnnHtp.so",
+    "options": { "offload_graph_io_quantization": "0", "qnn_context_priority": "high" },
+    "session": { "intra_op_num_threads": 1, "log_severity_level": 2 }
+  },
+  "protocol": { "warmup": 3, "iterations": 10 },
+  "input": { "kind": "random", "seed": 0 },
+  "models": [
+    { "name": "qwen_layer1(本物/hidden896)", "model": "models/ops/qwen_layer1_a16w8_mixed_epctx.onnx" },
+    { "name": "block_real(縮小/hidden128)",  "model": "models/ops/block_real_a16w8_mixed_epctx.onnx" }
+  ]
+}

@@ -1,0 +1,290 @@
+{
+ "archived_at": "2026-09-15T21:54:31",
+ "source_stage": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e",
+ "project_files": [
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq.md",
+   "sha256": "85358bdf053bfbfb7f39c81ac2224115355f181342820bc3d000b8da3ffcdf7b",
+   "bytes": 12328
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\app\\pipeline\\temporal_qdq_experiment.py",
+   "sha256": "733b97332aceb029fe17088b31b15d75ea5e88a3457ee44a77d3430cbd32839b",
+   "bytes": 27746
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\app\\pipeline\\focused_qdq_experiment.py",
+   "sha256": "cdc814b577b0de05cd44e4f0f63487d12581237deedbb771dca1cc453383754e",
+   "bytes": 8209
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\app\\pipeline\\summarize_temporal_qdq.py",
+   "sha256": "e1d06b221f8a19ae0b3f727bcf70508f5aff9b9f8f41164dc5cd2eaca1909365",
+   "bytes": 5631
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\app\\pipeline\\temporal_htp_probe.py",
+   "sha256": "b18de9c1c9722f207ca923a86a79a549269843817dd75ab4e054efb483aff0a5",
+   "bytes": 12224
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\build_audit.json",
+   "sha256": "6a6a8feaf36999663d20d04428069df9aae51da0c2a6083b7644121b2c187365",
+   "bytes": 2991807
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\calibration_ranges.json",
+   "sha256": "21d7d8379e5adf37cbfa393ca15c2ec000b977a9bd5d05205c218b6cac20554e",
+   "bytes": 484590
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\chat_english_focused_shared.json",
+   "sha256": "cc18f4ecf6d84526b2aba560f3d39204b224ce244b65fad8876353e2910af5f1",
+   "bytes": 138528
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\chat_english_focused_split.json",
+   "sha256": "45f5233550efb1e905560fb6bafd961bd3c77fe98b66a65538b71bb5badcc67c",
+   "bytes": 138500
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\chat_english_teacher.json",
+   "sha256": "ef910126e7c4b77f37ee0bf9aff21449aadd0aee2cb87ae278f1867062b35676",
+   "bytes": 450204
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\chat_original_focused_shared.json",
+   "sha256": "d5ffe17084424681821f3443c043bea3a1cdf7cb25ff93eede8a3608770b9b44",
+   "bytes": 136269
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\chat_original_focused_split.json",
+   "sha256": "86136b8773c717c7df0d4b6d3bcb25710dd6a64cbcbd4a5fb3de14489e9835db",
+   "bytes": 136191
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\chat_original_teacher.json",
+   "sha256": "fcc3b7961771c0a319e8302ce992a9f5dde334dbb47e484c000b83fce07942a9",
+   "bytes": 442732
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\focused_build_audit.json",
+   "sha256": "f45ab63b8d974f034588f7ed78efc7b983addabc89d5de27e60d883458d0dc7d",
+   "bytes": 150942
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\focused_free_generation.json",
+   "sha256": "f6d322a639b5507ce22477b50a30820fe26fb76f7be2cefa2f5568bb1f72b401",
+   "bytes": 3112
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\focused_teacher_summary.json",
+   "sha256": "d10e9656d196f46bc7ccab694c9c03226316748a9b9b808834bb0de6fcdb30a0",
+   "bytes": 9237
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\free_generation.json",
+   "sha256": "2544e5d34b2e8f79f9c4612a257ab2bf81266ba6f574e33a1c6089ab16e961aa",
+   "bytes": 6383
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\hybrid_free_generation.json",
+   "sha256": "f8ed1f2772fd9a5c4a1780c4edc4e683560efd42a2a863541ace17ecab2a10a1",
+   "bytes": 2288
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\numeric_evidence.md",
+   "sha256": "1f3f6318dd8f94180a534421074017af0c3cc295a3860fb697aba5f6f3622425",
+   "bytes": 4192
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\observed_sources.json",
+   "sha256": "9ca1c17fe17243dd5953c725bf0f3a5781f89b6de928ffaec34eb11fe9e2ba31",
+   "bytes": 45300
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\qparam_map.json",
+   "sha256": "c601f2be73d88af27b8700e3a4979713c64fadee9aa526deac16739fddb09aca",
+   "bytes": 843215
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\run_evaluate.json",
+   "sha256": "fb9779b2c59f8248fdb2d0552f6785073c5684e1905335cb0b234d6659763255",
+   "bytes": 423
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\run_focused_all.json",
+   "sha256": "51c31264f9fb5db8c3534191059ab0e7254ac9dce95f03f407640bfbcb3f0820",
+   "bytes": 337
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\run_focused_generate-hybrid.json",
+   "sha256": "6724e1acf353fff8be909ac3f110b987e8a93bbae9d3b353e9e28bf9e6cf68cc",
+   "bytes": 349
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\run_generate.json",
+   "sha256": "63d54b1b6ba7019d5cfa1e76641187274014706ec03d6cce95d2cdab9adc8e07",
+   "bytes": 423
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\summary.json",
+   "sha256": "dd1dcece93719c6bfc67b43dbc96c89b166a461a3d337d9fb61ac244a2e19d37",
+   "bytes": 71402
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\teacher_summary.json",
+   "sha256": "c03b7b5b1ebfa05c9c1dcc5e36f82b3ece446772eab708a641d2a8c0120f19d7",
+   "bytes": 13672
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\htp_probe\\baseline_host.npz",
+   "sha256": "46cf544f1f0f0da8ec166a3c850436773cdb21c8bb5b2debd05c325fcb24ddfd",
+   "bytes": 14036
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\htp_probe\\candidate_host.npz",
+   "sha256": "609022cce5abe1d1fa7d39e6046f13c228afad5faa7a37ceb42823540b68efcf",
+   "bytes": 14036
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\htp_probe\\fp32_add53.npy",
+   "sha256": "f2d900b5bd2996f19b6eafc746542acc0ef83c30b8da409febef6dbc9105ee36",
+   "bytes": 4224
+  },
+  {
+   "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P12e_20260915_temporal_qdq\\htp_probe\\prepare.json",
+   "sha256": "bf8d5281fb6c89a21e53754116d74a3271893fe8687f297204304e800e5d5637",
+   "bytes": 15598
+  }
+ ],
+ "artifact_files": [
+  {
+   "path": "D:\\AI\\artifacts\\EdgeSLM_Android\\P12e_20260915_temporal_qdq\\baseline.onnx",
+   "sha256": "5de2d60a1b12d01a62bed4fa0c064a2d3d3ab566caa2bf0449bd125a2cd08e73",
+   "bytes": 756613768
+  },
+  {
+   "path": "D:\\AI\\artifacts\\EdgeSLM_Android\\P12e_20260915_temporal_qdq\\focused_shared.onnx",
+   "sha256": "d39ceefb7cd79dca519f0bec82c6e08f74d421b143fb4bb93d6d75aa44b80e5e",
+   "bytes": 756613893
+  },
+  {
+   "path": "D:\\AI\\artifacts\\EdgeSLM_Android\\P12e_20260915_temporal_qdq\\focused_later.onnx",
+   "sha256": "7f4c789055800a665224b505edab14ef491693f3957776b15af564a6d0c250fb",
+   "bytes": 756613893
+  },
+  {
+   "path": "D:\\AI\\artifacts\\EdgeSLM_Android\\P12e_20260915_temporal_qdq\\chat_original_reference.npz",
+   "sha256": "960a9fe4e0f1b6f05b0c3e7229d4dfb6d7fb619e4ec4b1af308d8b8e1b9c9722",
+   "bytes": 90463434
+  },
+  {
+   "path": "D:\\AI\\artifacts\\EdgeSLM_Android\\P12e_20260915_temporal_qdq\\chat_english_reference.npz",
+   "sha256": "44293f2038cf5342ec8e6ef50d0df9a0b949d671eec06cd44c40f395676328ff",
+   "bytes": 92154058
+  },
+  {
+   "path": "D:\\AI\\artifacts\\EdgeSLM_Android\\P12e_20260915_temporal_qdq\\htp_probe\\p12e_hid_qdq.onnx",
+   "sha256": "fb3096db4a70c49e0b14cafedb7d4606d80cf46a6b8e6427ec87ec690edbe808",
+   "bytes": 406676841
+  }
+ ],
+ "artifact_dir": "D:\\AI\\artifacts\\EdgeSLM_Android\\P12e_20260915_temporal_qdq",
+ "not_archived": {
+  "chat_english_oracle_0.npz": {
+   "bytes": 58737270,
+   "sha256": "21ec1ebc60e54f3e3d20eecc174fd874171bcafe99da10479ee4c35717ed6be3",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\chat_english_oracle_0.npz",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "chat_english_oracle_1.npz": {
+   "bytes": 58737270,
+   "sha256": "bc5166670f02b1f7459052427f0b879d406b42ae37de6ad1c0dffc79e1074960",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\chat_english_oracle_1.npz",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "chat_english_oracle_108.npz": {
+   "bytes": 58737270,
+   "sha256": "8a54f7dded5331a8bc68a17e17c7d2d742bc087888af5a67c5d03b566593892b",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\chat_english_oracle_108.npz",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "chat_english_oracle_40.npz": {
+   "bytes": 58737270,
+   "sha256": "2ad4cb6b33da1dfb902a912339624ac68ac349bdfaf5cfae9092182da5203cee",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\chat_english_oracle_40.npz",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "chat_original_oracle_0.npz": {
+   "bytes": 58737270,
+   "sha256": "21ec1ebc60e54f3e3d20eecc174fd874171bcafe99da10479ee4c35717ed6be3",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\chat_original_oracle_0.npz",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "chat_original_oracle_1.npz": {
+   "bytes": 58737270,
+   "sha256": "bc5166670f02b1f7459052427f0b879d406b42ae37de6ad1c0dffc79e1074960",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\chat_original_oracle_1.npz",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "chat_original_oracle_106.npz": {
+   "bytes": 58737270,
+   "sha256": "a9146aa678d7207bbcd3e2680dd54be4f2a5236abb670dbc12626074aae5c04e",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\chat_original_oracle_106.npz",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "chat_original_oracle_40.npz": {
+   "bytes": 58737270,
+   "sha256": "fa2adc41ab9d0c0b65cad12ab8c4051b37f098411fc335f9a047d6de0d1082e3",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\chat_original_oracle_40.npz",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "first.onnx": {
+   "bytes": 756613913,
+   "sha256": "dcf16dc5c463ff53c574277a07dd12573330bbea6caaa54623ea48b12eb5012c",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\first.onnx",
+   "reason": "全層split（先頭用）。自由生成で崩壊。Codex領域に残置・再生成可"
+  },
+  "fp32_calibration.onnx": {
+   "bytes": 2531553,
+   "sha256": "08b15100bc86c3c15b258dee7ae2f0fc1db08112d24632a8cc771580db3bb60e",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\fp32_calibration.onnx",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "fp32_hid_probe.onnx": {
+   "bytes": 451753,
+   "sha256": "64ff14914d2c68986be066b39ba8a3361f8691e31db1a5c4b729ace3b8afd56d",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\fp32_hid_probe.onnx",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "fp32_qwen3_dec28c256_prepped.onnx.data": {
+   "bytes": 2384171008,
+   "sha256": "2c7ae457d67a25780cf455a0e5b1515d92babd687635b4e3eb39101c27af1f90",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\fp32_qwen3_dec28c256_prepped.onnx.data",
+   "reason": "work/ops/qwen3_dec28c256/qwen3_dec28c256_prepped.onnx.data とバイト単位で同一"
+  },
+  "fp32_reference.onnx": {
+   "bytes": 2019778,
+   "sha256": "cc1fa97de3d76fa69c2cb304119806aff29d99b86ef9696e5ed916104f091b11",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\fp32_reference.onnx",
+   "reason": "測定の中間データ。Codex領域に残置"
+  },
+  "later.onnx": {
+   "bytes": 756613913,
+   "sha256": "21940fa48fabf8b4905f14d7e358a14560ba73f8fc2c02c1f5c45763bcaa6bb2",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\later.onnx",
+   "reason": "全層split（後続用）。自由生成で崩壊。Codex領域に残置・再生成可"
+  },
+  "shared.onnx": {
+   "bytes": 756613913,
+   "sha256": "c2c55ad8b9bab1cdb9e4eb9f0b7c4319913a31179710bbd42f6722260cf9bb14",
+   "location": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_p12e\\results\\shared.onnx",
+   "reason": "全層shared。自由生成で崩壊。Codex領域に残置・再生成可"
+  }
+ },
+ "baseline_qdq_sha256": "6ce931af751e1586d80216e1ed3dda9fead51e19393c1a19dc9261ad78ddf8b8",
+ "fp32_reference_note": "FP32基準は work/ops/qwen3_dec28c256/qwen3_dec28c256_prepped.onnx を使う（.data 同一を確認）",
+ "focused_split_definition": "position 0 は focused_shared.onnx、以降は focused_later.onnx。KV は自前で引き継ぐ",
+ "note": "archive_results.ps1 は PowerShell 5.1 に無い IO.Path.GetRelativePath を使うため未実行だった。同じ照合条件で Python から代行"
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "case": "none",
+    "spec": "none",
+    "pairs_removed": 0,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6797163684873166,
+      "rank_of_fp32_top1_mean": 1908.75,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.31191376059850767,
+      "positions": 48
+    }
+  },
+  {
+    "case": "lm_head重み",
+    "spec": "lm_head重み:@t=val_2798",
+    "pairs_removed": 1,
+    "metrics": {
+      "top1_agreement": 0.6666666666666666,
+      "top5_overlap": 0.8250000000000002,
+      "kl_fp32_to_quant": 0.6707526793134703,
+      "rank_of_fp32_top1_mean": 1950.5833333333333,
+      "rank_of_fp32_top1_p95": 6604.949999999993,
+      "logits_rel_l2": 0.3101897427578202,
+      "positions": 48
+    }
+  },
+  {
+    "case": "lm_head入力",
+    "spec": "lm_head入力:@t=mul_241",
+    "pairs_removed": 1,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6797234044240682,
+      "rank_of_fp32_top1_mean": 1909.2708333333333,
+      "rank_of_fp32_top1_p95": 6532.499999999993,
+      "logits_rel_l2": 0.31191065317450517,
+      "positions": 48
+    }
+  },
+  {
+    "case": "lm_head両方",
+    "spec": "lm_head両方:@t=val_2798,@t=mul_241",
+    "pairs_removed": 2,
+    "metrics": {
+      "top1_agreement": 0.6666666666666666,
+      "top5_overlap": 0.8250000000000002,
+      "kl_fp32_to_quant": 0.6707585386183107,
+      "rank_of_fp32_top1_mean": 1950.9375,
+      "rank_of_fp32_top1_p95": 6605.949999999993,
+      "logits_rel_l2": 0.31018666017969054,
+      "positions": 48
+    }
+  }
+]

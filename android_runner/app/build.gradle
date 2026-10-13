@@ -1,0 +1,74 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'org.edgeslm.runner'
+    compileSdk 34
+    // NDK は gradle.properties で固定（ZipDepth と同一）。新しい版に上げない。
+    ndkVersion project.property('ndk.version')
+
+    defaultConfig {
+        applicationId 'org.edgeslm.runner'
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName '0.1'
+        ndk {
+            // 対象端末は arm64 のみ。他 ABI はビルド時間と APK サイズの無駄。
+            abiFilters 'arm64-v8a'
+        }
+        externalNativeBuild {
+            cmake {
+                // nlohmann/json と std::string を使うため STL が必要。
+                // 単一のネイティブライブラリしか持たないので static で十分（余計な .so を増やさない）。
+                arguments '-DANDROID_STL=c++_static'
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+
+    packaging {
+        jniLibs {
+            // ★C-6（要件定義書 3.4節）
+            // FastRPC は V68 skeleton に「通常のファイルシステムパス」を要求する。
+            // これを true にするとマニフェストに extractNativeLibs="true" が入り、
+            // インストール時に .so が実ファイルとして展開される。
+            // false（AGP の現代の既定）だと APK から直接 mmap されパスが存在しなくなり、
+            // FastRPC が skeleton を開けない。
+            useLegacyPackaging = true
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+dependencies {
+    // ONNX Runtime 1.27.0（QNN EP 入り）。
+    // v0.1 では ZipDepth 同梱物をそのまま使う＝「持ち込むのは自分のコードだけ」にして
+    // 失敗時の切り分けを runner 側に限定する（基本設計③ 8.2節）。
+    // jniLibs の QNN ランタイム（QAIRT 2.48 セット）と版を揃えること（FR-12）。
+    implementation files('libs/onnxruntime-android-qnn-1.27.0.aar')
+}

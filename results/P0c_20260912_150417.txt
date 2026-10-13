@@ -1,0 +1,42 @@
+EdgeSLM_Android P0-c FastRPC アクセス可否の実測
+取得時刻: 2026-09-12 15:04:17
+
+--- ビルド ---
+-rw-r--r-- 1 Yoshio 197609 12592 Sep 12 15:04 /d/AI/source/n_chap5/EdgeSLM_Android/build/p0c/fastrpc_probe
+
+--- 端末側の権限（再確認） ---
+crw-rw-r-- 1 system system 506,   0 1971-03-16 00:33 /dev/adsprpc-smd
+crw-r--r-- 1 system system 506,   1 1971-03-16 00:33 /dev/adsprpc-smd-secure
+uid=2000(shell) gid=2000(shell) groups=2000(shell),1004(input),1007(log),1011(adb),1015(sdcard_rw),1028(sdcard_r),1078(ext_data_rw),1079(ext_obb_rw),3001(net_bt_admin),3002(net_bt),3003(inet),3006(net_bw_stats),3009(readproc),3011(uhid),3012(readtracefs) context=u:r:shell:s0
+
+--- 端末での実行結果 ---
+D:/AI/source/n_chap5/EdgeSLM_Android/build/p0c/fastrpc_probe: 1 file pushed, 0 skipped. 45.2 MB/s (12592 bytes in 0.000s)
+uid=2000 gid=2000
+[1] device nodes
+  OPEN FAIL  /dev/adsprpc-smd             (O_RDONLY) errno=13 Permission denied
+  OPEN FAIL  /dev/adsprpc-smd             (O_RDWR  <-- FastRPC に必要) errno=13 Permission denied
+  OPEN FAIL  /dev/adsprpc-smd-secure      (O_RDWR) errno=13 Permission denied
+[2] fastrpc user libs
+  DLOPEN OK   libcdsprpc.so
+    sym remote_handle64_open     found
+    sym remote_handle_open       found
+    sym remote_session_control   found
+    sym fastrpc_init_once        -
+  DLOPEN OK   /vendor/lib64/libcdsprpc.so
+    sym remote_handle64_open     found
+    sym remote_handle_open       found
+    sym remote_session_control   found
+    sym fastrpc_init_once        -
+  DLOPEN OK   libadsprpc.so
+    sym remote_handle64_open     found
+    sym remote_handle_open       found
+    sym remote_session_control   found
+    sym fastrpc_init_once        -
+[3] SNPE (参考: 端末に preinstall されている)
+  DLOPEN FAIL /vendor/lib64/libSNPE.so                 dlopen failed: library "/vendor/lib64/libSNPE.so" not found
+
+--- 判定の読み方 ---
+  [1] の O_RDWR が OPEN OK      -> CLI 形態で FastRPC を使える見込み。成果物の形は変更不要
+  [1] の O_RDWR が errno=13     -> shell ユーザーでは開けない。HTP 推論を CLI で行えない可能性が高く、
+      (EACCES)                     アプリ化（対象外としていた範囲）の再検討が必要
+  [2] の dlopen が失敗          -> ライブラリ自体の依存不足。linker の namespace 制約の可能性もある

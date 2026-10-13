@@ -1,0 +1,42 @@
+[
+  {
+    "top1_agreement": 0.8522727272727273,
+    "top5_overlap": 0.8875000000000001,
+    "kl_fp32_to_quant": 0.02381635052464455,
+    "rank_of_fp32_top1_mean": 1.1988636363636365,
+    "rank_of_fp32_top1_p95": 2.0,
+    "logits_rel_l2": 0.06786661887898747,
+    "positions": 176,
+    "label": "A16W8素[v68不可/上限]"
+  },
+  {
+    "top1_agreement": 0.8068181818181818,
+    "top5_overlap": 0.8340909090909091,
+    "kl_fp32_to_quant": 0.04995405392379873,
+    "rank_of_fp32_top1_mean": 1.3409090909090908,
+    "rank_of_fp32_top1_p95": 3.0,
+    "logits_rel_l2": 0.09848265429688564,
+    "positions": 176,
+    "label": "u16xu8+左右入替[最新]"
+  },
+  {
+    "top1_agreement": 0.6647727272727273,
+    "top5_overlap": 0.7284090909090909,
+    "kl_fp32_to_quant": 0.21984646411726522,
+    "rank_of_fp32_top1_mean": 1.9545454545454546,
+    "rank_of_fp32_top1_p95": 5.25,
+    "logits_rel_l2": 0.20703288253166205,
+    "positions": 176,
+    "label": "u16xu8[入替なし]"
+  },
+  {
+    "top1_agreement": 0.5,
+    "top5_overlap": 0.5897727272727272,
+    "kl_fp32_to_quant": 0.5560300934726375,
+    "rank_of_fp32_top1_mean": 20.636363636363637,
+    "rank_of_fp32_top1_p95": 22.0,
+    "logits_rel_l2": 0.32589244028023784,
+    "positions": 176,
+    "label": "両側A8[当初]"
+  }
+]

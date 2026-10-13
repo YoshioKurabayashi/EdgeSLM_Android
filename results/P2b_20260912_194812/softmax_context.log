@@ -1,0 +1,14 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\softmax\softmax_a16w8_qdq.onnx --preserve_io_datatype --output_path work\ops\softmax\ctx\softmax.dlc
+  OK  0.01 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\softmax\ctx\softmax.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file softmax_ctx --output_dir work\ops\softmax\ctx\ctx_softmax --htp_socs sm8350
+  OK  softmax_ctx.SM8350.bin  0.04 MiB
+=== S7: qnn-context-binary-utility（socModel の検証用メタデータ） ===
+  OK  work/ops/softmax/ctx/softmax_meta.json
+
+生成物:
+  DLC : work/ops/softmax/ctx/softmax.dlc
+  BIN : work/ops/softmax/ctx/ctx_softmax/softmax_ctx.SM8350.bin
+  META: work/ops/softmax/ctx/softmax_meta.json
+  CMD : work/ops/softmax/ctx/softmax_commands.txt

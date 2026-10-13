@@ -1,0 +1,22 @@
+[
+  {
+    "top1_agreement": 0.0625,
+    "top5_overlap": 0.06931818181818182,
+    "kl_fp32_to_quant": 9.611185931038523,
+    "rank_of_fp32_top1_mean": 31219.49431818182,
+    "rank_of_fp32_top1_p95": 122726.5,
+    "logits_rel_l2": 1.3972834886473198,
+    "positions": 176,
+    "label": "6層 従来"
+  },
+  {
+    "top1_agreement": 0.7443181818181818,
+    "top5_overlap": 0.7909090909090909,
+    "kl_fp32_to_quant": 0.08540907219888748,
+    "rank_of_fp32_top1_mean": 1.4772727272727273,
+    "rank_of_fp32_top1_p95": 3.0,
+    "logits_rel_l2": 0.12467857530808316,
+    "positions": 176,
+    "label": "6層 RMSNorm正規化[新]"
+  }
+]

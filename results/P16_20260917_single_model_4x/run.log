@@ -1,0 +1,17 @@
+{"phase": "evaluate", "tag": "baseline", "top1_keep": 0.8571428571428571, "retention": 0.41713323936661106, "margin_min": -1.3232250213623047, "kl": 0.19455028887869302, "point_B": 3.3471059799194336, "banana_en": 1.9797744750976562, "banana_ja": 4.453409194946289, "sec": 543}
+{"phase": "gen", "tag": "baseline", "turn": 0, "text": "エアコンを22度に調節しました。"}
+{"phase": "gen", "tag": "baseline", "turn": 1, "text": "音楽をかけてます。"}
+{"phase": "gen", "tag": "baseline", "turn": 2, "text": "さっきも22度にしました。"}
+{"phase": "evaluate", "tag": "A1_layer2_only", "top1_keep": 0.0, "retention": -6.989546705797641, "margin_min": -33.63230895996094, "kl": 18.23957856392255, "point_B": -17.189621925354004, "banana_en": -27.69009304046631, "banana_ja": -27.703831672668457, "sec": 582}
+{"phase": "gen", "tag": "A1_layer2_only", "turn": 0, "text": " glProgress卫波ру甯StoppedryORROKEvernrazilelveioresrorsاءnific呜imorer Borwitter\\nripePush revealedbrig.nz><?=aubew"}
+{"phase": "gen", "tag": "A1_layer2_only", "turn": 1, "text": "(esدنiaz computedRaraversuart波lineduiritordisplayReg泔HomeUpdated拉workDocорibprove倒rustarHome掩 atmosphereтанrad"}
+{"phase": "gen", "tag": "A1_layer2_only", "turn": 2, "text": "Archốngorr pushP-Star@authorstrອronarksrarigcomactrésb Arkразdireraarksbetlدمi Linaur Arr�"}
+{"phase": "evaluate", "tag": "A2_layer2_pos0_baseline", "top1_keep": 0.8392857142857143, "retention": 0.5004817697956374, "margin_min": -1.7903289794921875, "kl": 0.21864621211451246, "point_B": -0.6399192810058594, "banana_en": 1.4750690460205078, "banana_ja": 4.610316276550293, "sec": 516}
+{"phase": "gen", "tag": "A2_layer2_pos0_baseline", "turn": 0, "text": "エアコンを22度にすると、室内の気臭さが減って良いですね。"}
+{"phase": "gen", "tag": "A2_layer2_pos0_baseline", "turn": 1, "text": "音楽をかけてます。"}
+{"phase": "gen", "tag": "A2_layer2_pos0_baseline", "turn": 2, "text": "さっきは22度にしてました。"}
+{"phase": "evaluate", "tag": "B1_all_layers", "top1_keep": 0.0, "retention": -6.371332775391941, "margin_min": -29.867989540100098, "kl": 16.247157246925767, "point_B": -29.867989540100098, "banana_en": -11.953124523162842, "banana_ja": -11.751387603580952, "sec": 583}
+{"phase": "gen", "tag": "B1_all_layers", "turn": 0, "text": "arfneysദ讯另一种消还有什么(entries de³ims๋BSD子ancell NRAs可ice items(asicalsImplementednodoc.线上:Nirmaสเต(TAGเน flags"}
+{"phase": "gen", "tag": "B1_all_layers", "turn": 1, "text": "泮LOSSfunctions.Per更psiubsder(pmano)\n\n\n\n\n\n\n\n取消 nightmares-lraisingifiers vra(relionئifying Nolan litter主义者ifier捞单iner Wavelets.ph"}
+{"phase": "gen", "tag": "B1_all_layers", "turn": 2, "text": "RON cane Ph networkangen[attr comp乒-privateaperonicaick(hr/imsquareinnacleornipsisinnacleisedinnacleceans Instances孩童verts pry-ac<Text草�(nc"}
+exit=0

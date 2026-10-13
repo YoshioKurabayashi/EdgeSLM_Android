@@ -1,0 +1,11 @@
+{
+  "started_utc": "2026-09-15T12:22:58Z",
+  "script_sha256": "cdc814b577b0de05cd44e4f0f63487d12581237deedbb771dca1cc453383754e",
+  "common_script_sha256": "733b97332aceb029fe17088b31b15d75ea5e88a3457ee44a77d3430cbd32839b",
+  "phase": "generate-hybrid",
+  "threshold": 32,
+  "max_new": 32,
+  "providers": [
+    "CPUExecutionProvider"
+  ]
+}

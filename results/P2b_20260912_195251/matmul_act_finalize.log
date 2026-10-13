@@ -1,0 +1,6 @@
+[matmul_act] verdict=ready_for_device
+  OK S8_epctx
+  OK C-2  socModel=0
+  OK C-3  config 指定なし
+  OK C-4  C-1 pass 済みのモデルに付与
+  -> work\ops\matmul_act\status_finalize_a16w8_mixed.json

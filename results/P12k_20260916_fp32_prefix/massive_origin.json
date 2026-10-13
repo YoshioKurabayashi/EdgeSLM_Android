@@ -1,0 +1,513 @@
+{
+ "chat_ja_car": {
+  "n_tokens": 41,
+  "first_token": "<|im_start|>",
+  "first_token_id": 151644,
+  "pos0_max_abs": 8142.68310546875,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 4.792882919311523,
+  "later_argmax_pos": 32,
+  "h3_pos0_ch35": 8141.03955078125,
+  "h3_later_max_abs": 10.106499671936035,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 8142.68310546875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 805.4400024414062,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 456.7972106933594,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -189.00897216796875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 23,
+    "value": 125.65662384033203,
+    "token": "<|im_start|>"
+   }
+  ],
+  "special_tokens_after_pos0": [
+   {
+    "pos": 19,
+    "token": "<|im_end|>",
+    "max_abs": 4.616920471191406
+   },
+   {
+    "pos": 21,
+    "token": "<|im_start|>",
+    "max_abs": 1.2512487173080444
+   },
+   {
+    "pos": 32,
+    "token": "<|im_end|>",
+    "max_abs": 4.792882919311523
+   },
+   {
+    "pos": 34,
+    "token": "<|im_start|>",
+    "max_abs": 1.394822597503662
+   }
+  ]
+ },
+ "chat_en_banana": {
+  "n_tokens": 35,
+  "first_token": "<|im_start|>",
+  "first_token_id": 151644,
+  "pos0_max_abs": 8142.68310546875,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 4.478282928466797,
+  "later_argmax_pos": 26,
+  "h3_pos0_ch35": 8141.03955078125,
+  "h3_later_max_abs": 10.106499671936035,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 8142.68310546875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 805.4400024414062,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 456.7972106933594,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -189.00897216796875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 23,
+    "value": 125.65662384033203,
+    "token": "<|im_start|>"
+   }
+  ],
+  "special_tokens_after_pos0": [
+   {
+    "pos": 14,
+    "token": "<|im_end|>",
+    "max_abs": 4.0457305908203125
+   },
+   {
+    "pos": 16,
+    "token": "<|im_start|>",
+    "max_abs": 1.7468141317367554
+   },
+   {
+    "pos": 26,
+    "token": "<|im_end|>",
+    "max_abs": 4.478282928466797
+   },
+   {
+    "pos": 28,
+    "token": "<|im_start|>",
+    "max_abs": 1.659000039100647
+   }
+  ]
+ },
+ "chat_long_system": {
+  "n_tokens": 55,
+  "first_token": "<|im_start|>",
+  "first_token_id": 151644,
+  "pos0_max_abs": 8142.68310546875,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 4.594460487365723,
+  "later_argmax_pos": 46,
+  "h3_pos0_ch35": 8141.03955078125,
+  "h3_later_max_abs": 10.106499671936035,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 8142.68310546875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 805.4400024414062,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 456.7972106933594,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -189.00897216796875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 23,
+    "value": 125.65662384033203,
+    "token": "<|im_start|>"
+   }
+  ],
+  "special_tokens_after_pos0": [
+   {
+    "pos": 36,
+    "token": "<|im_end|>",
+    "max_abs": 4.367944240570068
+   },
+   {
+    "pos": 38,
+    "token": "<|im_start|>",
+    "max_abs": 1.6473610401153564
+   },
+   {
+    "pos": 46,
+    "token": "<|im_end|>",
+    "max_abs": 4.594460487365723
+   },
+   {
+    "pos": 48,
+    "token": "<|im_start|>",
+    "max_abs": 1.672866702079773
+   }
+  ]
+ },
+ "chat_no_system": {
+  "n_tokens": 16,
+  "first_token": "<|im_start|>",
+  "first_token_id": 151644,
+  "pos0_max_abs": 8142.68310546875,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 4.068536281585693,
+  "later_argmax_pos": 7,
+  "h3_pos0_ch35": 8141.03955078125,
+  "h3_later_max_abs": 9.035209655761719,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 8142.68310546875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 805.4400024414062,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 456.7972106933594,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -189.00897216796875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 23,
+    "value": 125.65662384033203,
+    "token": "<|im_start|>"
+   }
+  ],
+  "special_tokens_after_pos0": [
+   {
+    "pos": 7,
+    "token": "<|im_end|>",
+    "max_abs": 4.068536281585693
+   },
+   {
+    "pos": 9,
+    "token": "<|im_start|>",
+    "max_abs": 1.5245246887207031
+   }
+  ]
+ },
+ "chat_two_turns": {
+  "n_tokens": 41,
+  "first_token": "<|im_start|>",
+  "first_token_id": 151644,
+  "pos0_max_abs": 8142.68310546875,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 4.626029014587402,
+  "later_argmax_pos": 32,
+  "h3_pos0_ch35": 8141.03955078125,
+  "h3_later_max_abs": 10.106499671936035,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 8142.68310546875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 805.4400024414062,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 456.7972106933594,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -189.00897216796875,
+    "token": "<|im_start|>"
+   },
+   {
+    "pos": 0,
+    "ch": 23,
+    "value": 125.65662384033203,
+    "token": "<|im_start|>"
+   }
+  ],
+  "special_tokens_after_pos0": [
+   {
+    "pos": 8,
+    "token": "<|im_end|>",
+    "max_abs": 3.9688363075256348
+   },
+   {
+    "pos": 10,
+    "token": "<|im_start|>",
+    "max_abs": 1.4717769622802734
+   },
+   {
+    "pos": 14,
+    "token": "<|im_end|>",
+    "max_abs": 3.915154218673706
+   },
+   {
+    "pos": 16,
+    "token": "<|im_start|>",
+    "max_abs": 1.3644579648971558
+   },
+   {
+    "pos": 21,
+    "token": "<|im_end|>",
+    "max_abs": 4.470757961273193
+   },
+   {
+    "pos": 23,
+    "token": "<|im_start|>",
+    "max_abs": 1.3579148054122925
+   },
+   {
+    "pos": 32,
+    "token": "<|im_end|>",
+    "max_abs": 4.626029014587402
+   },
+   {
+    "pos": 34,
+    "token": "<|im_start|>",
+    "max_abs": 1.4824681282043457
+   }
+  ]
+ },
+ "raw_ja": {
+  "n_tokens": 7,
+  "first_token": "日本の",
+  "first_token_id": 131888,
+  "pos0_max_abs": 7259.24951171875,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 4.405493259429932,
+  "later_argmax_pos": 1,
+  "h3_pos0_ch35": 7259.34619140625,
+  "h3_later_max_abs": 10.645092010498047,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 7259.24951171875,
+    "token": "日本の"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 717.420654296875,
+    "token": "日本の"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 406.38983154296875,
+    "token": "日本の"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -168.7732391357422,
+    "token": "日本の"
+   },
+   {
+    "pos": 0,
+    "ch": 23,
+    "value": 114.42302703857422,
+    "token": "日本の"
+   }
+  ],
+  "special_tokens_after_pos0": []
+ },
+ "raw_en": {
+  "n_tokens": 7,
+  "first_token": "The",
+  "first_token_id": 785,
+  "pos0_max_abs": 6540.79638671875,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 3.085172653198242,
+  "later_argmax_pos": 3,
+  "h3_pos0_ch35": 6543.55908203125,
+  "h3_later_max_abs": 6.573488235473633,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 6540.79638671875,
+    "token": "The"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 646.8448486328125,
+    "token": "The"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 365.1763916015625,
+    "token": "The"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -156.02200317382812,
+    "token": "The"
+   },
+   {
+    "pos": 0,
+    "ch": 3,
+    "value": 100.02393341064453,
+    "token": "The"
+   }
+  ],
+  "special_tokens_after_pos0": []
+ },
+ "raw_code": {
+  "n_tokens": 11,
+  "first_token": "def",
+  "first_token_id": 750,
+  "pos0_max_abs": 5749.6884765625,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 2.4995524883270264,
+  "later_argmax_pos": 1,
+  "h3_pos0_ch35": 5751.49365234375,
+  "h3_later_max_abs": 6.347829818725586,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 5749.6884765625,
+    "token": "def"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 566.98583984375,
+    "token": "def"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 321.4801025390625,
+    "token": "def"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -136.75514221191406,
+    "token": "def"
+   },
+   {
+    "pos": 0,
+    "ch": 23,
+    "value": 86.33966827392578,
+    "token": "def"
+   }
+  ],
+  "special_tokens_after_pos0": []
+ },
+ "raw_starts_with_newline": {
+  "n_tokens": 2,
+  "first_token": "\n\n",
+  "first_token_id": 271,
+  "pos0_max_abs": 6543.1728515625,
+  "pos0_argmax_ch": 35,
+  "later_max_abs": 3.176053762435913,
+  "later_argmax_pos": 1,
+  "h3_pos0_ch35": 6542.42041015625,
+  "h3_later_max_abs": 7.013825416564941,
+  "top5": [
+   {
+    "pos": 0,
+    "ch": 35,
+    "value": 6543.1728515625,
+    "token": "\n\n"
+   },
+   {
+    "pos": 0,
+    "ch": 13,
+    "value": 646.984130859375,
+    "token": "\n\n"
+   },
+   {
+    "pos": 0,
+    "ch": 1,
+    "value": 365.9732971191406,
+    "token": "\n\n"
+   },
+   {
+    "pos": 0,
+    "ch": 277,
+    "value": -151.1385040283203,
+    "token": "\n\n"
+   },
+   {
+    "pos": 0,
+    "ch": 23,
+    "value": 103.61605072021484,
+    "token": "\n\n"
+   }
+  ],
+  "special_tokens_after_pos0": []
+ }
+}

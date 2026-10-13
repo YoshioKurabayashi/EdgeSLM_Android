@@ -1,0 +1,17 @@
+{
+  "job_id": "v01_probe_zipdepth",
+  "task": "probe",
+  "model": "models/zipdepth.onnx",
+  "ep": {
+    "provider": "QNN",
+    "backend": "libQnnHtp.so",
+    "options": {
+      "offload_graph_io_quantization": "0",
+      "qnn_context_priority": "high"
+    },
+    "session": {
+      "intra_op_num_threads": 1,
+      "log_severity_level": 2
+    }
+  }
+}

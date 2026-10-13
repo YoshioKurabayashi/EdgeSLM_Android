@@ -1,0 +1,125 @@
+  ONNX の KV を積んだ: fp32
+  ONNX の KV を積んだ: baseline
+  ONNX の KV を積んだ: focused
+
+  等価チェック: HF↔ONNX FP32 の KV 最大相対L2  K 9.68e-04 / V 1.95e-03  |  自前 attention ↔ HF self_attn 最大相対L2 2.08e-06
+
+  ※ 独立な雑音の bias ratio の目安 1/√79 = 0.113
+
+  ===== K =====
+  層 0 baseline  K L2   5.04%  bias 0.324  cos +0.062  PC1 0.856  Δscore/σ 0.061  attnKL 0.0064  出力誤差(Kのみ)   4.26%
+  層 0 focused   K L2   5.04%  bias 0.324  cos +0.062  PC1 0.856  Δscore/σ 0.061  attnKL 0.0064  出力誤差(Kのみ)   4.26%
+  層 1 baseline  K L2   8.30%  bias 0.366  cos +0.138  PC1 0.732  Δscore/σ 0.216  attnKL 0.1639  出力誤差(Kのみ)  26.55%
+  層 1 focused   K L2   8.30%  bias 0.366  cos +0.138  PC1 0.732  Δscore/σ 0.216  attnKL 0.1639  出力誤差(Kのみ)  26.55%
+  層 2 baseline  K L2   7.33%  bias 0.297  cos +0.116  PC1 0.451  Δscore/σ 0.209  attnKL 0.0583  出力誤差(Kのみ)  23.83%
+  層 2 focused   K L2   7.33%  bias 0.297  cos +0.116  PC1 0.451  Δscore/σ 0.209  attnKL 0.0583  出力誤差(Kのみ)  23.83%
+  層 3 baseline  K L2  12.36%  bias 0.380  cos +0.111  PC1 0.188  Δscore/σ 0.289  attnKL 0.0896  出力誤差(Kのみ)  29.25%
+  層 3 focused   K L2  10.52%  bias 0.402  cos +0.141  PC1 0.241  Δscore/σ 0.249  attnKL 0.0521  出力誤差(Kのみ)  21.17%
+  層 4 baseline  K L2  12.69%  bias 0.253  cos +0.044  PC1 0.291  Δscore/σ 0.212  attnKL 0.0336  出力誤差(Kのみ)  13.63%
+  層 4 focused   K L2  10.97%  bias 0.283  cos +0.070  PC1 0.368  Δscore/σ 0.189  attnKL 0.0257  出力誤差(Kのみ)  11.51%
+  層 5 baseline  K L2  10.75%  bias 0.203  cos +0.031  PC1 0.434  Δscore/σ 0.215  attnKL 0.0320  出力誤差(Kのみ)  19.14%
+  層 5 focused   K L2   9.46%  bias 0.223  cos +0.057  PC1 0.543  Δscore/σ 0.191  attnKL 0.0216  出力誤差(Kのみ)  18.97%
+  層 6 baseline  K L2  16.24%  bias 0.311  cos +0.079  PC1 0.251  Δscore/σ 0.263  attnKL 0.1709  出力誤差(Kのみ)  26.81%
+  層 6 focused   K L2  13.98%  bias 0.322  cos +0.105  PC1 0.322  Δscore/σ 0.230  attnKL 0.0840  出力誤差(Kのみ)  20.01%
+  層 7 baseline  K L2  11.74%  bias 0.287  cos +0.070  PC1 0.176  Δscore/σ 0.253  attnKL 0.0674  出力誤差(Kのみ)  22.11%
+  層 7 focused   K L2  10.04%  bias 0.306  cos +0.098  PC1 0.242  Δscore/σ 0.231  attnKL 0.0601  出力誤差(Kのみ)  22.21%
+  層 8 baseline  K L2  24.33%  bias 0.256  cos +0.049  PC1 0.167  Δscore/σ 0.285  attnKL 0.0605  出力誤差(Kのみ)  29.11%
+  層 8 focused   K L2  20.72%  bias 0.290  cos +0.078  PC1 0.246  Δscore/σ 0.235  attnKL 0.0398  出力誤差(Kのみ)  23.61%
+  層 9 baseline  K L2  17.52%  bias 0.269  cos +0.058  PC1 0.129  Δscore/σ 0.249  attnKL 0.0496  出力誤差(Kのみ)  23.31%
+  層 9 focused   K L2  14.50%  bias 0.285  cos +0.076  PC1 0.206  Δscore/σ 0.202  attnKL 0.0344  出力誤差(Kのみ)  17.78%
+  層10 baseline  K L2  12.88%  bias 0.258  cos +0.050  PC1 0.139  Δscore/σ 0.244  attnKL 0.0607  出力誤差(Kのみ)  19.92%
+  層10 focused   K L2  10.58%  bias 0.302  cos +0.082  PC1 0.209  Δscore/σ 0.195  attnKL 0.0511  出力誤差(Kのみ)  20.98%
+  層11 baseline  K L2  23.38%  bias 0.258  cos +0.049  PC1 0.145  Δscore/σ 0.272  attnKL 0.0660  出力誤差(Kのみ)  12.63%
+  層11 focused   K L2  19.81%  bias 0.280  cos +0.063  PC1 0.214  Δscore/σ 0.231  attnKL 0.0442  出力誤差(Kのみ)  13.36%
+  層12 baseline  K L2  17.10%  bias 0.226  cos +0.049  PC1 0.254  Δscore/σ 0.298  attnKL 0.0596  出力誤差(Kのみ)  15.84%
+  層12 focused   K L2  13.91%  bias 0.258  cos +0.063  PC1 0.242  Δscore/σ 0.233  attnKL 0.0380  出力誤差(Kのみ)  14.31%
+  層13 baseline  K L2  26.36%  bias 0.259  cos +0.064  PC1 0.142  Δscore/σ 0.284  attnKL 0.0669  出力誤差(Kのみ)  23.29%
+  層13 focused   K L2  21.26%  bias 0.293  cos +0.081  PC1 0.186  Δscore/σ 0.207  attnKL 0.0406  出力誤差(Kのみ)  20.85%
+  層14 baseline  K L2  24.83%  bias 0.262  cos +0.077  PC1 0.180  Δscore/σ 0.311  attnKL 0.0802  出力誤差(Kのみ)  27.05% ◆
+  層14 focused   K L2  20.16%  bias 0.303  cos +0.094  PC1 0.146  Δscore/σ 0.248  attnKL 0.0638  出力誤差(Kのみ)  26.91% ◆
+  層15 baseline  K L2  13.70%  bias 0.200  cos +0.033  PC1 0.143  Δscore/σ 0.268  attnKL 0.0779  出力誤差(Kのみ)  22.29% ◆
+  層15 focused   K L2  12.15%  bias 0.231  cos +0.045  PC1 0.163  Δscore/σ 0.235  attnKL 0.0549  出力誤差(Kのみ)  18.42% ◆
+  層16 baseline  K L2  22.86%  bias 0.284  cos +0.074  PC1 0.126  Δscore/σ 0.276  attnKL 0.0856  出力誤差(Kのみ)  29.05% ◆
+  層16 focused   K L2  20.52%  bias 0.294  cos +0.082  PC1 0.166  Δscore/σ 0.235  attnKL 0.0640  出力誤差(Kのみ)  28.36% ◆
+  層17 baseline  K L2  18.89%  bias 0.307  cos +0.078  PC1 0.220  Δscore/σ 0.332  attnKL 0.0785  出力誤差(Kのみ)  20.43% ◆
+  層17 focused   K L2  17.57%  bias 0.324  cos +0.094  PC1 0.264  Δscore/σ 0.325  attnKL 0.0531  出力誤差(Kのみ)  16.99% ◆
+  層18 baseline  K L2  21.27%  bias 0.285  cos +0.079  PC1 0.121  Δscore/σ 0.286  attnKL 0.1162  出力誤差(Kのみ)  18.10% ◆
+  層18 focused   K L2  19.17%  bias 0.284  cos +0.082  PC1 0.144  Δscore/σ 0.245  attnKL 0.0707  出力誤差(Kのみ)  14.93% ◆
+  層19 baseline  K L2  19.92%  bias 0.275  cos +0.077  PC1 0.121  Δscore/σ 0.264  attnKL 0.0345  出力誤差(Kのみ)  18.16% ◆
+  層19 focused   K L2  18.31%  bias 0.289  cos +0.094  PC1 0.153  Δscore/σ 0.247  attnKL 0.0314  出力誤差(Kのみ)  15.83% ◆
+  層20 baseline  K L2  20.83%  bias 0.244  cos +0.054  PC1 0.130  Δscore/σ 0.279  attnKL 0.0371  出力誤差(Kのみ)  21.77% ◆
+  層20 focused   K L2  18.99%  bias 0.256  cos +0.062  PC1 0.158  Δscore/σ 0.258  attnKL 0.0304  出力誤差(Kのみ)  18.78% ◆
+  層21 baseline  K L2  20.56%  bias 0.259  cos +0.054  PC1 0.149  Δscore/σ 0.279  attnKL 0.0262  出力誤差(Kのみ)  22.84%
+  層21 focused   K L2  18.90%  bias 0.264  cos +0.066  PC1 0.177  Δscore/σ 0.254  attnKL 0.0165  出力誤差(Kのみ)  16.46%
+  層22 baseline  K L2  22.58%  bias 0.282  cos +0.067  PC1 0.146  Δscore/σ 0.283  attnKL 0.0120  出力誤差(Kのみ)   5.77%
+  層22 focused   K L2  20.74%  bias 0.290  cos +0.082  PC1 0.168  Δscore/σ 0.259  attnKL 0.0112  出力誤差(Kのみ)   6.93%
+  層23 baseline  K L2  22.88%  bias 0.262  cos +0.064  PC1 0.119  Δscore/σ 0.296  attnKL 0.0155  出力誤差(Kのみ)   9.64%
+  層23 focused   K L2  20.67%  bias 0.247  cos +0.057  PC1 0.141  Δscore/σ 0.273  attnKL 0.0131  出力誤差(Kのみ)   7.92%
+  層24 baseline  K L2  21.55%  bias 0.247  cos +0.059  PC1 0.127  Δscore/σ 0.293  attnKL 0.0193  出力誤差(Kのみ)  10.78%
+  層24 focused   K L2  19.50%  bias 0.254  cos +0.069  PC1 0.153  Δscore/σ 0.269  attnKL 0.0172  出力誤差(Kのみ)  12.77%
+  層25 baseline  K L2  23.28%  bias 0.254  cos +0.070  PC1 0.109  Δscore/σ 0.305  attnKL 0.0198  出力誤差(Kのみ)  12.95%
+  層25 focused   K L2  21.09%  bias 0.242  cos +0.065  PC1 0.139  Δscore/σ 0.283  attnKL 0.0171  出力誤差(Kのみ)  11.19%
+  層26 baseline  K L2  26.17%  bias 0.244  cos +0.049  PC1 0.127  Δscore/σ 0.317  attnKL 0.0173  出力誤差(Kのみ)  10.15%
+  層26 focused   K L2  23.75%  bias 0.231  cos +0.049  PC1 0.142  Δscore/σ 0.304  attnKL 0.0154  出力誤差(Kのみ)   7.18%
+  層27 baseline  K L2  20.32%  bias 0.242  cos +0.051  PC1 0.129  Δscore/σ 0.270  attnKL 0.0118  出力誤差(Kのみ)   4.73%
+  層27 focused   K L2  19.18%  bias 0.250  cos +0.063  PC1 0.155  Δscore/σ 0.256  attnKL 0.0115  出力誤差(Kのみ)   4.60%
+
+  ===== V =====
+  層 0 baseline  V L2  30.80%  bias 0.397  cos +0.141  PC1 0.867  ΣaΔv/Σav  21.66%  出力誤差(KV)  17.01%
+  層 0 focused   V L2  30.80%  bias 0.397  cos +0.141  PC1 0.867  ΣaΔv/Σav  21.66%  出力誤差(KV)  17.01%
+  層 1 baseline  V L2  32.79%  bias 0.338  cos +0.113  PC1 0.543  ΣaΔv/Σav  46.74%  出力誤差(KV)  46.12%
+  層 1 focused   V L2  32.79%  bias 0.338  cos +0.113  PC1 0.543  ΣaΔv/Σav  46.74%  出力誤差(KV)  46.12%
+  層 2 baseline  V L2  34.84%  bias 0.293  cos +0.100  PC1 0.401  ΣaΔv/Σav  42.80%  出力誤差(KV)  48.44%
+  層 2 focused   V L2  34.84%  bias 0.293  cos +0.100  PC1 0.401  ΣaΔv/Σav  42.80%  出力誤差(KV)  48.44%
+  層 3 baseline  V L2  38.28%  bias 0.269  cos +0.042  PC1 0.278  ΣaΔv/Σav  42.68%  出力誤差(KV)  43.16%
+  層 3 focused   V L2  32.62%  bias 0.315  cos +0.089  PC1 0.395  ΣaΔv/Σav  39.63%  出力誤差(KV)  38.73%
+  層 4 baseline  V L2  39.35%  bias 0.249  cos +0.039  PC1 0.195  ΣaΔv/Σav  29.47%  出力誤差(KV)  30.76%
+  層 4 focused   V L2  32.49%  bias 0.295  cos +0.081  PC1 0.293  ΣaΔv/Σav  26.69%  出力誤差(KV)  29.36%
+  層 5 baseline  V L2  36.41%  bias 0.236  cos +0.034  PC1 0.173  ΣaΔv/Σav  27.15%  出力誤差(KV)  29.26%
+  層 5 focused   V L2  29.76%  bias 0.282  cos +0.067  PC1 0.269  ΣaΔv/Σav  26.91%  出力誤差(KV)  29.67%
+  層 6 baseline  V L2  41.15%  bias 0.245  cos +0.040  PC1 0.174  ΣaΔv/Σav  41.12%  出力誤差(KV)  34.05%
+  層 6 focused   V L2  34.36%  bias 0.273  cos +0.064  PC1 0.261  ΣaΔv/Σav  33.13%  出力誤差(KV)  29.98%
+  層 7 baseline  V L2  42.67%  bias 0.224  cos +0.030  PC1 0.155  ΣaΔv/Σav  26.92%  出力誤差(KV)  32.38%
+  層 7 focused   V L2  35.30%  bias 0.252  cos +0.044  PC1 0.238  ΣaΔv/Σav  23.95%  出力誤差(KV)  30.64%
+  層 8 baseline  V L2  54.06%  bias 0.204  cos +0.036  PC1 0.643  ΣaΔv/Σav  26.91%  出力誤差(KV)  38.72%
+  層 8 focused   V L2  46.16%  bias 0.200  cos +0.052  PC1 0.683  ΣaΔv/Σav  22.75%  出力誤差(KV)  32.20%
+  層 9 baseline  V L2  43.86%  bias 0.240  cos +0.040  PC1 0.120  ΣaΔv/Σav  24.79%  出力誤差(KV)  33.27%
+  層 9 focused   V L2  35.53%  bias 0.254  cos +0.047  PC1 0.198  ΣaΔv/Σav  20.66%  出力誤差(KV)  26.63%
+  層10 baseline  V L2  44.10%  bias 0.228  cos +0.037  PC1 0.147  ΣaΔv/Σav  28.43%  出力誤差(KV)  30.09%
+  層10 focused   V L2  35.04%  bias 0.260  cos +0.049  PC1 0.207  ΣaΔv/Σav  27.39%  出力誤差(KV)  28.71%
+  層11 baseline  V L2  47.65%  bias 0.223  cos +0.052  PC1 0.495  ΣaΔv/Σav  23.42%  出力誤差(KV)  26.38%
+  層11 focused   V L2  35.74%  bias 0.257  cos +0.067  PC1 0.386  ΣaΔv/Σav  19.46%  出力誤差(KV)  22.55%
+  層12 baseline  V L2  67.35%  bias 0.193  cos +0.038  PC1 0.854  ΣaΔv/Σav  22.96%  出力誤差(KV)  23.65%
+  層12 focused   V L2  52.32%  bias 0.207  cos +0.048  PC1 0.880  ΣaΔv/Σav  18.26%  出力誤差(KV)  19.21%
+  層13 baseline  V L2  65.47%  bias 0.190  cos +0.049  PC1 0.830  ΣaΔv/Σav  25.48%  出力誤差(KV)  29.24%
+  層13 focused   V L2  48.06%  bias 0.214  cos +0.066  PC1 0.841  ΣaΔv/Σav  21.64%  出力誤差(KV)  24.87%
+  層14 baseline  V L2  68.59%  bias 0.186  cos +0.035  PC1 0.833  ΣaΔv/Σav  27.91%  出力誤差(KV)  32.04% ◆
+  層14 focused   V L2  54.55%  bias 0.205  cos +0.050  PC1 0.853  ΣaΔv/Σav  24.52%  出力誤差(KV)  30.74% ◆
+  層15 baseline  V L2  43.32%  bias 0.236  cos +0.043  PC1 0.111  ΣaΔv/Σav  32.83%  出力誤差(KV)  32.38% ◆
+  層15 focused   V L2  37.91%  bias 0.258  cos +0.058  PC1 0.151  ΣaΔv/Σav  28.14%  出力誤差(KV)  27.00% ◆
+  層16 baseline  V L2  39.28%  bias 0.232  cos +0.041  PC1 0.123  ΣaΔv/Σav  33.97%  出力誤差(KV)  48.38% ◆
+  層16 focused   V L2  34.55%  bias 0.247  cos +0.052  PC1 0.172  ΣaΔv/Σav  28.46%  出力誤差(KV)  41.58% ◆
+  層17 baseline  V L2  40.67%  bias 0.240  cos +0.043  PC1 0.125  ΣaΔv/Σav  28.50%  出力誤差(KV)  31.64% ◆
+  層17 focused   V L2  35.55%  bias 0.248  cos +0.052  PC1 0.182  ΣaΔv/Σav  23.86%  出力誤差(KV)  28.99% ◆
+  層18 baseline  V L2  36.92%  bias 0.238  cos +0.040  PC1 0.147  ΣaΔv/Σav  23.67%  出力誤差(KV)  23.11% ◆
+  層18 focused   V L2  33.07%  bias 0.248  cos +0.049  PC1 0.192  ΣaΔv/Σav  23.02%  出力誤差(KV)  19.77% ◆
+  層19 baseline  V L2  38.44%  bias 0.240  cos +0.040  PC1 0.142  ΣaΔv/Σav  17.21%  出力誤差(KV)  23.74% ◆
+  層19 focused   V L2  34.61%  bias 0.257  cos +0.050  PC1 0.187  ΣaΔv/Σav  16.81%  出力誤差(KV)  19.85% ◆
+  層20 baseline  V L2  34.91%  bias 0.234  cos +0.036  PC1 0.148  ΣaΔv/Σav  31.38%  出力誤差(KV)  37.22% ◆
+  層20 focused   V L2  30.88%  bias 0.258  cos +0.052  PC1 0.191  ΣaΔv/Σav  31.36%  出力誤差(KV)  34.42% ◆
+  層21 baseline  V L2  35.56%  bias 0.246  cos +0.040  PC1 0.139  ΣaΔv/Σav  16.57%  出力誤差(KV)  24.69%
+  層21 focused   V L2  31.79%  bias 0.265  cos +0.053  PC1 0.184  ΣaΔv/Σav  12.94%  出力誤差(KV)  17.73%
+  層22 baseline  V L2  36.18%  bias 0.246  cos +0.039  PC1 0.140  ΣaΔv/Σav  13.72%  出力誤差(KV)  11.15%
+  層22 focused   V L2  32.75%  bias 0.262  cos +0.051  PC1 0.181  ΣaΔv/Σav  11.56%  出力誤差(KV)   9.89%
+  層23 baseline  V L2  38.78%  bias 0.229  cos +0.034  PC1 0.117  ΣaΔv/Σav  13.36%  出力誤差(KV)  14.56%
+  層23 focused   V L2  35.02%  bias 0.245  cos +0.044  PC1 0.148  ΣaΔv/Σav  12.95%  出力誤差(KV)  12.62%
+  層24 baseline  V L2  40.16%  bias 0.225  cos +0.032  PC1 0.123  ΣaΔv/Σav  17.48%  出力誤差(KV)  16.45%
+  層24 focused   V L2  36.47%  bias 0.240  cos +0.044  PC1 0.154  ΣaΔv/Σav  16.15%  出力誤差(KV)  15.98%
+  層25 baseline  V L2  41.90%  bias 0.213  cos +0.031  PC1 0.115  ΣaΔv/Σav  19.95%  出力誤差(KV)  19.46%
+  層25 focused   V L2  38.21%  bias 0.222  cos +0.040  PC1 0.140  ΣaΔv/Σav  18.16%  出力誤差(KV)  16.54%
+  層26 baseline  V L2  42.45%  bias 0.215  cos +0.034  PC1 0.119  ΣaΔv/Σav  17.16%  出力誤差(KV)  16.14%
+  層26 focused   V L2  39.68%  bias 0.216  cos +0.043  PC1 0.138  ΣaΔv/Σav  15.23%  出力誤差(KV)  14.37%
+  層27 baseline  V L2  50.49%  bias 0.247  cos +0.055  PC1 0.122  ΣaΔv/Σav   7.86%  出力誤差(KV)   7.82%
+  層27 focused   V L2  48.31%  bias 0.250  cos +0.064  PC1 0.142  ΣaΔv/Σav   7.50%  出力誤差(KV)   7.70%
+
+-> D:\AI\source\n_chap5\EdgeSLM_Android\results\P12h_20260915_kv_error_direction\report.json

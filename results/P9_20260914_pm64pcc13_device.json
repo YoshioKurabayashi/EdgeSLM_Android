@@ -1,0 +1,12 @@
+{
+  "samples": 19,
+  "positions": "last",
+  "primary_output": "logits",
+  "other_outputs": {},
+  "rel_l2_mean": 0.20503381681192212,
+  "rel_l2_max": 0.39164409096244185,
+  "cosine_mean": 0.9780417926762037,
+  "cosine_min": 0.9388981206776523,
+  "ort_run_ms_mean": 42.42088263128933,
+  "top1_agreement": 0.7894736842105263
+}

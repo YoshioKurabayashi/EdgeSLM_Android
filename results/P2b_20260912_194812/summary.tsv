@@ -1,0 +1,14 @@
+name	S2_S4	S5_convert	S6_context	S8_epctx	verdict	detail
+matmul_weight	OK	OK	OK	OK	ready_for_device	
+matmul_act	OK	OK	NG	-	fail_S6_context	85.9ms [ ERROR ] <E> [4294967295] has incorrect Value 68, expected >= 73.
+rmsnorm	OK	OK	OK	OK	ready_for_device	
+rmsnorm_fused	NG	-	-	-	fail_S2_preprocess	NG S2_preprocess  ValidationError: No Op registered for SimplifiedLayerNormalization with domain_version of 17
+layernorm	OK	OK	OK	OK	ready_for_device	
+rope	OK	OK	OK	OK	ready_for_device	
+rope_fused	OK	NG	-	-	fail_S5_convert	2026-09-12 19:49:29,848 - 273 - ERROR - Encountered Error: modeltools::IrGraph::validateQnnOpConfig: Failed QNN validation for rope with error
+softmax	OK	OK	OK	OK	ready_for_device	
+silu	OK	OK	OK	OK	ready_for_device	
+attention	OK	OK	NG	-	fail_S6_context	91.0ms [ ERROR ] <E> [4294967295] has incorrect Value 68, expected >= 73.
+kvcache	OK	OK	NG	-	fail_S6_context	87.3ms [ ERROR ] <E> [4294967295] has incorrect Value 68, expected >= 73.
+embed	OK	OK	OK	OK	ready_for_device	
+block	OK	OK	NG	-	fail_S6_context	90.3ms [ ERROR ] <E> [4294967295] has incorrect Value 68, expected >= 73.

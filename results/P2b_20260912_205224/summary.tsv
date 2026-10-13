@@ -1,0 +1,5 @@
+name	S2_S4	S5_convert	S6_context	S8_epctx	verdict	detail
+gqa_repeat	OK	OK	NG	-	fail_S6_context	155.4ms [ ERROR ] <E> "QNN_DATATYPE_FLOAT_32_converted_k_QNN_DATATYPE_FLOAT_16" generated: could not create op
+rope_slice	OK	OK	OK	OK	ready_for_device	
+rmsnorm_real	OK	OK	OK	OK	ready_for_device	
+block_real	OK	OK	OK	OK	ready_for_device	

@@ -1,0 +1,818 @@
+[
+ {
+  "tensor": "add_17",
+  "q_output": "add_17_QuantizeLinear_Output",
+  "scale": 0.00030173262348398566,
+  "zero_point": 32968.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "node_pow_9_abs",
+  "q_output": "node_pow_9_abs_QuantizeLinear_Output",
+  "scale": 0.00015178989269770682,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Abs"
+ },
+ {
+  "tensor": "node_pow_9_maxr",
+  "q_output": "node_pow_9_maxr_QuantizeLinear_Output",
+  "scale": 0.00015178989269770682,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "ReduceMax"
+ },
+ {
+  "tensor": "node_pow_9_max",
+  "q_output": "node_pow_9_max_QuantizeLinear_Output",
+  "scale": 0.00015178990724962205,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "node_pow_9_rmax",
+  "q_output": "node_pow_9_rmax_QuantizeLinear_Output",
+  "scale": 3.965428277297178e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Reciprocal"
+ },
+ {
+  "tensor": "node_pow_9_xs",
+  "q_output": "node_pow_9_xs_QuantizeLinear_Output",
+  "scale": 3.051804378628731e-05,
+  "zero_point": 32768.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "pow_9",
+  "q_output": "pow_9_QuantizeLinear_Output",
+  "scale": 1.525902007415425e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Pow"
+ },
+ {
+  "tensor": "mean_8",
+  "q_output": "mean_8_QuantizeLinear_Output",
+  "scale": 2.009819297654758e-07,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "ReduceMean"
+ },
+ {
+  "tensor": "add_18",
+  "q_output": "add_18_QuantizeLinear_Output",
+  "scale": 2.009819297654758e-07,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "val_255",
+  "q_output": "val_255_QuantizeLinear_Output",
+  "scale": 1.7512246586193214e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Sqrt"
+ },
+ {
+  "tensor": "rsqrt_8",
+  "q_output": "rsqrt_8_QuantizeLinear_Output",
+  "scale": 0.0003492672403808683,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Reciprocal"
+ },
+ {
+  "tensor": "mul_28",
+  "q_output": "mul_28_QuantizeLinear_Output",
+  "scale": 0.0005849419976584613,
+  "zero_point": 26404.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "mul_29",
+  "q_output": "mul_29_QuantizeLinear_Output",
+  "scale": 0.0003180799540132284,
+  "zero_point": 56523.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "linear_14",
+  "q_output": "linear_14_QuantizeLinear_Output",
+  "scale": 0.00010298281267751008,
+  "zero_point": 36297.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "linear_15",
+  "q_output": "linear_15_QuantizeLinear_Output",
+  "scale": 0.00010597148502711207,
+  "zero_point": 33099.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "linear_16",
+  "q_output": "linear_16_QuantizeLinear_Output",
+  "scale": 0.00011281845945632085,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "view_8",
+  "q_output": "view_8_QuantizeLinear_Output",
+  "scale": 0.00010298281267751008,
+  "zero_point": 36297.0,
+  "dtype": "uint16",
+  "producer": "Reshape"
+ },
+ {
+  "tensor": "view_9",
+  "q_output": "view_9_QuantizeLinear_Output",
+  "scale": 0.00010597148502711207,
+  "zero_point": 33099.0,
+  "dtype": "uint16",
+  "producer": "Reshape"
+ },
+ {
+  "tensor": "view_10",
+  "q_output": "view_10_QuantizeLinear_Output",
+  "scale": 0.00011281845945632085,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "Reshape"
+ },
+ {
+  "tensor": "node_pow_10_abs",
+  "q_output": "node_pow_10_abs_QuantizeLinear_Output",
+  "scale": 5.7038407248910517e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Abs"
+ },
+ {
+  "tensor": "node_pow_11_abs",
+  "q_output": "node_pow_11_abs_QuantizeLinear_Output",
+  "scale": 5.3521012887358665e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Abs"
+ },
+ {
+  "tensor": "transpose_12",
+  "q_output": "transpose_12_QuantizeLinear_Output",
+  "scale": 0.00011281845945632085,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "Transpose"
+ },
+ {
+  "tensor": "node_pow_10_maxr",
+  "q_output": "node_pow_10_maxr_QuantizeLinear_Output",
+  "scale": 5.7038407248910517e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "ReduceMax"
+ },
+ {
+  "tensor": "node_pow_11_maxr",
+  "q_output": "node_pow_11_maxr_QuantizeLinear_Output",
+  "scale": 5.3521012887358665e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "ReduceMax"
+ },
+ {
+  "tensor": "cat_11",
+  "q_output": "cat_11_QuantizeLinear_Output",
+  "scale": 0.00011283836647635326,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "Concat"
+ },
+ {
+  "tensor": "node_pow_10_max",
+  "q_output": "node_pow_10_max_QuantizeLinear_Output",
+  "scale": 5.7038421800825745e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "node_pow_11_max",
+  "q_output": "node_pow_11_max_QuantizeLinear_Output",
+  "scale": 5.3521027439273894e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "present_v_2_QuantizeLinear_Input",
+  "q_output": "present_v_2_QuantizeLinear_Output",
+  "scale": 0.00011283836647635326,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "Slice"
+ },
+ {
+  "tensor": "node_pow_10_rmax",
+  "q_output": "node_pow_10_rmax_QuantizeLinear_Output",
+  "scale": 4.193204949842766e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Reciprocal"
+ },
+ {
+  "tensor": "node_pow_11_rmax",
+  "q_output": "node_pow_11_rmax_QuantizeLinear_Output",
+  "scale": 3.131087578367442e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Reciprocal"
+ },
+ {
+  "tensor": "val_352",
+  "q_output": "val_352_QuantizeLinear_Output",
+  "scale": 0.00011283836647635326,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "Unsqueeze"
+ },
+ {
+  "tensor": "node_pow_10_xs",
+  "q_output": "node_pow_10_xs_QuantizeLinear_Output",
+  "scale": 3.0518036510329694e-05,
+  "zero_point": 32767.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "node_pow_11_xs",
+  "q_output": "node_pow_11_xs_QuantizeLinear_Output",
+  "scale": 3.0518036510329694e-05,
+  "zero_point": 32768.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "val_354",
+  "q_output": "val_354_QuantizeLinear_Output",
+  "scale": 0.00011283836647635326,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "Concat"
+ },
+ {
+  "tensor": "pow_10",
+  "q_output": "pow_10_QuantizeLinear_Output",
+  "scale": 1.5259012798196636e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Pow"
+ },
+ {
+  "tensor": "pow_11",
+  "q_output": "pow_11_QuantizeLinear_Output",
+  "scale": 1.525901461718604e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Pow"
+ },
+ {
+  "tensor": "repeat_interleave_5",
+  "q_output": "repeat_interleave_5_QuantizeLinear_Output",
+  "scale": 0.028999460861086845,
+  "zero_point": 128.0,
+  "dtype": "uint8",
+  "producer": "Reshape"
+ },
+ {
+  "tensor": "mean_9",
+  "q_output": "mean_9_QuantizeLinear_Output",
+  "scale": 2.7132077775604557e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "ReduceMean"
+ },
+ {
+  "tensor": "mean_10",
+  "q_output": "mean_10_QuantizeLinear_Output",
+  "scale": 2.7594758194027236e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "ReduceMean"
+ },
+ {
+  "tensor": "add_19",
+  "q_output": "add_19_QuantizeLinear_Output",
+  "scale": 2.7132077775604557e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "add_20",
+  "q_output": "add_20_QuantizeLinear_Output",
+  "scale": 2.7594758194027236e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "val_273",
+  "q_output": "val_273_QuantizeLinear_Output",
+  "scale": 6.43435305391904e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Sqrt"
+ },
+ {
+  "tensor": "val_277",
+  "q_output": "val_277_QuantizeLinear_Output",
+  "scale": 6.488983217423083e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Sqrt"
+ },
+ {
+  "tensor": "rsqrt_9",
+  "q_output": "rsqrt_9_QuantizeLinear_Output",
+  "scale": 0.00012681969383265823,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Reciprocal"
+ },
+ {
+  "tensor": "rsqrt_10",
+  "q_output": "rsqrt_10_QuantizeLinear_Output",
+  "scale": 0.00011420526425354183,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Reciprocal"
+ },
+ {
+  "tensor": "mul_30",
+  "q_output": "mul_30_QuantizeLinear_Output",
+  "scale": 0.00024248463159892708,
+  "zero_point": 31260.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "mul_32",
+  "q_output": "mul_32_QuantizeLinear_Output",
+  "scale": 0.00020731643598992378,
+  "zero_point": 29433.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "mul_31",
+  "q_output": "mul_31_QuantizeLinear_Output",
+  "scale": 0.0005337108159437776,
+  "zero_point": 39890.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "mul_33",
+  "q_output": "mul_33_QuantizeLinear_Output",
+  "scale": 0.005548547953367233,
+  "zero_point": 29396.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "transpose_10",
+  "q_output": "transpose_10_QuantizeLinear_Output",
+  "scale": 0.0005337108159437776,
+  "zero_point": 39890.0,
+  "dtype": "uint16",
+  "producer": "Transpose"
+ },
+ {
+  "tensor": "transpose_11",
+  "q_output": "transpose_11_QuantizeLinear_Output",
+  "scale": 0.005548547953367233,
+  "zero_point": 29396.0,
+  "dtype": "uint16",
+  "producer": "Transpose"
+ },
+ {
+  "tensor": "slice_13",
+  "q_output": "slice_13_QuantizeLinear_Output",
+  "scale": 0.0005337108159437776,
+  "zero_point": 39890.0,
+  "dtype": "uint16",
+  "producer": "Slice"
+ },
+ {
+  "tensor": "slice_14",
+  "q_output": "slice_14_QuantizeLinear_Output",
+  "scale": 0.0005337108159437776,
+  "zero_point": 39890.0,
+  "dtype": "uint16",
+  "producer": "Slice"
+ },
+ {
+  "tensor": "mul_34",
+  "q_output": "mul_34_QuantizeLinear_Output",
+  "scale": 0.0005108866607770324,
+  "zero_point": 41672.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "slice_15",
+  "q_output": "slice_15_QuantizeLinear_Output",
+  "scale": 0.005548547953367233,
+  "zero_point": 29396.0,
+  "dtype": "uint16",
+  "producer": "Slice"
+ },
+ {
+  "tensor": "slice_16",
+  "q_output": "slice_16_QuantizeLinear_Output",
+  "scale": 0.005548547953367233,
+  "zero_point": 29396.0,
+  "dtype": "uint16",
+  "producer": "Slice"
+ },
+ {
+  "tensor": "mul_36",
+  "q_output": "mul_36_QuantizeLinear_Output",
+  "scale": 0.005548547953367233,
+  "zero_point": 29396.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "neg_4",
+  "q_output": "neg_4_QuantizeLinear_Output",
+  "scale": 0.0005337108159437776,
+  "zero_point": 25645.0,
+  "dtype": "uint16",
+  "producer": "Neg"
+ },
+ {
+  "tensor": "neg_5",
+  "q_output": "neg_5_QuantizeLinear_Output",
+  "scale": 0.005548547953367233,
+  "zero_point": 36139.0,
+  "dtype": "uint16",
+  "producer": "Neg"
+ },
+ {
+  "tensor": "cat_8",
+  "q_output": "cat_8_QuantizeLinear_Output",
+  "scale": 0.0005337108159437776,
+  "zero_point": 25645.0,
+  "dtype": "uint16",
+  "producer": "Concat"
+ },
+ {
+  "tensor": "cat_9",
+  "q_output": "cat_9_QuantizeLinear_Output",
+  "scale": 0.005548547953367233,
+  "zero_point": 36139.0,
+  "dtype": "uint16",
+  "producer": "Concat"
+ },
+ {
+  "tensor": "mul_35",
+  "q_output": "mul_35_QuantizeLinear_Output",
+  "scale": 0.00044399616308510303,
+  "zero_point": 26586.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "mul_37",
+  "q_output": "mul_37_QuantizeLinear_Output",
+  "scale": 0.0006474340334534645,
+  "zero_point": 25293.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "add_21",
+  "q_output": "add_21_QuantizeLinear_Output",
+  "scale": 0.0005924678989686072,
+  "zero_point": 35934.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "add_22",
+  "q_output": "add_22_QuantizeLinear_Output",
+  "scale": 0.005548545159399509,
+  "zero_point": 29396.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "add_21_prescaled",
+  "q_output": "add_21_prescaled_QuantizeLinear_Output",
+  "scale": 5.2367257012519985e-05,
+  "zero_point": 35934.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "cat_10",
+  "q_output": "cat_10_QuantizeLinear_Output",
+  "scale": 0.005548722110688686,
+  "zero_point": 29397.0,
+  "dtype": "uint16",
+  "producer": "Concat"
+ },
+ {
+  "tensor": "node_matmul_4_At",
+  "q_output": "node_matmul_4_At_QuantizeLinear_Output",
+  "scale": 0.01345838513225317,
+  "zero_point": 140.0,
+  "dtype": "uint8",
+  "producer": "Transpose"
+ },
+ {
+  "tensor": "present_k_2_QuantizeLinear_Input",
+  "q_output": "present_k_2_QuantizeLinear_Output",
+  "scale": 0.005548722110688686,
+  "zero_point": 29397.0,
+  "dtype": "uint16",
+  "producer": "Slice"
+ },
+ {
+  "tensor": "val_345",
+  "q_output": "val_345_QuantizeLinear_Output",
+  "scale": 0.005548722110688686,
+  "zero_point": 29397.0,
+  "dtype": "uint16",
+  "producer": "Unsqueeze"
+ },
+ {
+  "tensor": "val_347",
+  "q_output": "val_347_QuantizeLinear_Output",
+  "scale": 0.005548722110688686,
+  "zero_point": 29397.0,
+  "dtype": "uint16",
+  "producer": "Concat"
+ },
+ {
+  "tensor": "repeat_interleave_4",
+  "q_output": "repeat_interleave_4_QuantizeLinear_Output",
+  "scale": 0.005548722110688686,
+  "zero_point": 29397.0,
+  "dtype": "uint16",
+  "producer": "Reshape"
+ },
+ {
+  "tensor": "transpose_13",
+  "q_output": "transpose_13_QuantizeLinear_Output",
+  "scale": 0.005548722110688686,
+  "zero_point": 29397.0,
+  "dtype": "uint16",
+  "producer": "Transpose"
+ },
+ {
+  "tensor": "node_matmul_4_Bt",
+  "q_output": "node_matmul_4_Bt_QuantizeLinear_Output",
+  "scale": 0.005548722110688686,
+  "zero_point": 29397.0,
+  "dtype": "uint16",
+  "producer": "Transpose"
+ },
+ {
+  "tensor": "node_matmul_4_scoresT",
+  "q_output": "node_matmul_4_scoresT_QuantizeLinear_Output",
+  "scale": 0.0007213934441097081,
+  "zero_point": 28256.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "mul_38",
+  "q_output": "mul_38_QuantizeLinear_Output",
+  "scale": 0.0007213934441097081,
+  "zero_point": 28256.0,
+  "dtype": "uint16",
+  "producer": "Transpose"
+ },
+ {
+  "tensor": "add_23",
+  "q_output": "add_23_QuantizeLinear_Output",
+  "scale": 0.0013258950784802437,
+  "zero_point": 45252.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "softmax_2",
+  "q_output": "softmax_2_QuantizeLinear_Output",
+  "scale": 1.5259021893143654e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Softmax"
+ },
+ {
+  "tensor": "matmul_5",
+  "q_output": "matmul_5_QuantizeLinear_Output",
+  "scale": 0.00011281845945632085,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "transpose_14",
+  "q_output": "transpose_14_QuantizeLinear_Output",
+  "scale": 0.00011281845945632085,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "Transpose"
+ },
+ {
+  "tensor": "view_11",
+  "q_output": "view_11_QuantizeLinear_Output",
+  "scale": 0.00011281845945632085,
+  "zero_point": 32998.0,
+  "dtype": "uint16",
+  "producer": "Reshape"
+ },
+ {
+  "tensor": "linear_17",
+  "q_output": "linear_17_QuantizeLinear_Output",
+  "scale": 0.00011120926501462236,
+  "zero_point": 45662.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "add_24",
+  "q_output": "add_24_QuantizeLinear_Output",
+  "scale": 0.0003055345732718706,
+  "zero_point": 35428.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "node_pow_12_abs",
+  "q_output": "node_pow_12_abs_QuantizeLinear_Output",
+  "scale": 0.00016516937466803938,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Abs"
+ },
+ {
+  "tensor": "node_pow_12_maxr",
+  "q_output": "node_pow_12_maxr_QuantizeLinear_Output",
+  "scale": 0.00016516937466803938,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "ReduceMax"
+ },
+ {
+  "tensor": "node_pow_12_max",
+  "q_output": "node_pow_12_max_QuantizeLinear_Output",
+  "scale": 0.0001651693892199546,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "node_pow_12_rmax",
+  "q_output": "node_pow_12_rmax_QuantizeLinear_Output",
+  "scale": 7.243946583912475e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Reciprocal"
+ },
+ {
+  "tensor": "node_pow_12_xs",
+  "q_output": "node_pow_12_xs_QuantizeLinear_Output",
+  "scale": 3.051804378628731e-05,
+  "zero_point": 32768.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "pow_12",
+  "q_output": "pow_12_QuantizeLinear_Output",
+  "scale": 1.525902007415425e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Pow"
+ },
+ {
+  "tensor": "mean_11",
+  "q_output": "mean_11_QuantizeLinear_Output",
+  "scale": 4.4995164216743433e-07,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "ReduceMean"
+ },
+ {
+  "tensor": "add_25",
+  "q_output": "add_25_QuantizeLinear_Output",
+  "scale": 4.4995164216743433e-07,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ },
+ {
+  "tensor": "val_368",
+  "q_output": "val_368_QuantizeLinear_Output",
+  "scale": 2.6202712888334645e-06,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Sqrt"
+ },
+ {
+  "tensor": "rsqrt_11",
+  "q_output": "rsqrt_11_QuantizeLinear_Output",
+  "scale": 0.0002877824008464813,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Reciprocal"
+ },
+ {
+  "tensor": "mul_39",
+  "q_output": "mul_39_QuantizeLinear_Output",
+  "scale": 0.00046754319919273257,
+  "zero_point": 25197.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "mul_40",
+  "q_output": "mul_40_QuantizeLinear_Output",
+  "scale": 0.0012471901718527079,
+  "zero_point": 44776.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "linear_18",
+  "q_output": "linear_18_QuantizeLinear_Output",
+  "scale": 0.0010865057120099664,
+  "zero_point": 8206.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "linear_19",
+  "q_output": "linear_19_QuantizeLinear_Output",
+  "scale": 0.001742847845889628,
+  "zero_point": 30584.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "val_370",
+  "q_output": "val_370_QuantizeLinear_Output",
+  "scale": 1.52587890625e-05,
+  "zero_point": 0.0,
+  "dtype": "uint16",
+  "producer": "Sigmoid"
+ },
+ {
+  "tensor": "silu_2",
+  "q_output": "silu_2_QuantizeLinear_Output",
+  "scale": 0.0009547045920044184,
+  "zero_point": 292.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "mul_41",
+  "q_output": "mul_41_QuantizeLinear_Output",
+  "scale": 0.10498359054327011,
+  "zero_point": 29393.0,
+  "dtype": "uint16",
+  "producer": "Mul"
+ },
+ {
+  "tensor": "linear_20",
+  "q_output": "linear_20_QuantizeLinear_Output",
+  "scale": 0.11333262920379639,
+  "zero_point": 1489.0,
+  "dtype": "uint16",
+  "producer": "MatMul"
+ },
+ {
+  "tensor": "add_26",
+  "q_output": "add_26_QuantizeLinear_Output",
+  "scale": 0.11332785338163376,
+  "zero_point": 1485.0,
+  "dtype": "uint16",
+  "producer": "Add"
+ }
+]

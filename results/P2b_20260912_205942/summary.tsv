@@ -1,0 +1,7 @@
+name	S2_S4	S5_convert	S6_context	S8_epctx	verdict	detail
+gqa_repeat	NG	-	-	-	fail_C1_float_segment	NG C-1  1 箇所で float が量子化を経ずに流れている
+rope_slice	OK	OK	OK	OK	ready_for_device	
+rmsnorm_real	OK	OK	OK	OK	ready_for_device	
+block_real	OK	OK	OK	OK	ready_for_device	
+block	OK	OK	OK	OK	ready_for_device	
+attention	OK	OK	OK	OK	ready_for_device	

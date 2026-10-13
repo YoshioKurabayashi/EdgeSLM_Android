@@ -1,0 +1,16 @@
+KV 系の量子化グループ 252（KV 以外の Q と scale を共有しているもの 28）
+  較正 long_ja: 累計 640 トークン
+  較正 long_code: 累計 1280 トークン
+  較正 chat_long: 累計 1903 トークン
+FP32 観測 1903 トークン 402s / 観測できなかったテンソル 0: []
+広げたグループ 252 / 変更なし 0 / 観測なし 0  倍率 最大 8.54 中央値 1.53  うち uint8 28（最大倍率 2.55）
+baseline_kvwide            1位保持  78.6%  margin保持   35.3%  最小margin  -1.90  KL 0.239 | 点B -0.05 点A -1.18 BANANA +0.66 バナナ +4.43  (628s)
+      turn0: 'エアコンを22度に調子をつけてください。'
+      turn1: '音楽をかけてください。'
+      turn2: 'さっき何度にしたっけ?'
+D1_fp32pos0_later_kvwide   1位保持  82.1%  margin保持   48.7%  最小margin  -1.00  KL 0.197 | 点B -0.33 点A -0.56 BANANA +0.46 バナナ +5.99  (611s)
+      turn0: 'エアコンを22度にすると、室内の気臭さが少なくなりますよ。'
+      turn1: 'エアコンの温度を指定できますか？'
+      turn2: 'さっきは22度にしていましたね。'
+-> D:\AI\source\n_chap5\EdgeSLM_Android\results\P12l_20260916_kv_range_recal\report.json
+exit=0

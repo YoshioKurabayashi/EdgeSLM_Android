@@ -1,0 +1,906 @@
+{
+  "provenance": [
+    {
+      "source": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\work\\qwen3_dec28c256\\qwen05b_decode_L28_C256.onnx",
+      "probe": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_resume\\results\\export_add53.onnx",
+      "nodes": 469,
+      "sha256_source_graph": "8a880cd4ac8a4d86634e5df4cf66b69d4a0f5827c5c02801e4fe8c099444f027",
+      "targets": [
+        "add_53"
+      ]
+    },
+    {
+      "source": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\work\\ops\\qwen3_dec28c256\\qwen3_dec28c256_prepped.onnx",
+      "probe": "C:\\Users\\kurab\\.codex\\visualizations\\2026\\09\\15\\01a0a272-0b51-7e40-bfd0-97d7308b3331\\slm_resume\\results\\prepped_add53.onnx",
+      "nodes": 607,
+      "sha256_source_graph": "8d9cd3d8bd5ca64a246bbb510656eb03dcff9d9e381d404da5d41b1422eab4d2",
+      "targets": [
+        "add_53"
+      ]
+    }
+  ],
+  "hf_snapshot": "C:\\Users\\kurab\\.cache\\huggingface\\hub\\models--Qwen--Qwen3-0.6B\\snapshots\\c1899de289a04d12100db370d81485cdf75e47ca",
+  "stats": {
+    "global_max": {
+      "sample": 0,
+      "channel": 35,
+      "value": 7257.35009765625,
+      "row": {
+        "sample": 0,
+        "position": 0,
+        "token_id": 131888,
+        "prefix_ids": [
+          131888
+        ],
+        "prefix_text": "日本の",
+        "max_channel": 35,
+        "prepped_max": 7257.35009765625,
+        "export_same_channel": 7258.099609375,
+        "hf_same_channel": 7258.1005859375,
+        "export_vs_hf": {
+          "max_abs": 0.0009765625,
+          "rel_l2": 1.3638934299316372e-07
+        },
+        "prepped_vs_hf": {
+          "max_abs": 0.75048828125,
+          "rel_l2": 0.0001034248411380439
+        }
+      }
+    },
+    "shape": [
+      30,
+      1024
+    ],
+    "min": -169.5126495361328,
+    "abs_percentiles": {
+      "50": 0.3529357314109802,
+      "99": 7.047032713890079,
+      "99.9": 92.08043353272258,
+      "99.99": 6484.819741599471,
+      "99.999": 7165.376691678737
+    },
+    "thresholds": {
+      "10": {
+        "count": 206,
+        "total": 30720,
+        "samples": [
+          0,
+          1,
+          2,
+          3,
+          6,
+          10,
+          12,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          21,
+          24,
+          26,
+          27,
+          29
+        ],
+        "channels": {
+          "0": 5,
+          "1": 5,
+          "3": 5,
+          "4": 5,
+          "5": 5,
+          "6": 2,
+          "7": 5,
+          "8": 5,
+          "9": 5,
+          "12": 5,
+          "13": 5,
+          "14": 5,
+          "15": 5,
+          "16": 5,
+          "17": 5,
+          "18": 5,
+          "19": 2,
+          "22": 5,
+          "23": 5,
+          "24": 5,
+          "27": 5,
+          "28": 5,
+          "30": 4,
+          "32": 5,
+          "33": 3,
+          "35": 18,
+          "41": 1,
+          "44": 3,
+          "45": 5,
+          "51": 5,
+          "55": 4,
+          "61": 5,
+          "62": 5,
+          "63": 5,
+          "65": 4,
+          "106": 1,
+          "109": 5,
+          "112": 1,
+          "121": 5,
+          "131": 5,
+          "137": 1,
+          "165": 5,
+          "218": 2,
+          "277": 5,
+          "281": 2,
+          "429": 3
+        }
+      },
+      "100": {
+        "count": 29,
+        "total": 30720,
+        "samples": [
+          0,
+          6,
+          12,
+          18,
+          24
+        ],
+        "channels": {
+          "1": 5,
+          "3": 4,
+          "7": 2,
+          "13": 5,
+          "23": 3,
+          "35": 5,
+          "277": 5
+        }
+      },
+      "1000": {
+        "count": 5,
+        "total": 30720,
+        "samples": [
+          0,
+          6,
+          12,
+          18,
+          24
+        ],
+        "channels": {
+          "35": 5
+        }
+      },
+      "5000": {
+        "count": 5,
+        "total": 30720,
+        "samples": [
+          0,
+          6,
+          12,
+          18,
+          24
+        ],
+        "channels": {
+          "35": 5
+        }
+      }
+    },
+    "export_vs_prepped": {
+      "max_abs": 0.966796875,
+      "rel_l2": 9.609320423743254e-05
+    },
+    "hf_vs_export": {
+      "max_abs": 0.00390625,
+      "rel_l2": 4.1850817016657076e-07
+    },
+    "hf_vs_prepped": {
+      "max_abs": 0.9638671875,
+      "rel_l2": 9.615652292407541e-05
+    }
+  },
+  "samples": [
+    {
+      "sample": 0,
+      "position": 0,
+      "token_id": 131888,
+      "prefix_ids": [
+        131888
+      ],
+      "prefix_text": "日本の",
+      "max_channel": 35,
+      "prepped_max": 7257.35009765625,
+      "export_same_channel": 7258.099609375,
+      "hf_same_channel": 7258.1005859375,
+      "export_vs_hf": {
+        "max_abs": 0.0009765625,
+        "rel_l2": 1.3638934299316372e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.75048828125,
+        "rel_l2": 0.0001034248411380439
+      }
+    },
+    {
+      "sample": 1,
+      "position": 1,
+      "token_id": 106114,
+      "prefix_ids": [
+        131888,
+        106114
+      ],
+      "prefix_text": "日本の首都",
+      "max_channel": 35,
+      "prepped_max": 16.91170310974121,
+      "export_same_channel": 16.911014556884766,
+      "hf_same_channel": 16.911006927490234,
+      "export_vs_hf": {
+        "max_abs": 7.62939453125e-06,
+        "rel_l2": 8.933580893812726e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0014400482177734375,
+        "rel_l2": 0.00022685706185713979
+      }
+    },
+    {
+      "sample": 2,
+      "position": 2,
+      "token_id": 15322,
+      "prefix_ids": [
+        131888,
+        106114,
+        15322
+      ],
+      "prefix_text": "日本の首都は",
+      "max_channel": 35,
+      "prepped_max": 13.510719299316406,
+      "export_same_channel": 13.508605003356934,
+      "hf_same_channel": 13.50860595703125,
+      "export_vs_hf": {
+        "max_abs": 1.8328428268432617e-06,
+        "rel_l2": 6.754287042765857e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.00211334228515625,
+        "rel_l2": 0.00033902809346535666
+      }
+    },
+    {
+      "sample": 3,
+      "position": 3,
+      "token_id": 5373,
+      "prefix_ids": [
+        131888,
+        106114,
+        15322,
+        5373
+      ],
+      "prefix_text": "日本の首都は、",
+      "max_channel": 35,
+      "prepped_max": 13.31017017364502,
+      "export_same_channel": 13.309139251708984,
+      "hf_same_channel": 13.309137344360352,
+      "export_vs_hf": {
+        "max_abs": 2.384185791015625e-06,
+        "rel_l2": 7.472569243069855e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0011208057403564453,
+        "rel_l2": 0.00033404634755531716
+      }
+    },
+    {
+      "sample": 4,
+      "position": 4,
+      "token_id": 57326,
+      "prefix_ids": [
+        131888,
+        106114,
+        15322,
+        5373,
+        57326
+      ],
+      "prefix_text": "日本の首都は、その",
+      "max_channel": 35,
+      "prepped_max": 7.442301273345947,
+      "export_same_channel": 7.443338871002197,
+      "hf_same_channel": 7.443337440490723,
+      "export_vs_hf": {
+        "max_abs": 1.9669532775878906e-06,
+        "rel_l2": 8.997771325603099e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0012906789779663086,
+        "rel_l2": 0.00046226993863000474
+      }
+    },
+    {
+      "sample": 5,
+      "position": 5,
+      "token_id": 101478,
+      "prefix_ids": [
+        131888,
+        106114,
+        15322,
+        5373,
+        57326,
+        101478
+      ],
+      "prefix_text": "日本の首都は、その都市",
+      "max_channel": 35,
+      "prepped_max": 6.1456475257873535,
+      "export_same_channel": 6.144591808319092,
+      "hf_same_channel": 6.144591808319092,
+      "export_vs_hf": {
+        "max_abs": 3.337860107421875e-06,
+        "rel_l2": 9.154442438574908e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0012316703796386719,
+        "rel_l2": 0.000314603017455524
+      }
+    },
+    {
+      "sample": 6,
+      "position": 0,
+      "token_id": 785,
+      "prefix_ids": [
+        785
+      ],
+      "prefix_text": "The",
+      "max_channel": 35,
+      "prepped_max": 6541.73828125,
+      "export_same_channel": 6542.32275390625,
+      "hf_same_channel": 6542.32666015625,
+      "export_vs_hf": {
+        "max_abs": 0.00390625,
+        "rel_l2": 5.930405150941637e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.58837890625,
+        "rel_l2": 8.995753441758289e-05
+      }
+    },
+    {
+      "sample": 7,
+      "position": 1,
+      "token_id": 6722,
+      "prefix_ids": [
+        785,
+        6722
+      ],
+      "prefix_text": "The capital",
+      "max_channel": 35,
+      "prepped_max": 7.206989765167236,
+      "export_same_channel": 7.206415176391602,
+      "hf_same_channel": 7.206418037414551,
+      "export_vs_hf": {
+        "max_abs": 4.410743713378906e-06,
+        "rel_l2": 1.3541132615039332e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0010361671447753906,
+        "rel_l2": 0.0002919295106516414
+      }
+    },
+    {
+      "sample": 8,
+      "position": 2,
+      "token_id": 315,
+      "prefix_ids": [
+        785,
+        6722,
+        315
+      ],
+      "prefix_text": "The capital of",
+      "max_channel": 35,
+      "prepped_max": 7.227297782897949,
+      "export_same_channel": 7.227026462554932,
+      "hf_same_channel": 7.227020740509033,
+      "export_vs_hf": {
+        "max_abs": 5.7220458984375e-06,
+        "rel_l2": 1.8293195901624985e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.001188814640045166,
+        "rel_l2": 0.000536393781814942
+      }
+    },
+    {
+      "sample": 9,
+      "position": 3,
+      "token_id": 9625,
+      "prefix_ids": [
+        785,
+        6722,
+        315,
+        9625
+      ],
+      "prefix_text": "The capital of France",
+      "max_channel": 35,
+      "prepped_max": 8.312767028808594,
+      "export_same_channel": 8.311752319335938,
+      "hf_same_channel": 8.311745643615723,
+      "export_vs_hf": {
+        "max_abs": 6.67572021484375e-06,
+        "rel_l2": 1.2073937936954724e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0010213851928710938,
+        "rel_l2": 0.00028503578384697566
+      }
+    },
+    {
+      "sample": 10,
+      "position": 4,
+      "token_id": 374,
+      "prefix_ids": [
+        785,
+        6722,
+        315,
+        9625,
+        374
+      ],
+      "prefix_text": "The capital of France is",
+      "max_channel": 35,
+      "prepped_max": 10.58520221710205,
+      "export_same_channel": 10.582869529724121,
+      "hf_same_channel": 10.582870483398438,
+      "export_vs_hf": {
+        "max_abs": 3.2186508178710938e-06,
+        "rel_l2": 1.3828992166577887e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0023317337036132812,
+        "rel_l2": 0.00039944356479887453
+      }
+    },
+    {
+      "sample": 11,
+      "position": 5,
+      "token_id": 12095,
+      "prefix_ids": [
+        785,
+        6722,
+        315,
+        9625,
+        374,
+        12095
+      ],
+      "prefix_text": "The capital of France is Paris",
+      "max_channel": 35,
+      "prepped_max": 7.267286777496338,
+      "export_same_channel": 7.266445159912109,
+      "hf_same_channel": 7.266443729400635,
+      "export_vs_hf": {
+        "max_abs": 2.205371856689453e-06,
+        "rel_l2": 9.218061422644848e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0012950897216796875,
+        "rel_l2": 0.0003048221374741681
+      }
+    },
+    {
+      "sample": 12,
+      "position": 0,
+      "token_id": 16,
+      "prefix_ids": [
+        16
+      ],
+      "prefix_text": "1",
+      "max_channel": 35,
+      "prepped_max": 6544.08935546875,
+      "export_same_channel": 6544.48486328125,
+      "hf_same_channel": 6544.486328125,
+      "export_vs_hf": {
+        "max_abs": 0.00146484375,
+        "rel_l2": 2.2378168857248383e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.39697265625,
+        "rel_l2": 6.070763163725709e-05
+      }
+    },
+    {
+      "sample": 13,
+      "position": 1,
+      "token_id": 11,
+      "prefix_ids": [
+        16,
+        11
+      ],
+      "prefix_text": "1,",
+      "max_channel": 35,
+      "prepped_max": 9.585193634033203,
+      "export_same_channel": 9.583979606628418,
+      "hf_same_channel": 9.583985328674316,
+      "export_vs_hf": {
+        "max_abs": 5.7220458984375e-06,
+        "rel_l2": 1.390990625265352e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0012530088424682617,
+        "rel_l2": 0.0004998018233101384
+      }
+    },
+    {
+      "sample": 14,
+      "position": 2,
+      "token_id": 220,
+      "prefix_ids": [
+        16,
+        11,
+        220
+      ],
+      "prefix_text": "1, ",
+      "max_channel": 35,
+      "prepped_max": 10.640897750854492,
+      "export_same_channel": 10.641193389892578,
+      "hf_same_channel": 10.641190528869629,
+      "export_vs_hf": {
+        "max_abs": 5.245208740234375e-06,
+        "rel_l2": 1.3057997401195913e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0009748935699462891,
+        "rel_l2": 0.00035448662404438045
+      }
+    },
+    {
+      "sample": 15,
+      "position": 3,
+      "token_id": 17,
+      "prefix_ids": [
+        16,
+        11,
+        220,
+        17
+      ],
+      "prefix_text": "1, 2",
+      "max_channel": 35,
+      "prepped_max": 11.104573249816895,
+      "export_same_channel": 11.104254722595215,
+      "hf_same_channel": 11.104259490966797,
+      "export_vs_hf": {
+        "max_abs": 4.76837158203125e-06,
+        "rel_l2": 1.4969218428029549e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0008034706115722656,
+        "rel_l2": 0.0002968504748268933
+      }
+    },
+    {
+      "sample": 16,
+      "position": 4,
+      "token_id": 11,
+      "prefix_ids": [
+        16,
+        11,
+        220,
+        17,
+        11
+      ],
+      "prefix_text": "1, 2,",
+      "max_channel": 35,
+      "prepped_max": 11.289351463317871,
+      "export_same_channel": 11.28929328918457,
+      "hf_same_channel": 11.289287567138672,
+      "export_vs_hf": {
+        "max_abs": 5.7220458984375e-06,
+        "rel_l2": 1.3320943200288456e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0017714500427246094,
+        "rel_l2": 0.0004552534383467179
+      }
+    },
+    {
+      "sample": 17,
+      "position": 5,
+      "token_id": 220,
+      "prefix_ids": [
+        16,
+        11,
+        220,
+        17,
+        11,
+        220
+      ],
+      "prefix_text": "1, 2, ",
+      "max_channel": 35,
+      "prepped_max": 11.143597602844238,
+      "export_same_channel": 11.142557144165039,
+      "hf_same_channel": 11.142553329467773,
+      "export_vs_hf": {
+        "max_abs": 3.814697265625e-06,
+        "rel_l2": 1.623130688992256e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0011489391326904297,
+        "rel_l2": 0.0002998283667011116
+      }
+    },
+    {
+      "sample": 18,
+      "position": 0,
+      "token_id": 102249,
+      "prefix_ids": [
+        102249
+      ],
+      "prefix_text": "人工",
+      "max_channel": 35,
+      "prepped_max": 6957.94775390625,
+      "export_same_channel": 6958.91455078125,
+      "hf_same_channel": 6958.91162109375,
+      "export_vs_hf": {
+        "max_abs": 0.0029296875,
+        "rel_l2": 4.223849072134935e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.9638671875,
+        "rel_l2": 0.0001385350159641593
+      }
+    },
+    {
+      "sample": 19,
+      "position": 1,
+      "token_id": 52183,
+      "prefix_ids": [
+        102249,
+        52183
+      ],
+      "prefix_text": "人工知",
+      "max_channel": 35,
+      "prepped_max": 17.262359619140625,
+      "export_same_channel": 17.26227569580078,
+      "hf_same_channel": 17.262277603149414,
+      "export_vs_hf": {
+        "max_abs": 2.5033950805664062e-06,
+        "rel_l2": 7.176641849917872e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.001017928123474121,
+        "rel_l2": 0.0002407004928289753
+      }
+    },
+    {
+      "sample": 20,
+      "position": 2,
+      "token_id": 26232,
+      "prefix_ids": [
+        102249,
+        52183,
+        26232
+      ],
+      "prefix_text": "人工知能",
+      "max_channel": 35,
+      "prepped_max": 8.874234199523926,
+      "export_same_channel": 8.874979972839355,
+      "hf_same_channel": 8.874981880187988,
+      "export_vs_hf": {
+        "max_abs": 3.635883331298828e-06,
+        "rel_l2": 1.8287082812776166e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0014660358428955078,
+        "rel_l2": 0.0006231467345936502
+      }
+    },
+    {
+      "sample": 21,
+      "position": 3,
+      "token_id": 126238,
+      "prefix_ids": [
+        102249,
+        52183,
+        26232,
+        126238
+      ],
+      "prefix_text": "人工知能とは",
+      "max_channel": 35,
+      "prepped_max": 10.4700927734375,
+      "export_same_channel": 10.469467163085938,
+      "hf_same_channel": 10.469467163085938,
+      "export_vs_hf": {
+        "max_abs": 2.3245811462402344e-06,
+        "rel_l2": 7.953782025021493e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0012125968933105469,
+        "rel_l2": 0.0002685710082762668
+      }
+    },
+    {
+      "sample": 22,
+      "position": 4,
+      "token_id": 98749,
+      "prefix_ids": [
+        102249,
+        52183,
+        26232,
+        126238,
+        98749
+      ],
+      "prefix_text": "人工知能とは何",
+      "max_channel": 35,
+      "prepped_max": 6.386139392852783,
+      "export_same_channel": 6.386292934417725,
+      "hf_same_channel": 6.386298179626465,
+      "export_vs_hf": {
+        "max_abs": 5.245208740234375e-06,
+        "rel_l2": 1.166377583695222e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0012009143829345703,
+        "rel_l2": 0.00035200589333528597
+      }
+    },
+    {
+      "sample": 23,
+      "position": 5,
+      "token_id": 131938,
+      "prefix_ids": [
+        102249,
+        52183,
+        26232,
+        126238,
+        98749,
+        131938
+      ],
+      "prefix_text": "人工知能とは何ですか",
+      "max_channel": 35,
+      "prepped_max": 8.500761985778809,
+      "export_same_channel": 8.501985549926758,
+      "hf_same_channel": 8.501986503601074,
+      "export_vs_hf": {
+        "max_abs": 2.816319465637207e-06,
+        "rel_l2": 1.2718589454300993e-06
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.001224517822265625,
+        "rel_l2": 0.00047682532109180983
+      }
+    },
+    {
+      "sample": 24,
+      "position": 0,
+      "token_id": 750,
+      "prefix_ids": [
+        750
+      ],
+      "prefix_text": "def",
+      "max_channel": 35,
+      "prepped_max": 5750.103515625,
+      "export_same_channel": 5750.28369140625,
+      "hf_same_channel": 5750.287109375,
+      "export_vs_hf": {
+        "max_abs": 0.00341796875,
+        "rel_l2": 5.940376571410835e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.18359375,
+        "rel_l2": 3.1986583447755795e-05
+      }
+    },
+    {
+      "sample": 25,
+      "position": 1,
+      "token_id": 912,
+      "prefix_ids": [
+        750,
+        912
+      ],
+      "prefix_text": "def add",
+      "max_channel": 35,
+      "prepped_max": 9.513626098632812,
+      "export_same_channel": 9.512981414794922,
+      "hf_same_channel": 9.512981414794922,
+      "export_vs_hf": {
+        "max_abs": 2.6226043701171875e-06,
+        "rel_l2": 6.766036487481653e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0010597705841064453,
+        "rel_l2": 0.00028258316269123184
+      }
+    },
+    {
+      "sample": 26,
+      "position": 2,
+      "token_id": 2877,
+      "prefix_ids": [
+        750,
+        912,
+        2877
+      ],
+      "prefix_text": "def add(a",
+      "max_channel": 35,
+      "prepped_max": 10.821629524230957,
+      "export_same_channel": 10.819818496704102,
+      "hf_same_channel": 10.819822311401367,
+      "export_vs_hf": {
+        "max_abs": 3.814697265625e-06,
+        "rel_l2": 9.56911776266767e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0018072128295898438,
+        "rel_l2": 0.00026313001019836265
+      }
+    },
+    {
+      "sample": 27,
+      "position": 3,
+      "token_id": 11,
+      "prefix_ids": [
+        750,
+        912,
+        2877,
+        11
+      ],
+      "prefix_text": "def add(a,",
+      "max_channel": 35,
+      "prepped_max": 11.10094165802002,
+      "export_same_channel": 11.098491668701172,
+      "hf_same_channel": 11.098492622375488,
+      "export_vs_hf": {
+        "max_abs": 1.6093254089355469e-06,
+        "rel_l2": 7.168398868385579e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.00244903564453125,
+        "rel_l2": 0.00023542484681015222
+      }
+    },
+    {
+      "sample": 28,
+      "position": 4,
+      "token_id": 293,
+      "prefix_ids": [
+        750,
+        912,
+        2877,
+        11,
+        293
+      ],
+      "prefix_text": "def add(a, b",
+      "max_channel": 35,
+      "prepped_max": 7.749433994293213,
+      "export_same_channel": 7.748875141143799,
+      "hf_same_channel": 7.748874664306641,
+      "export_vs_hf": {
+        "max_abs": 2.2351741790771484e-06,
+        "rel_l2": 9.85217827293628e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0006786584854125977,
+        "rel_l2": 0.00021286783348092216
+      }
+    },
+    {
+      "sample": 29,
+      "position": 5,
+      "token_id": 1648,
+      "prefix_ids": [
+        750,
+        912,
+        2877,
+        11,
+        293,
+        1648
+      ],
+      "prefix_text": "def add(a, b):",
+      "max_channel": 35,
+      "prepped_max": 10.66244125366211,
+      "export_same_channel": 10.660917282104492,
+      "hf_same_channel": 10.660920143127441,
+      "export_vs_hf": {
+        "max_abs": 2.86102294921875e-06,
+        "rel_l2": 8.743176386080079e-07
+      },
+      "prepped_vs_hf": {
+        "max_abs": 0.0015211105346679688,
+        "rel_l2": 0.0003138136494131053
+      }
+    }
+  ],
+  "torch": "2.11.0+cpu",
+  "ort": "1.30.0"
+}

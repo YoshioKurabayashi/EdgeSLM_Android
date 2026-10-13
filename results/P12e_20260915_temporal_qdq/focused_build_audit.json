@@ -1,0 +1,6072 @@
+{
+  "shared": {
+    "changes": [
+      {
+        "sources": [
+          "mul_41"
+        ],
+        "scale_name": "mul_41_scale",
+        "zero_name": "mul_41_zero_point",
+        "scale": 0.176219642162323,
+        "zero": 29691,
+        "dtype": "uint16",
+        "observed": [
+          -3488.001953125,
+          4210.9443359375
+        ],
+        "represented": [
+          -5232.137395441532,
+          6316.4168536663055
+        ]
+      },
+      {
+        "sources": [
+          "linear_20"
+        ],
+        "scale_name": "linear_20_scale",
+        "zero_name": "linear_20_zero_point",
+        "scale": 0.1906735897064209,
+        "zero": 1487,
+        "dtype": "uint16",
+        "observed": [
+          -188.98086547851562,
+          8141.50732421875
+        ],
+        "represented": [
+          -283.5316278934479,
+          12212.262073516846
+        ]
+      },
+      {
+        "sources": [
+          "add_26"
+        ],
+        "scale_name": "add_26_scale",
+        "zero_name": "add_26_zero_point",
+        "scale": 0.19066762924194336,
+        "zero": 1498,
+        "dtype": "uint16",
+        "observed": [
+          -190.3606719970703,
+          8139.85498046875
+        ],
+        "represented": [
+          -285.62010860443115,
+          12209.782973766327
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_13_abs"
+        ],
+        "scale_name": "node_pow_13_abs_scale",
+        "zero_name": "node_pow_13_abs_zero_point",
+        "scale": 0.186309352517128,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.905726432800293e-07,
+          8139.85498046875
+        ],
+        "represented": [
+          0.0,
+          12209.783417209983
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_13_maxr"
+        ],
+        "scale_name": "node_pow_13_maxr_scale",
+        "zero_name": "node_pow_13_maxr_zero_point",
+        "scale": 0.186309352517128,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.6499953269958496,
+          8139.85498046875
+        ],
+        "represented": [
+          0.0,
+          12209.783417209983
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_13_max"
+        ],
+        "scale_name": "node_pow_13_max_scale",
+        "zero_name": "node_pow_13_max_zero_point",
+        "scale": 0.186309352517128,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.649996280670166,
+          8139.85498046875
+        ],
+        "represented": [
+          0.0,
+          12209.783417209983
+        ]
+      },
+      {
+        "sources": [
+          "add_33"
+        ],
+        "scale_name": "add_33_scale",
+        "zero_name": "add_33_zero_point",
+        "scale": 0.19065485894680023,
+        "zero": 1500,
+        "dtype": "uint16",
+        "observed": [
+          -190.63113403320312,
+          8139.05517578125
+        ],
+        "represented": [
+          -285.98228842020035,
+          12208.583892658353
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_16_abs"
+        ],
+        "scale_name": "node_pow_16_abs_scale",
+        "zero_name": "node_pow_16_abs_zero_point",
+        "scale": 0.18629105389118195,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.1324882507324219e-06,
+          8139.05517578125
+        ],
+        "represented": [
+          0.0,
+          12208.584216758609
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_16_maxr"
+        ],
+        "scale_name": "node_pow_16_maxr_scale",
+        "zero_name": "node_pow_16_maxr_zero_point",
+        "scale": 0.18629105389118195,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.5891023874282837,
+          8139.05517578125
+        ],
+        "represented": [
+          0.0,
+          12208.584216758609
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_16_max"
+        ],
+        "scale_name": "node_pow_16_max_scale",
+        "zero_name": "node_pow_16_max_zero_point",
+        "scale": 0.18629105389118195,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.5891033411026,
+          8139.05517578125
+        ],
+        "represented": [
+          0.0,
+          12208.584216758609
+        ]
+      },
+      {
+        "sources": [
+          "add_35"
+        ],
+        "scale_name": "add_35_scale",
+        "zero_name": "add_35_zero_point",
+        "scale": 0.1906556785106659,
+        "zero": 1500,
+        "dtype": "uint16",
+        "observed": [
+          -190.60069274902344,
+          8139.09033203125
+        ],
+        "represented": [
+          -285.98351776599884,
+          12208.63637343049
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_17_abs"
+        ],
+        "scale_name": "node_pow_17_abs_scale",
+        "zero_name": "node_pow_17_abs_zero_point",
+        "scale": 0.1862918585538864,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.960464477539063e-08,
+          8139.09033203125
+        ],
+        "represented": [
+          0.0,
+          12208.636950328946
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_17_maxr"
+        ],
+        "scale_name": "node_pow_17_maxr_scale",
+        "zero_name": "node_pow_17_maxr_zero_point",
+        "scale": 0.1862918585538864,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.729234218597412,
+          8139.09033203125
+        ],
+        "represented": [
+          0.0,
+          12208.636950328946
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_17_max"
+        ],
+        "scale_name": "node_pow_17_max_scale",
+        "zero_name": "node_pow_17_max_zero_point",
+        "scale": 0.1862918585538864,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.7292351722717285,
+          8139.09033203125
+        ],
+        "represented": [
+          0.0,
+          12208.636950328946
+        ]
+      },
+      {
+        "sources": [
+          "add_42"
+        ],
+        "scale_name": "add_42_scale",
+        "zero_name": "add_42_zero_point",
+        "scale": 0.19067244231700897,
+        "zero": 1502,
+        "dtype": "uint16",
+        "observed": [
+          -190.92665100097656,
+          8138.64892578125
+        ],
+        "represented": [
+          -286.3900083601475,
+          12209.328498885036
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_20_abs"
+        ],
+        "scale_name": "node_pow_20_abs_scale",
+        "zero_name": "node_pow_20_abs_zero_point",
+        "scale": 0.18628175556659698,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.227063179016113e-07,
+          8138.64892578125
+        ],
+        "represented": [
+          0.0,
+          12207.974851056933
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_20_maxr"
+        ],
+        "scale_name": "node_pow_20_maxr_scale",
+        "zero_name": "node_pow_20_maxr_zero_point",
+        "scale": 0.18628175556659698,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.804065227508545,
+          8138.64892578125
+        ],
+        "represented": [
+          0.0,
+          12207.974851056933
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_20_max"
+        ],
+        "scale_name": "node_pow_20_max_scale",
+        "zero_name": "node_pow_20_max_zero_point",
+        "scale": 0.18628175556659698,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.8040661811828613,
+          8138.64892578125
+        ],
+        "represented": [
+          0.0,
+          12207.974851056933
+        ]
+      },
+      {
+        "sources": [
+          "add_44"
+        ],
+        "scale_name": "add_44_scale",
+        "zero_name": "add_44_zero_point",
+        "scale": 0.19065505266189575,
+        "zero": 1502,
+        "dtype": "uint16",
+        "observed": [
+          -190.90924072265625,
+          8138.68701171875
+        ],
+        "represented": [
+          -286.3638890981674,
+          12208.21498709917
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_21_abs"
+        ],
+        "scale_name": "node_pow_21_abs_scale",
+        "zero_name": "node_pow_21_abs_zero_point",
+        "scale": 0.18628261983394623,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.152557373046875e-07,
+          8138.68701171875
+        ],
+        "represented": [
+          0.0,
+          12208.031490817666
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_21_maxr"
+        ],
+        "scale_name": "node_pow_21_maxr_scale",
+        "zero_name": "node_pow_21_maxr_zero_point",
+        "scale": 0.18628261983394623,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.999119997024536,
+          8138.68701171875
+        ],
+        "represented": [
+          0.0,
+          12208.031490817666
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_21_max"
+        ],
+        "scale_name": "node_pow_21_max_scale",
+        "zero_name": "node_pow_21_max_zero_point",
+        "scale": 0.18628261983394623,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.9991209506988525,
+          8138.68701171875
+        ],
+        "represented": [
+          0.0,
+          12208.031490817666
+        ]
+      },
+      {
+        "sources": [
+          "add_51"
+        ],
+        "scale_name": "add_51_scale",
+        "zero_name": "add_51_zero_point",
+        "scale": 0.19067023694515228,
+        "zero": 1507,
+        "dtype": "uint16",
+        "observed": [
+          -191.5600128173828,
+          8138.61328125
+        ],
+        "represented": [
+          -287.3400470763445,
+          12208.23393112421
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_24_abs"
+        ],
+        "scale_name": "node_pow_24_abs_scale",
+        "zero_name": "node_pow_24_abs_zero_point",
+        "scale": 0.18628093600273132,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.4007091522216797e-06,
+          8138.61328125
+        ],
+        "represented": [
+          0.0,
+          12207.921140938997
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_24_maxr"
+        ],
+        "scale_name": "node_pow_24_maxr_scale",
+        "zero_name": "node_pow_24_maxr_zero_point",
+        "scale": 0.18628093600273132,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.3983893394470215,
+          8138.61328125
+        ],
+        "represented": [
+          0.0,
+          12207.921140938997
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_24_max"
+        ],
+        "scale_name": "node_pow_24_max_scale",
+        "zero_name": "node_pow_24_max_zero_point",
+        "scale": 0.18628093600273132,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.398390293121338,
+          8138.61328125
+        ],
+        "represented": [
+          0.0,
+          12207.921140938997
+        ]
+      },
+      {
+        "sources": [
+          "add_53"
+        ],
+        "scale_name": "add_53_scale",
+        "zero_name": "add_53_zero_point",
+        "scale": 0.1906653642654419,
+        "zero": 1507,
+        "dtype": "uint16",
+        "observed": [
+          -191.52713012695312,
+          8138.6142578125
+        ],
+        "represented": [
+          -287.33270394802094,
+          12207.921943187714
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_25_abs"
+        ],
+        "scale_name": "node_pow_25_abs_scale",
+        "zero_name": "node_pow_25_abs_zero_point",
+        "scale": 0.18628095090389252,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.0563602447509766e-06,
+          8138.6142578125
+        ],
+        "represented": [
+          0.0,
+          12207.922117486596
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_25_maxr"
+        ],
+        "scale_name": "node_pow_25_maxr_scale",
+        "zero_name": "node_pow_25_maxr_zero_point",
+        "scale": 0.18628095090389252,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.202669143676758,
+          8138.6142578125
+        ],
+        "represented": [
+          0.0,
+          12207.922117486596
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_25_max"
+        ],
+        "scale_name": "node_pow_25_max_scale",
+        "zero_name": "node_pow_25_max_zero_point",
+        "scale": 0.18628095090389252,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.202670097351074,
+          8138.6142578125
+        ],
+        "represented": [
+          0.0,
+          12207.922117486596
+        ]
+      },
+      {
+        "sources": [
+          "add_60"
+        ],
+        "scale_name": "add_60_scale",
+        "zero_name": "add_60_zero_point",
+        "scale": 0.1906890720129013,
+        "zero": 1512,
+        "dtype": "uint16",
+        "observed": [
+          -192.21456909179688,
+          8136.796875
+        ],
+        "represented": [
+          -288.3218768835068,
+          12208.48645748198
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_28_abs"
+        ],
+        "scale_name": "node_pow_28_abs_scale",
+        "zero_name": "node_pow_28_abs_zero_point",
+        "scale": 0.1862393617630005,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.960464477539063e-08,
+          8136.796875
+        ],
+        "represented": [
+          0.0,
+          12205.196573138237
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_28_maxr"
+        ],
+        "scale_name": "node_pow_28_maxr_scale",
+        "zero_name": "node_pow_28_maxr_zero_point",
+        "scale": 0.1862393617630005,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.7774746417999268,
+          8136.796875
+        ],
+        "represented": [
+          0.0,
+          12205.196573138237
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_28_max"
+        ],
+        "scale_name": "node_pow_28_max_scale",
+        "zero_name": "node_pow_28_max_zero_point",
+        "scale": 0.1862393617630005,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.777475595474243,
+          8136.796875
+        ],
+        "represented": [
+          0.0,
+          12205.196573138237
+        ]
+      },
+      {
+        "sources": [
+          "add_62"
+        ],
+        "scale_name": "add_62_scale",
+        "zero_name": "add_62_zero_point",
+        "scale": 0.19066858291625977,
+        "zero": 1512,
+        "dtype": "uint16",
+        "observed": [
+          -192.1939239501953,
+          8136.8037109375
+        ],
+        "represented": [
+          -288.29089736938477,
+          12207.174684047699
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_29_abs"
+        ],
+        "scale_name": "node_pow_29_abs_scale",
+        "zero_name": "node_pow_29_abs_zero_point",
+        "scale": 0.18623951077461243,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.172325134277344e-07,
+          8136.8037109375
+        ],
+        "represented": [
+          0.0,
+          12205.206338614225
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_29_maxr"
+        ],
+        "scale_name": "node_pow_29_maxr_scale",
+        "zero_name": "node_pow_29_maxr_zero_point",
+        "scale": 0.18623951077461243,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.508646488189697,
+          8136.8037109375
+        ],
+        "represented": [
+          0.0,
+          12205.206338614225
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_29_max"
+        ],
+        "scale_name": "node_pow_29_max_scale",
+        "zero_name": "node_pow_29_max_zero_point",
+        "scale": 0.18623951077461243,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.508647441864014,
+          8136.8037109375
+        ],
+        "represented": [
+          0.0,
+          12205.206338614225
+        ]
+      },
+      {
+        "sources": [
+          "add_69"
+        ],
+        "scale_name": "add_69_scale",
+        "zero_name": "add_69_zero_point",
+        "scale": 0.1906421184539795,
+        "zero": 1519,
+        "dtype": "uint16",
+        "observed": [
+          -193.05690002441406,
+          8134.95068359375
+        ],
+        "represented": [
+          -289.58537793159485,
+          12204.145854949951
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_32_abs"
+        ],
+        "scale_name": "node_pow_32_abs_scale",
+        "zero_name": "node_pow_32_abs_zero_point",
+        "scale": 0.18619710206985474,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.4137476682662964e-06,
+          8134.95068359375
+        ],
+        "represented": [
+          0.0,
+          12202.42708414793
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_32_maxr"
+        ],
+        "scale_name": "node_pow_32_maxr_scale",
+        "zero_name": "node_pow_32_maxr_zero_point",
+        "scale": 0.18619710206985474,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.936062812805176,
+          8134.95068359375
+        ],
+        "represented": [
+          0.0,
+          12202.42708414793
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_32_max"
+        ],
+        "scale_name": "node_pow_32_max_scale",
+        "zero_name": "node_pow_32_max_zero_point",
+        "scale": 0.18619710206985474,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.936063766479492,
+          8134.95068359375
+        ],
+        "represented": [
+          0.0,
+          12202.42708414793
+        ]
+      },
+      {
+        "sources": [
+          "add_71"
+        ],
+        "scale_name": "add_71_scale",
+        "zero_name": "add_71_zero_point",
+        "scale": 0.19064642488956451,
+        "zero": 1519,
+        "dtype": "uint16",
+        "observed": [
+          -193.06126403808594,
+          8134.97314453125
+        ],
+        "represented": [
+          -289.5919194072485,
+          12204.421535730362
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_33_abs"
+        ],
+        "scale_name": "node_pow_33_abs_scale",
+        "zero_name": "node_pow_33_abs_zero_point",
+        "scale": 0.18619760870933533,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.8551945686340332e-06,
+          8134.97314453125
+        ],
+        "represented": [
+          0.0,
+          12202.46028676629
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_33_maxr"
+        ],
+        "scale_name": "node_pow_33_maxr_scale",
+        "zero_name": "node_pow_33_maxr_zero_point",
+        "scale": 0.18619760870933533,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.701324224472046,
+          8134.97314453125
+        ],
+        "represented": [
+          0.0,
+          12202.46028676629
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_33_max"
+        ],
+        "scale_name": "node_pow_33_max_scale",
+        "zero_name": "node_pow_33_max_zero_point",
+        "scale": 0.18619760870933533,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.7013251781463623,
+          8134.97314453125
+        ],
+        "represented": [
+          0.0,
+          12202.46028676629
+        ]
+      },
+      {
+        "sources": [
+          "add_78"
+        ],
+        "scale_name": "add_78_scale",
+        "zero_name": "add_78_zero_point",
+        "scale": 0.19059690833091736,
+        "zero": 1527,
+        "dtype": "uint16",
+        "observed": [
+          -194.0276336669922,
+          8131.134765625
+        ],
+        "represented": [
+          -291.0414790213108,
+          12199.726908445358
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_36_abs"
+        ],
+        "scale_name": "node_pow_36_abs_scale",
+        "zero_name": "node_pow_36_abs_zero_point",
+        "scale": 0.1861097663640976,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.4603137969970703e-06,
+          8131.134765625
+        ],
+        "represented": [
+          0.0,
+          12196.703538671136
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_36_maxr"
+        ],
+        "scale_name": "node_pow_36_maxr_scale",
+        "zero_name": "node_pow_36_maxr_zero_point",
+        "scale": 0.1861097663640976,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.8608736991882324,
+          8131.134765625
+        ],
+        "represented": [
+          0.0,
+          12196.703538671136
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_36_max"
+        ],
+        "scale_name": "node_pow_36_max_scale",
+        "zero_name": "node_pow_36_max_zero_point",
+        "scale": 0.1861097663640976,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.860874652862549,
+          8131.134765625
+        ],
+        "represented": [
+          0.0,
+          12196.703538671136
+        ]
+      },
+      {
+        "sources": [
+          "add_80"
+        ],
+        "scale_name": "add_80_scale",
+        "zero_name": "add_80_zero_point",
+        "scale": 0.19059965014457703,
+        "zero": 1527,
+        "dtype": "uint16",
+        "observed": [
+          -194.03042602539062,
+          8131.1484375
+        ],
+        "represented": [
+          -291.0456657707691,
+          12199.902406454086
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_37_abs"
+        ],
+        "scale_name": "node_pow_37_abs_scale",
+        "zero_name": "node_pow_37_abs_zero_point",
+        "scale": 0.18611007928848267,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.811452865600586e-07,
+          8131.1484375
+        ],
+        "represented": [
+          0.0,
+          12196.724046170712
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_37_maxr"
+        ],
+        "scale_name": "node_pow_37_maxr_scale",
+        "zero_name": "node_pow_37_maxr_zero_point",
+        "scale": 0.18611007928848267,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.366689205169678,
+          8131.1484375
+        ],
+        "represented": [
+          0.0,
+          12196.724046170712
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_37_max"
+        ],
+        "scale_name": "node_pow_37_max_scale",
+        "zero_name": "node_pow_37_max_zero_point",
+        "scale": 0.18611007928848267,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.366690158843994,
+          8131.1484375
+        ],
+        "represented": [
+          0.0,
+          12196.724046170712
+        ]
+      },
+      {
+        "sources": [
+          "add_87"
+        ],
+        "scale_name": "add_87_scale",
+        "zero_name": "add_87_zero_point",
+        "scale": 0.19044815003871918,
+        "zero": 1537,
+        "dtype": "uint16",
+        "observed": [
+          -195.11993408203125,
+          8125.533203125
+        ],
+        "represented": [
+          -292.7188066095114,
+          12188.30070617795
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_40_abs"
+        ],
+        "scale_name": "node_pow_40_abs_scale",
+        "zero_name": "node_pow_40_abs_zero_point",
+        "scale": 0.18598154187202454,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.761317253112793e-05,
+          8125.533203125
+        ],
+        "represented": [
+          0.0,
+          12188.300346583128
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_40_maxr"
+        ],
+        "scale_name": "node_pow_40_maxr_scale",
+        "zero_name": "node_pow_40_maxr_zero_point",
+        "scale": 0.18598154187202454,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.79066276550293,
+          8125.533203125
+        ],
+        "represented": [
+          0.0,
+          12188.300346583128
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_40_max"
+        ],
+        "scale_name": "node_pow_40_max_scale",
+        "zero_name": "node_pow_40_max_zero_point",
+        "scale": 0.18598154187202454,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.790663719177246,
+          8125.533203125
+        ],
+        "represented": [
+          0.0,
+          12188.300346583128
+        ]
+      },
+      {
+        "sources": [
+          "add_89"
+        ],
+        "scale_name": "add_89_scale",
+        "zero_name": "add_89_zero_point",
+        "scale": 0.19044792652130127,
+        "zero": 1537,
+        "dtype": "uint16",
+        "observed": [
+          -195.11532592773438,
+          8125.5234375
+        ],
+        "represented": [
+          -292.71846306324005,
+          12188.286401510239
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_41_abs"
+        ],
+        "scale_name": "node_pow_41_abs_scale",
+        "zero_name": "node_pow_41_abs_zero_point",
+        "scale": 0.18598131835460663,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.2782554626464844e-07,
+          8125.5234375
+        ],
+        "represented": [
+          0.0,
+          12188.285698369145
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_41_maxr"
+        ],
+        "scale_name": "node_pow_41_maxr_scale",
+        "zero_name": "node_pow_41_maxr_zero_point",
+        "scale": 0.18598131835460663,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.027388095855713,
+          8125.5234375
+        ],
+        "represented": [
+          0.0,
+          12188.285698369145
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_41_max"
+        ],
+        "scale_name": "node_pow_41_max_scale",
+        "zero_name": "node_pow_41_max_zero_point",
+        "scale": 0.18598131835460663,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.027389049530029,
+          8125.5234375
+        ],
+        "represented": [
+          0.0,
+          12188.285698369145
+        ]
+      },
+      {
+        "sources": [
+          "add_96"
+        ],
+        "scale_name": "add_96_scale",
+        "zero_name": "add_96_zero_point",
+        "scale": 0.19042399525642395,
+        "zero": 1542,
+        "dtype": "uint16",
+        "observed": [
+          -195.69522094726562,
+          8123.86767578125
+        ],
+        "represented": [
+          -293.63380068540573,
+          12185.802728444338
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_44_abs"
+        ],
+        "scale_name": "node_pow_44_abs_scale",
+        "zero_name": "node_pow_44_abs_zero_point",
+        "scale": 0.18594342470169067,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.0132789611816406e-05,
+          8123.86767578125
+        ],
+        "represented": [
+          0.0,
+          12185.802337825298
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_44_maxr"
+        ],
+        "scale_name": "node_pow_44_maxr_scale",
+        "zero_name": "node_pow_44_maxr_zero_point",
+        "scale": 0.18594342470169067,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.646391868591309,
+          8123.86767578125
+        ],
+        "represented": [
+          0.0,
+          12185.802337825298
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_44_max"
+        ],
+        "scale_name": "node_pow_44_max_scale",
+        "zero_name": "node_pow_44_max_zero_point",
+        "scale": 0.18594342470169067,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.646392822265625,
+          8123.86767578125
+        ],
+        "represented": [
+          0.0,
+          12185.802337825298
+        ]
+      },
+      {
+        "sources": [
+          "add_98"
+        ],
+        "scale_name": "add_98_scale",
+        "zero_name": "add_98_zero_point",
+        "scale": 0.19045913219451904,
+        "zero": 1541,
+        "dtype": "uint16",
+        "observed": [
+          -195.6649932861328,
+          8124.03662109375
+        ],
+        "represented": [
+          -293.49752271175385,
+          12188.241705656052
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_45_abs"
+        ],
+        "scale_name": "node_pow_45_abs_scale",
+        "zero_name": "node_pow_45_abs_zero_point",
+        "scale": 0.18594729900360107,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.7136335372924805e-06,
+          8124.03662109375
+        ],
+        "represented": [
+          0.0,
+          12186.056240200996
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_45_maxr"
+        ],
+        "scale_name": "node_pow_45_maxr_scale",
+        "zero_name": "node_pow_45_maxr_zero_point",
+        "scale": 0.18594729900360107,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.147891044616699,
+          8124.03662109375
+        ],
+        "represented": [
+          0.0,
+          12186.056240200996
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_45_max"
+        ],
+        "scale_name": "node_pow_45_max_scale",
+        "zero_name": "node_pow_45_max_zero_point",
+        "scale": 0.18594729900360107,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.147891998291016,
+          8124.03662109375
+        ],
+        "represented": [
+          0.0,
+          12186.056240200996
+        ]
+      },
+      {
+        "sources": [
+          "add_105"
+        ],
+        "scale_name": "add_105_scale",
+        "zero_name": "add_105_zero_point",
+        "scale": 0.19037027657032013,
+        "zero": 1549,
+        "dtype": "uint16",
+        "observed": [
+          -196.56578063964844,
+          8120.68798828125
+        ],
+        "represented": [
+          -294.8835584074259,
+          12181.032516628504
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_48_abs"
+        ],
+        "scale_name": "node_pow_48_abs_scale",
+        "zero_name": "node_pow_48_abs_zero_point",
+        "scale": 0.18587064743041992,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.3709068298339844e-06,
+          8120.68798828125
+        ],
+        "represented": [
+          0.0,
+          12181.03287935257
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_48_maxr"
+        ],
+        "scale_name": "node_pow_48_maxr_scale",
+        "zero_name": "node_pow_48_maxr_zero_point",
+        "scale": 0.18587064743041992,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.795417785644531,
+          8120.68798828125
+        ],
+        "represented": [
+          0.0,
+          12181.03287935257
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_48_max"
+        ],
+        "scale_name": "node_pow_48_max_scale",
+        "zero_name": "node_pow_48_max_zero_point",
+        "scale": 0.18587064743041992,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.795418739318848,
+          8120.68798828125
+        ],
+        "represented": [
+          0.0,
+          12181.03287935257
+        ]
+      },
+      {
+        "sources": [
+          "add_107"
+        ],
+        "scale_name": "add_107_scale",
+        "zero_name": "add_107_zero_point",
+        "scale": 0.1903708279132843,
+        "zero": 1549,
+        "dtype": "uint16",
+        "observed": [
+          -196.56732177734375,
+          8120.7109375
+        ],
+        "represented": [
+          -294.8844124376774,
+          12181.06779485941
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_49_abs"
+        ],
+        "scale_name": "node_pow_49_abs_scale",
+        "zero_name": "node_pow_49_abs_zero_point",
+        "scale": 0.1858711689710617,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.2665987014770508e-06,
+          8120.7109375
+        ],
+        "represented": [
+          0.0,
+          12181.067058518529
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_49_maxr"
+        ],
+        "scale_name": "node_pow_49_maxr_scale",
+        "zero_name": "node_pow_49_maxr_zero_point",
+        "scale": 0.1858711689710617,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.236878871917725,
+          8120.7109375
+        ],
+        "represented": [
+          0.0,
+          12181.067058518529
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_49_max"
+        ],
+        "scale_name": "node_pow_49_max_scale",
+        "zero_name": "node_pow_49_max_zero_point",
+        "scale": 0.1858711689710617,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.236879825592041,
+          8120.7109375
+        ],
+        "represented": [
+          0.0,
+          12181.067058518529
+        ]
+      },
+      {
+        "sources": [
+          "add_114"
+        ],
+        "scale_name": "add_114_scale",
+        "zero_name": "add_114_zero_point",
+        "scale": 0.19033099710941315,
+        "zero": 1553,
+        "dtype": "uint16",
+        "observed": [
+          -197.01284790039062,
+          8118.50439453125
+        ],
+        "represented": [
+          -295.5840385109186,
+          12177.757857054472
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_52_abs"
+        ],
+        "scale_name": "node_pow_52_abs_scale",
+        "zero_name": "node_pow_52_abs_zero_point",
+        "scale": 0.18582066893577576,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.726912498474121e-06,
+          8118.50439453125
+        ],
+        "represented": [
+          0.0,
+          12177.757538706064
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_52_maxr"
+        ],
+        "scale_name": "node_pow_52_maxr_scale",
+        "zero_name": "node_pow_52_maxr_zero_point",
+        "scale": 0.18582066893577576,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.177365779876709,
+          8118.50439453125
+        ],
+        "represented": [
+          0.0,
+          12177.757538706064
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_52_max"
+        ],
+        "scale_name": "node_pow_52_max_scale",
+        "zero_name": "node_pow_52_max_zero_point",
+        "scale": 0.18582066893577576,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.177366733551025,
+          8118.50439453125
+        ],
+        "represented": [
+          0.0,
+          12177.757538706064
+        ]
+      },
+      {
+        "sources": [
+          "add_116"
+        ],
+        "scale_name": "add_116_scale",
+        "zero_name": "add_116_zero_point",
+        "scale": 0.19032809138298035,
+        "zero": 1553,
+        "dtype": "uint16",
+        "observed": [
+          -197.03378295898438,
+          8118.380859375
+        ],
+        "represented": [
+          -295.5795259177685,
+          12177.571942865849
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_53_abs"
+        ],
+        "scale_name": "node_pow_53_abs_scale",
+        "zero_name": "node_pow_53_abs_zero_point",
+        "scale": 0.18581783771514893,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.8848648071289062e-05,
+          8118.380859375
+        ],
+        "represented": [
+          0.0,
+          12177.571994662285
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_53_maxr"
+        ],
+        "scale_name": "node_pow_53_maxr_scale",
+        "zero_name": "node_pow_53_maxr_zero_point",
+        "scale": 0.18581783771514893,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.423505783081055,
+          8118.380859375
+        ],
+        "represented": [
+          0.0,
+          12177.571994662285
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_53_max"
+        ],
+        "scale_name": "node_pow_53_max_scale",
+        "zero_name": "node_pow_53_max_zero_point",
+        "scale": 0.18581783771514893,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.423506736755371,
+          8118.380859375
+        ],
+        "represented": [
+          0.0,
+          12177.571994662285
+        ]
+      },
+      {
+        "sources": [
+          "add_123"
+        ],
+        "scale_name": "add_123_scale",
+        "zero_name": "add_123_zero_point",
+        "scale": 0.19028647243976593,
+        "zero": 1556,
+        "dtype": "uint16",
+        "observed": [
+          -197.35064697265625,
+          8116.22509765625
+        ],
+        "represented": [
+          -296.0857511162758,
+          12174.338220223784
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_56_abs"
+        ],
+        "scale_name": "node_pow_56_abs_scale",
+        "zero_name": "node_pow_56_abs_zero_point",
+        "scale": 0.1857684999704361,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          9.506940841674805e-06,
+          8116.22509765625
+        ],
+        "represented": [
+          0.0,
+          12174.33864556253
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_56_maxr"
+        ],
+        "scale_name": "node_pow_56_maxr_scale",
+        "zero_name": "node_pow_56_maxr_zero_point",
+        "scale": 0.1857684999704361,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.512933254241943,
+          8116.22509765625
+        ],
+        "represented": [
+          0.0,
+          12174.33864556253
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_56_max"
+        ],
+        "scale_name": "node_pow_56_max_scale",
+        "zero_name": "node_pow_56_max_zero_point",
+        "scale": 0.1857684999704361,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.51293420791626,
+          8116.22509765625
+        ],
+        "represented": [
+          0.0,
+          12174.33864556253
+        ]
+      },
+      {
+        "sources": [
+          "add_125"
+        ],
+        "scale_name": "add_125_scale",
+        "zero_name": "add_125_zero_point",
+        "scale": 0.1902848333120346,
+        "zero": 1556,
+        "dtype": "uint16",
+        "observed": [
+          -197.3590087890625,
+          8116.15478515625
+        ],
+        "represented": [
+          -296.08320063352585,
+          12174.233350470662
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_57_abs"
+        ],
+        "scale_name": "node_pow_57_abs_scale",
+        "zero_name": "node_pow_57_abs_zero_point",
+        "scale": 0.18576689064502716,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.6093254089355469e-06,
+          8116.15478515625
+        ],
+        "represented": [
+          0.0,
+          12174.233178421855
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_57_maxr"
+        ],
+        "scale_name": "node_pow_57_maxr_scale",
+        "zero_name": "node_pow_57_maxr_zero_point",
+        "scale": 0.18576689064502716,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.950809001922607,
+          8116.15478515625
+        ],
+        "represented": [
+          0.0,
+          12174.233178421855
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_57_max"
+        ],
+        "scale_name": "node_pow_57_max_scale",
+        "zero_name": "node_pow_57_max_zero_point",
+        "scale": 0.18576689064502716,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.950809955596924,
+          8116.15478515625
+        ],
+        "represented": [
+          0.0,
+          12174.233178421855
+        ]
+      },
+      {
+        "sources": [
+          "add_132"
+        ],
+        "scale_name": "add_132_scale",
+        "zero_name": "add_132_zero_point",
+        "scale": 0.19020569324493408,
+        "zero": 1562,
+        "dtype": "uint16",
+        "observed": [
+          -198.06190490722656,
+          8112.0185546875
+        ],
+        "represented": [
+          -297.10129284858704,
+          12168.028813958168
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_60_abs"
+        ],
+        "scale_name": "node_pow_60_abs_scale",
+        "zero_name": "node_pow_60_abs_zero_point",
+        "scale": 0.18567222356796265,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.0563602447509766e-06,
+          8112.0185546875
+        ],
+        "represented": [
+          0.0,
+          12168.029171526432
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_60_maxr"
+        ],
+        "scale_name": "node_pow_60_maxr_scale",
+        "zero_name": "node_pow_60_maxr_zero_point",
+        "scale": 0.18567222356796265,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.10140323638916,
+          8112.0185546875
+        ],
+        "represented": [
+          0.0,
+          12168.029171526432
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_60_max"
+        ],
+        "scale_name": "node_pow_60_max_scale",
+        "zero_name": "node_pow_60_max_zero_point",
+        "scale": 0.18567222356796265,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.101404190063477,
+          8112.0185546875
+        ],
+        "represented": [
+          0.0,
+          12168.029171526432
+        ]
+      },
+      {
+        "sources": [
+          "add_134"
+        ],
+        "scale_name": "add_134_scale",
+        "zero_name": "add_134_zero_point",
+        "scale": 0.19020846486091614,
+        "zero": 1562,
+        "dtype": "uint16",
+        "observed": [
+          -198.07040405273438,
+          8111.96435546875
+        ],
+        "represented": [
+          -297.105622112751,
+          12168.206122547388
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_61_abs"
+        ],
+        "scale_name": "node_pow_61_abs_scale",
+        "zero_name": "node_pow_61_abs_zero_point",
+        "scale": 0.18567097187042236,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.556510925292969e-07,
+          8111.96435546875
+        ],
+        "represented": [
+          0.0,
+          12167.94714152813
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_61_maxr"
+        ],
+        "scale_name": "node_pow_61_maxr_scale",
+        "zero_name": "node_pow_61_maxr_zero_point",
+        "scale": 0.18567097187042236,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          11.71452522277832,
+          8111.96435546875
+        ],
+        "represented": [
+          0.0,
+          12167.94714152813
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_61_max"
+        ],
+        "scale_name": "node_pow_61_max_scale",
+        "zero_name": "node_pow_61_max_zero_point",
+        "scale": 0.18567097187042236,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          11.714526176452637,
+          8111.96435546875
+        ],
+        "represented": [
+          0.0,
+          12167.94714152813
+        ]
+      },
+      {
+        "sources": [
+          "add_141"
+        ],
+        "scale_name": "add_141_scale",
+        "zero_name": "add_141_zero_point",
+        "scale": 0.19020597636699677,
+        "zero": 1566,
+        "dtype": "uint16",
+        "observed": [
+          -198.5750274658203,
+          8110.74560546875
+        ],
+        "represented": [
+          -297.86255899071693,
+          12167.286102220416
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_64_abs"
+        ],
+        "scale_name": "node_pow_64_abs_scale",
+        "zero_name": "node_pow_64_abs_zero_point",
+        "scale": 0.18564307689666748,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.377216100692749e-06,
+          8110.74560546875
+        ],
+        "represented": [
+          0.0,
+          12166.119044423103
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_64_maxr"
+        ],
+        "scale_name": "node_pow_64_maxr_scale",
+        "zero_name": "node_pow_64_maxr_zero_point",
+        "scale": 0.18564307689666748,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.66333293914795,
+          8110.74560546875
+        ],
+        "represented": [
+          0.0,
+          12166.119044423103
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_64_max"
+        ],
+        "scale_name": "node_pow_64_max_scale",
+        "zero_name": "node_pow_64_max_zero_point",
+        "scale": 0.18564307689666748,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.663333892822266,
+          8110.74560546875
+        ],
+        "represented": [
+          0.0,
+          12166.119044423103
+        ]
+      },
+      {
+        "sources": [
+          "add_143"
+        ],
+        "scale_name": "add_143_scale",
+        "zero_name": "add_143_zero_point",
+        "scale": 0.19018703699111938,
+        "zero": 1566,
+        "dtype": "uint16",
+        "observed": [
+          -198.5414581298828,
+          8110.7158203125
+        ],
+        "represented": [
+          -297.83289992809296,
+          12166.074569284916
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_65_abs"
+        ],
+        "scale_name": "node_pow_65_abs_scale",
+        "zero_name": "node_pow_65_abs_zero_point",
+        "scale": 0.18564240634441376,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.470348358154297e-06,
+          8110.7158203125
+        ],
+        "represented": [
+          0.0,
+          12166.075099781156
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_65_maxr"
+        ],
+        "scale_name": "node_pow_65_maxr_scale",
+        "zero_name": "node_pow_65_maxr_zero_point",
+        "scale": 0.18564240634441376,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.857185363769531,
+          8110.7158203125
+        ],
+        "represented": [
+          0.0,
+          12166.075099781156
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_65_max"
+        ],
+        "scale_name": "node_pow_65_max_scale",
+        "zero_name": "node_pow_65_max_zero_point",
+        "scale": 0.18564240634441376,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.857186317443848,
+          8110.7158203125
+        ],
+        "represented": [
+          0.0,
+          12166.075099781156
+        ]
+      },
+      {
+        "sources": [
+          "add_150"
+        ],
+        "scale_name": "add_150_scale",
+        "zero_name": "add_150_zero_point",
+        "scale": 0.19020548462867737,
+        "zero": 1567,
+        "dtype": "uint16",
+        "observed": [
+          -198.70130920410156,
+          8109.21875
+        ],
+        "represented": [
+          -298.05199441313744,
+          12167.064440727234
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_68_abs"
+        ],
+        "scale_name": "node_pow_68_abs_scale",
+        "zero_name": "node_pow_68_abs_zero_point",
+        "scale": 0.1856081336736679,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.4454126358032227e-05,
+          8109.21875
+        ],
+        "represented": [
+          0.0,
+          12163.829040303826
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_68_maxr"
+        ],
+        "scale_name": "node_pow_68_maxr_scale",
+        "zero_name": "node_pow_68_maxr_zero_point",
+        "scale": 0.1856081336736679,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.740578651428223,
+          8109.21875
+        ],
+        "represented": [
+          0.0,
+          12163.829040303826
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_68_max"
+        ],
+        "scale_name": "node_pow_68_max_scale",
+        "zero_name": "node_pow_68_max_zero_point",
+        "scale": 0.1856081336736679,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.740579605102539,
+          8109.21875
+        ],
+        "represented": [
+          0.0,
+          12163.829040303826
+        ]
+      },
+      {
+        "sources": [
+          "add_152"
+        ],
+        "scale_name": "add_152_scale",
+        "zero_name": "add_152_zero_point",
+        "scale": 0.1901915967464447,
+        "zero": 1567,
+        "dtype": "uint16",
+        "observed": [
+          -198.6868133544922,
+          8109.205078125
+        ],
+        "represented": [
+          -298.03023210167885,
+          12166.176060676575
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_69_abs"
+        ],
+        "scale_name": "node_pow_69_abs_scale",
+        "zero_name": "node_pow_69_abs_zero_point",
+        "scale": 0.18560782074928284,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.3245811462402344e-06,
+          8109.205078125
+        ],
+        "represented": [
+          0.0,
+          12163.80853280425
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_69_maxr"
+        ],
+        "scale_name": "node_pow_69_maxr_scale",
+        "zero_name": "node_pow_69_maxr_zero_point",
+        "scale": 0.18560782074928284,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          13.84034538269043,
+          8109.205078125
+        ],
+        "represented": [
+          0.0,
+          12163.80853280425
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_69_max"
+        ],
+        "scale_name": "node_pow_69_max_scale",
+        "zero_name": "node_pow_69_max_zero_point",
+        "scale": 0.18560782074928284,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          13.840346336364746,
+          8109.205078125
+        ],
+        "represented": [
+          0.0,
+          12163.80853280425
+        ]
+      },
+      {
+        "sources": [
+          "add_159"
+        ],
+        "scale_name": "add_159_scale",
+        "zero_name": "add_159_zero_point",
+        "scale": 0.19019976258277893,
+        "zero": 1562,
+        "dtype": "uint16",
+        "observed": [
+          -198.06134033203125,
+          8109.97802734375
+        ],
+        "represented": [
+          -297.0920291543007,
+          12167.649411708117
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_72_abs"
+        ],
+        "scale_name": "node_pow_72_abs_scale",
+        "zero_name": "node_pow_72_abs_zero_point",
+        "scale": 0.18562550842761993,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.470348358154297e-06,
+          8109.97802734375
+        ],
+        "represented": [
+          0.0,
+          12164.967694804072
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_72_maxr"
+        ],
+        "scale_name": "node_pow_72_maxr_scale",
+        "zero_name": "node_pow_72_maxr_zero_point",
+        "scale": 0.18562550842761993,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          14.79421329498291,
+          8109.97802734375
+        ],
+        "represented": [
+          0.0,
+          12164.967694804072
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_72_max"
+        ],
+        "scale_name": "node_pow_72_max_scale",
+        "zero_name": "node_pow_72_max_zero_point",
+        "scale": 0.18562550842761993,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          14.794214248657227,
+          8109.97802734375
+        ],
+        "represented": [
+          0.0,
+          12164.967694804072
+        ]
+      },
+      {
+        "sources": [
+          "add_161"
+        ],
+        "scale_name": "add_161_scale",
+        "zero_name": "add_161_zero_point",
+        "scale": 0.19017080962657928,
+        "zero": 1562,
+        "dtype": "uint16",
+        "observed": [
+          -198.01333618164062,
+          8110.53076171875
+        ],
+        "represented": [
+          -297.04680463671684,
+          12165.797204241157
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_73_abs"
+        ],
+        "scale_name": "node_pow_73_abs_scale",
+        "zero_name": "node_pow_73_abs_zero_point",
+        "scale": 0.1856381595134735,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          8.13603401184082e-06,
+          8110.53076171875
+        ],
+        "represented": [
+          0.0,
+          12165.796783715487
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_73_maxr"
+        ],
+        "scale_name": "node_pow_73_maxr_scale",
+        "zero_name": "node_pow_73_maxr_zero_point",
+        "scale": 0.1856381595134735,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          16.625398635864258,
+          8110.53076171875
+        ],
+        "represented": [
+          0.0,
+          12165.796783715487
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_73_max"
+        ],
+        "scale_name": "node_pow_73_max_scale",
+        "zero_name": "node_pow_73_max_zero_point",
+        "scale": 0.1856381595134735,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          16.62540054321289,
+          8110.53076171875
+        ],
+        "represented": [
+          0.0,
+          12165.796783715487
+        ]
+      },
+      {
+        "sources": [
+          "add_168"
+        ],
+        "scale_name": "add_168_scale",
+        "zero_name": "add_168_zero_point",
+        "scale": 0.19023825228214264,
+        "zero": 1560,
+        "dtype": "uint16",
+        "observed": [
+          -197.83248901367188,
+          8113.6611328125
+        ],
+        "represented": [
+          -296.7716735601425,
+          12170.492189750075
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_76_abs"
+        ],
+        "scale_name": "node_pow_76_abs_scale",
+        "zero_name": "node_pow_76_abs_zero_point",
+        "scale": 0.18570981919765472,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.9431114196777344e-05,
+          8113.6611328125
+        ],
+        "represented": [
+          0.0,
+          12170.493001118302
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_76_maxr"
+        ],
+        "scale_name": "node_pow_76_maxr_scale",
+        "zero_name": "node_pow_76_maxr_zero_point",
+        "scale": 0.18570981919765472,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          17.549896240234375,
+          8113.6611328125
+        ],
+        "represented": [
+          0.0,
+          12170.493001118302
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_76_max"
+        ],
+        "scale_name": "node_pow_76_max_scale",
+        "zero_name": "node_pow_76_max_zero_point",
+        "scale": 0.18570981919765472,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          17.549898147583008,
+          8113.6611328125
+        ],
+        "represented": [
+          0.0,
+          12170.493001118302
+        ]
+      },
+      {
+        "sources": [
+          "add_170"
+        ],
+        "scale_name": "add_170_scale",
+        "zero_name": "add_170_zero_point",
+        "scale": 0.19031289219856262,
+        "zero": 1559,
+        "dtype": "uint16",
+        "observed": [
+          -197.79852294921875,
+          8115.08056640625
+        ],
+        "represented": [
+          -296.6977989375591,
+          12175.457591295242
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_77_abs"
+        ],
+        "scale_name": "node_pow_77_abs_scale",
+        "zero_name": "node_pow_77_abs_zero_point",
+        "scale": 0.1857423037290573,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.086162567138672e-07,
+          8115.08056640625
+        ],
+        "represented": [
+          0.0,
+          12172.621874883771
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_77_maxr"
+        ],
+        "scale_name": "node_pow_77_maxr_scale",
+        "zero_name": "node_pow_77_maxr_zero_point",
+        "scale": 0.1857423037290573,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          19.407564163208008,
+          8115.08056640625
+        ],
+        "represented": [
+          0.0,
+          12172.621874883771
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_77_max"
+        ],
+        "scale_name": "node_pow_77_max_scale",
+        "zero_name": "node_pow_77_max_zero_point",
+        "scale": 0.1857423037290573,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          19.40756607055664,
+          8115.08056640625
+        ],
+        "represented": [
+          0.0,
+          12172.621874883771
+        ]
+      },
+      {
+        "sources": [
+          "add_177"
+        ],
+        "scale_name": "add_177_scale",
+        "zero_name": "add_177_zero_point",
+        "scale": 0.1903226673603058,
+        "zero": 1558,
+        "dtype": "uint16",
+        "observed": [
+          -197.62850952148438,
+          8117.51513671875
+        ],
+        "represented": [
+          -296.5227157473564,
+          12176.273289710283
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_80_abs"
+        ],
+        "scale_name": "node_pow_80_abs_scale",
+        "zero_name": "node_pow_80_abs_zero_point",
+        "scale": 0.1857980340719223,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.464387893676758e-05,
+          8117.51513671875
+        ],
+        "represented": [
+          0.0,
+          12176.274162903428
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_80_maxr"
+        ],
+        "scale_name": "node_pow_80_maxr_scale",
+        "zero_name": "node_pow_80_maxr_zero_point",
+        "scale": 0.1857980340719223,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          18.728939056396484,
+          8117.51513671875
+        ],
+        "represented": [
+          0.0,
+          12176.274162903428
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_80_max"
+        ],
+        "scale_name": "node_pow_80_max_scale",
+        "zero_name": "node_pow_80_max_zero_point",
+        "scale": 0.1857980340719223,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          18.728940963745117,
+          8117.51513671875
+        ],
+        "represented": [
+          0.0,
+          12176.274162903428
+        ]
+      },
+      {
+        "sources": [
+          "add_179"
+        ],
+        "scale_name": "add_179_scale",
+        "zero_name": "add_179_zero_point",
+        "scale": 0.19043739140033722,
+        "zero": 1542,
+        "dtype": "uint16",
+        "observed": [
+          -195.7695770263672,
+          8124.439453125
+        ],
+        "represented": [
+          -293.65445753932,
+          12186.65998788178
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_81_abs"
+        ],
+        "scale_name": "node_pow_81_abs_scale",
+        "zero_name": "node_pow_81_abs_zero_point",
+        "scale": 0.18595650792121887,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.014636993408203e-05,
+          8124.439453125
+        ],
+        "represented": [
+          0.0,
+          12186.659746617079
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_81_maxr"
+        ],
+        "scale_name": "node_pow_81_maxr_scale",
+        "zero_name": "node_pow_81_maxr_zero_point",
+        "scale": 0.18595650792121887,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          21.95836639404297,
+          8124.439453125
+        ],
+        "represented": [
+          0.0,
+          12186.659746617079
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_81_max"
+        ],
+        "scale_name": "node_pow_81_max_scale",
+        "zero_name": "node_pow_81_max_zero_point",
+        "scale": 0.18595650792121887,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          21.9583683013916,
+          8124.439453125
+        ],
+        "represented": [
+          0.0,
+          12186.659746617079
+        ]
+      },
+      {
+        "sources": [
+          "add_186"
+        ],
+        "scale_name": "add_186_scale",
+        "zero_name": "add_186_zero_point",
+        "scale": 0.19054996967315674,
+        "zero": 1529,
+        "dtype": "uint16",
+        "observed": [
+          -194.23391723632812,
+          8129.45654296875
+        ],
+        "represented": [
+          -291.35090363025665,
+          12196.34135890007
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_84_abs"
+        ],
+        "scale_name": "node_pow_84_abs_scale",
+        "zero_name": "node_pow_84_abs_zero_point",
+        "scale": 0.18607135117053986,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.334615707397461e-06,
+          8129.45654296875
+        ],
+        "represented": [
+          0.0,
+          12194.18599896133
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_84_maxr"
+        ],
+        "scale_name": "node_pow_84_maxr_scale",
+        "zero_name": "node_pow_84_maxr_zero_point",
+        "scale": 0.18607135117053986,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          24.553804397583008,
+          8129.45654296875
+        ],
+        "represented": [
+          0.0,
+          12194.18599896133
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_84_max"
+        ],
+        "scale_name": "node_pow_84_max_scale",
+        "zero_name": "node_pow_84_max_zero_point",
+        "scale": 0.18607135117053986,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          24.55380630493164,
+          8129.45654296875
+        ],
+        "represented": [
+          0.0,
+          12194.18599896133
+        ]
+      },
+      {
+        "sources": [
+          "add_188"
+        ],
+        "scale_name": "add_188_scale",
+        "zero_name": "add_188_zero_point",
+        "scale": 0.1905435174703598,
+        "zero": 1528,
+        "dtype": "uint16",
+        "observed": [
+          -194.10031127929688,
+          8130.53955078125
+        ],
+        "represented": [
+          -291.1504946947098,
+          12196.11892272532
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_85_abs"
+        ],
+        "scale_name": "node_pow_85_abs_scale",
+        "zero_name": "node_pow_85_abs_zero_point",
+        "scale": 0.18609613180160522,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.659989356994629e-05,
+          8130.53955078125
+        ],
+        "represented": [
+          0.0,
+          12195.809997618198
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_85_maxr"
+        ],
+        "scale_name": "node_pow_85_maxr_scale",
+        "zero_name": "node_pow_85_maxr_zero_point",
+        "scale": 0.18609613180160522,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          24.18954849243164,
+          8130.53955078125
+        ],
+        "represented": [
+          0.0,
+          12195.809997618198
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_85_max"
+        ],
+        "scale_name": "node_pow_85_max_scale",
+        "zero_name": "node_pow_85_max_zero_point",
+        "scale": 0.18609613180160522,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          24.189550399780273,
+          8130.53955078125
+        ],
+        "represented": [
+          0.0,
+          12195.809997618198
+        ]
+      },
+      {
+        "sources": [
+          "add_195"
+        ],
+        "scale_name": "add_195_scale",
+        "zero_name": "add_195_zero_point",
+        "scale": 0.19070474803447723,
+        "zero": 1515,
+        "dtype": "uint16",
+        "observed": [
+          -192.61178588867188,
+          8137.7236328125
+        ],
+        "represented": [
+          -288.917693272233,
+          12208.917969167233
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_88_abs"
+        ],
+        "scale_name": "node_pow_88_abs_scale",
+        "zero_name": "node_pow_88_abs_zero_point",
+        "scale": 0.18626056611537933,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.0222196578979492e-05,
+          8137.7236328125
+        ],
+        "represented": [
+          0.0,
+          12206.586200371385
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_88_maxr"
+        ],
+        "scale_name": "node_pow_88_maxr_scale",
+        "zero_name": "node_pow_88_maxr_zero_point",
+        "scale": 0.18626056611537933,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          28.17467498779297,
+          8137.7236328125
+        ],
+        "represented": [
+          0.0,
+          12206.586200371385
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_88_max"
+        ],
+        "scale_name": "node_pow_88_max_scale",
+        "zero_name": "node_pow_88_max_zero_point",
+        "scale": 0.18626056611537933,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          28.1746768951416,
+          8137.7236328125
+        ],
+        "represented": [
+          0.0,
+          12206.586200371385
+        ]
+      },
+      {
+        "sources": [
+          "add_197"
+        ],
+        "scale_name": "add_197_scale",
+        "zero_name": "add_197_zero_point",
+        "scale": 0.1906784623861313,
+        "zero": 1514,
+        "dtype": "uint16",
+        "observed": [
+          -192.39486694335938,
+          8138.283203125
+        ],
+        "represented": [
+          -288.68719205260277,
+          12207.425840422511
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_89_abs"
+        ],
+        "scale_name": "node_pow_89_abs_scale",
+        "zero_name": "node_pow_89_abs_zero_point",
+        "scale": 0.18627338111400604,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.039836883544922e-06,
+          8138.283203125
+        ],
+        "represented": [
+          0.0,
+          12207.426031306386
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_89_maxr"
+        ],
+        "scale_name": "node_pow_89_maxr_scale",
+        "zero_name": "node_pow_89_maxr_zero_point",
+        "scale": 0.18627338111400604,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          37.726776123046875,
+          8138.283203125
+        ],
+        "represented": [
+          0.0,
+          12207.426031306386
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_89_max"
+        ],
+        "scale_name": "node_pow_89_max_scale",
+        "zero_name": "node_pow_89_max_zero_point",
+        "scale": 0.18627338111400604,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          37.726776123046875,
+          8138.283203125
+        ],
+        "represented": [
+          0.0,
+          12207.426031306386
+        ]
+      },
+      {
+        "sources": [
+          "add_204"
+        ],
+        "scale_name": "add_204_scale",
+        "zero_name": "add_204_zero_point",
+        "scale": 0.19075198471546173,
+        "zero": 1507,
+        "dtype": "uint16",
+        "observed": [
+          -191.6102752685547,
+          8142.3115234375
+        ],
+        "represented": [
+          -287.46324096620083,
+          12213.468077361584
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_92_abs"
+        ],
+        "scale_name": "node_pow_92_abs_scale",
+        "zero_name": "node_pow_92_abs_zero_point",
+        "scale": 0.18636557459831238,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.0067901611328125e-05,
+          8142.3115234375
+        ],
+        "represented": [
+          0.0,
+          12213.467931300402
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_92_maxr"
+        ],
+        "scale_name": "node_pow_92_maxr_scale",
+        "zero_name": "node_pow_92_maxr_zero_point",
+        "scale": 0.18636557459831238,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          33.682701110839844,
+          8142.3115234375
+        ],
+        "represented": [
+          0.0,
+          12213.467931300402
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_92_max"
+        ],
+        "scale_name": "node_pow_92_max_scale",
+        "zero_name": "node_pow_92_max_zero_point",
+        "scale": 0.18636557459831238,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          33.682701110839844,
+          8142.3115234375
+        ],
+        "represented": [
+          0.0,
+          12213.467931300402
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_93_abs"
+        ],
+        "scale_name": "node_pow_93_abs_scale",
+        "zero_name": "node_pow_93_abs_zero_point",
+        "scale": 0.18637698888778687,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.3589859008789062e-05,
+          8142.81005859375
+        ],
+        "represented": [
+          0.0,
+          12214.215966761112
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_93_maxr"
+        ],
+        "scale_name": "node_pow_93_maxr_scale",
+        "zero_name": "node_pow_93_maxr_zero_point",
+        "scale": 0.18637698888778687,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          36.44849395751953,
+          8142.81005859375
+        ],
+        "represented": [
+          0.0,
+          12214.215966761112
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_93_max"
+        ],
+        "scale_name": "node_pow_93_max_scale",
+        "zero_name": "node_pow_93_max_zero_point",
+        "scale": 0.18637698888778687,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          36.44849395751953,
+          8142.81005859375
+        ],
+        "represented": [
+          0.0,
+          12214.215966761112
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_96_abs"
+        ],
+        "scale_name": "node_pow_96_abs_scale",
+        "zero_name": "node_pow_96_abs_zero_point",
+        "scale": 0.186514750123024,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          9.956955909729004e-05,
+          8148.8291015625
+        ],
+        "represented": [
+          0.0,
+          12223.244149312377
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_96_maxr"
+        ],
+        "scale_name": "node_pow_96_maxr_scale",
+        "zero_name": "node_pow_96_maxr_zero_point",
+        "scale": 0.186514750123024,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          39.144081115722656,
+          8148.8291015625
+        ],
+        "represented": [
+          0.0,
+          12223.244149312377
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_96_max"
+        ],
+        "scale_name": "node_pow_96_max_scale",
+        "zero_name": "node_pow_96_max_zero_point",
+        "scale": 0.186514750123024,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          39.144081115722656,
+          8148.8291015625
+        ],
+        "represented": [
+          0.0,
+          12223.244149312377
+        ]
+      }
+    ],
+    "changed_groups": 168,
+    "threshold": 32,
+    "selection": "shared/later scale ratio on calibration only",
+    "source_sha256": "6ce931af751e1586d80216e1ed3dda9fead51e19393c1a19dc9261ad78ddf8b8",
+    "model_sha256": "d39ceefb7cd79dca519f0bec82c6e08f74d421b143fb4bb93d6d75aa44b80e5e",
+    "node_sha256": "a2b5018d5ff0ab50d8398478281fe074ed01d111c769ef03607495966d621dd2",
+    "unexpected_initializer_changes": []
+  },
+  "later": {
+    "changes": [
+      {
+        "sources": [
+          "mul_41"
+        ],
+        "scale_name": "mul_41_scale",
+        "zero_name": "mul_41_zero_point",
+        "scale": 0.00037498539313673973,
+        "zero": 39798,
+        "dtype": "uint16",
+        "observed": [
+          -9.949111938476562,
+          6.433968544006348
+        ],
+        "represented": [
+          -14.923668676055968,
+          9.65099906316027
+        ]
+      },
+      {
+        "sources": [
+          "linear_20"
+        ],
+        "scale_name": "linear_20_scale",
+        "zero_name": "linear_20_zero_point",
+        "scale": 0.00017944365390576422,
+        "zero": 21833,
+        "dtype": "uint16",
+        "observed": [
+          -2.6117844581604004,
+          5.228030681610107
+        ],
+        "represented": [
+          -3.9177932957245503,
+          7.842046562989708
+        ]
+      },
+      {
+        "sources": [
+          "add_26"
+        ],
+        "scale_name": "add_26_scale",
+        "zero_name": "add_26_zero_point",
+        "scale": 0.0004592752375174314,
+        "zero": 21762,
+        "dtype": "uint16",
+        "observed": [
+          -6.662981033325195,
+          13.402568817138672
+        ],
+        "represented": [
+          -9.994747718854342,
+          20.103854971850524
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_13_abs"
+        ],
+        "scale_name": "node_pow_13_abs_scale",
+        "zero_name": "node_pow_13_abs_zero_point",
+        "scale": 0.0003067651705350727,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.905726432800293e-07,
+          13.402568817138672
+        ],
+        "represented": [
+          0.0,
+          20.10385545101599
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_13_maxr"
+        ],
+        "scale_name": "node_pow_13_maxr_scale",
+        "zero_name": "node_pow_13_maxr_zero_point",
+        "scale": 0.0003067651705350727,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.6499953269958496,
+          13.402568817138672
+        ],
+        "represented": [
+          0.0,
+          20.10385545101599
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_13_max"
+        ],
+        "scale_name": "node_pow_13_max_scale",
+        "zero_name": "node_pow_13_max_zero_point",
+        "scale": 0.00030676519963890314,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.649996280670166,
+          13.402569770812988
+        ],
+        "represented": [
+          0.0,
+          20.103857358335517
+        ]
+      },
+      {
+        "sources": [
+          "add_33"
+        ],
+        "scale_name": "add_33_scale",
+        "zero_name": "add_33_zero_point",
+        "scale": 0.00045978924026712775,
+        "zero": 23049,
+        "dtype": "uint16",
+        "observed": [
+          -7.065059661865234,
+          13.023069381713867
+        ],
+        "represented": [
+          -10.597682198917028,
+          19.53460566198919
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_16_abs"
+        ],
+        "scale_name": "node_pow_16_abs_scale",
+        "zero_name": "node_pow_16_abs_zero_point",
+        "scale": 0.0002980789868161082,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.1324882507324219e-06,
+          13.023069381713867
+        ],
+        "represented": [
+          0.0,
+          19.534606400993653
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_16_maxr"
+        ],
+        "scale_name": "node_pow_16_maxr_scale",
+        "zero_name": "node_pow_16_maxr_zero_point",
+        "scale": 0.0002980789868161082,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.5891023874282837,
+          13.023069381713867
+        ],
+        "represented": [
+          0.0,
+          19.534606400993653
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_16_max"
+        ],
+        "scale_name": "node_pow_16_max_scale",
+        "zero_name": "node_pow_16_max_zero_point",
+        "scale": 0.0002980790159199387,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.5891033411026,
+          13.023070335388184
+        ],
+        "represented": [
+          0.0,
+          19.53460830831318
+        ]
+      },
+      {
+        "sources": [
+          "add_35"
+        ],
+        "scale_name": "add_35_scale",
+        "zero_name": "add_35_zero_point",
+        "scale": 0.0005125102470628917,
+        "zero": 22293,
+        "dtype": "uint16",
+        "observed": [
+          -7.616926193237305,
+          14.774560928344727
+        ],
+        "represented": [
+          -11.425390937773045,
+          22.161968103493564
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_17_abs"
+        ],
+        "scale_name": "node_pow_17_abs_scale",
+        "zero_name": "node_pow_17_abs_zero_point",
+        "scale": 0.00033816805807873607,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.960464477539063e-08,
+          14.774560928344727
+        ],
+        "represented": [
+          0.0,
+          22.161843686189968
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_17_maxr"
+        ],
+        "scale_name": "node_pow_17_maxr_scale",
+        "zero_name": "node_pow_17_maxr_zero_point",
+        "scale": 0.00033816805807873607,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.729234218597412,
+          14.774560928344727
+        ],
+        "represented": [
+          0.0,
+          22.161843686189968
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_17_max"
+        ],
+        "scale_name": "node_pow_17_max_scale",
+        "zero_name": "node_pow_17_max_zero_point",
+        "scale": 0.0003381680871825665,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.7292351722717285,
+          14.774561882019043
+        ],
+        "represented": [
+          0.0,
+          22.161845593509497
+        ]
+      },
+      {
+        "sources": [
+          "add_42"
+        ],
+        "scale_name": "add_42_scale",
+        "zero_name": "add_42_zero_point",
+        "scale": 0.0005145449540577829,
+        "zero": 23591,
+        "dtype": "uint16",
+        "observed": [
+          -8.092334747314453,
+          14.388047218322754
+        ],
+        "represented": [
+          -12.138630011177156,
+          21.582073552999645
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_20_abs"
+        ],
+        "scale_name": "node_pow_20_abs_scale",
+        "zero_name": "node_pow_20_abs_zero_point",
+        "scale": 0.0003293213085271418,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.227063179016113e-07,
+          14.388047218322754
+        ],
+        "represented": [
+          0.0,
+          21.58207195432624
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_20_maxr"
+        ],
+        "scale_name": "node_pow_20_maxr_scale",
+        "zero_name": "node_pow_20_maxr_zero_point",
+        "scale": 0.0003293213085271418,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.804065227508545,
+          14.388047218322754
+        ],
+        "represented": [
+          0.0,
+          21.58207195432624
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_20_max"
+        ],
+        "scale_name": "node_pow_20_max_scale",
+        "zero_name": "node_pow_20_max_zero_point",
+        "scale": 0.00032932133763097227,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.8040661811828613,
+          14.38804817199707
+        ],
+        "represented": [
+          0.0,
+          21.582073861645767
+        ]
+      },
+      {
+        "sources": [
+          "add_44"
+        ],
+        "scale_name": "add_44_scale",
+        "zero_name": "add_44_zero_point",
+        "scale": 0.0005340861971490085,
+        "zero": 22039,
+        "dtype": "uint16",
+        "observed": [
+          -7.847149848937988,
+          15.486808776855469
+        ],
+        "represented": [
+          -11.770725698966999,
+          23.230613231193274
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_21_abs"
+        ],
+        "scale_name": "node_pow_21_abs_scale",
+        "zero_name": "node_pow_21_abs_zero_point",
+        "scale": 0.00035447036498226225,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.152557373046875e-07,
+          15.486808776855469
+        ],
+        "represented": [
+          0.0,
+          23.230215369112557
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_21_maxr"
+        ],
+        "scale_name": "node_pow_21_maxr_scale",
+        "zero_name": "node_pow_21_maxr_zero_point",
+        "scale": 0.00035447036498226225,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.999119997024536,
+          15.486808776855469
+        ],
+        "represented": [
+          0.0,
+          23.230215369112557
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_21_max"
+        ],
+        "scale_name": "node_pow_21_max_scale",
+        "zero_name": "node_pow_21_max_zero_point",
+        "scale": 0.0003544703940860927,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.9991209506988525,
+          15.486809730529785
+        ],
+        "represented": [
+          0.0,
+          23.230217276432086
+        ]
+      },
+      {
+        "sources": [
+          "add_51"
+        ],
+        "scale_name": "add_51_scale",
+        "zero_name": "add_51_zero_point",
+        "scale": 0.0005705905496142805,
+        "zero": 22178,
+        "dtype": "uint16",
+        "observed": [
+          -8.43622875213623,
+          16.492727279663086
+        ],
+        "represented": [
+          -12.654557209345512,
+          24.739094459626358
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_24_abs"
+        ],
+        "scale_name": "node_pow_24_abs_scale",
+        "zero_name": "node_pow_24_abs_zero_point",
+        "scale": 0.0003774943470489234,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.4007091522216797e-06,
+          16.492727279663086
+        ],
+        "represented": [
+          0.0,
+          24.739092033851193
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_24_maxr"
+        ],
+        "scale_name": "node_pow_24_maxr_scale",
+        "zero_name": "node_pow_24_maxr_zero_point",
+        "scale": 0.0003774943470489234,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.3983893394470215,
+          16.492727279663086
+        ],
+        "represented": [
+          0.0,
+          24.739092033851193
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_24_max"
+        ],
+        "scale_name": "node_pow_24_max_scale",
+        "zero_name": "node_pow_24_max_zero_point",
+        "scale": 0.0003774944052565843,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.398390293121338,
+          16.49272918701172
+        ],
+        "represented": [
+          0.0,
+          24.73909584849025
+        ]
+      },
+      {
+        "sources": [
+          "add_53"
+        ],
+        "scale_name": "add_53_scale",
+        "zero_name": "add_53_zero_point",
+        "scale": 0.0005914493813179433,
+        "zero": 21763,
+        "dtype": "uint16",
+        "observed": [
+          -8.58094596862793,
+          17.259279251098633
+        ],
+        "represented": [
+          -12.8717128856224,
+          25.888922319049016
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_25_abs"
+        ],
+        "scale_name": "node_pow_25_abs_scale",
+        "zero_name": "node_pow_25_abs_zero_point",
+        "scale": 0.00039503962034359574,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.0563602447509766e-06,
+          17.259279251098633
+        ],
+        "represented": [
+          0.0,
+          25.888921519217547
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_25_maxr"
+        ],
+        "scale_name": "node_pow_25_maxr_scale",
+        "zero_name": "node_pow_25_maxr_zero_point",
+        "scale": 0.00039503962034359574,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.202669143676758,
+          17.259279251098633
+        ],
+        "represented": [
+          0.0,
+          25.888921519217547
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_25_max"
+        ],
+        "scale_name": "node_pow_25_max_scale",
+        "zero_name": "node_pow_25_max_zero_point",
+        "scale": 0.0003950396494474262,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.202670097351074,
+          17.259281158447266
+        ],
+        "represented": [
+          0.0,
+          25.888923426537076
+        ]
+      },
+      {
+        "sources": [
+          "add_60"
+        ],
+        "scale_name": "add_60_scale",
+        "zero_name": "add_60_zero_point",
+        "scale": 0.0006076964200474322,
+        "zero": 21144,
+        "dtype": "uint16",
+        "observed": [
+          -8.56608772277832,
+          17.98362922668457
+        ],
+        "represented": [
+          -12.849133105482906,
+          26.976251782325562
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_28_abs"
+        ],
+        "scale_name": "node_pow_28_abs_scale",
+        "zero_name": "node_pow_28_abs_zero_point",
+        "scale": 0.00041161890840157866,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.960464477539063e-08,
+          17.98362922668457
+        ],
+        "represented": [
+          0.0,
+          26.975445162097458
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_28_maxr"
+        ],
+        "scale_name": "node_pow_28_maxr_scale",
+        "zero_name": "node_pow_28_maxr_zero_point",
+        "scale": 0.00041161890840157866,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.7774746417999268,
+          17.98362922668457
+        ],
+        "represented": [
+          0.0,
+          26.975445162097458
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_28_max"
+        ],
+        "scale_name": "node_pow_28_max_scale",
+        "zero_name": "node_pow_28_max_zero_point",
+        "scale": 0.0004116189666092396,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.777475595474243,
+          17.983631134033203
+        ],
+        "represented": [
+          0.0,
+          26.975448976736516
+        ]
+      },
+      {
+        "sources": [
+          "add_62"
+        ],
+        "scale_name": "add_62_scale",
+        "zero_name": "add_62_zero_point",
+        "scale": 0.0006314552156254649,
+        "zero": 21203,
+        "dtype": "uint16",
+        "observed": [
+          -8.92582893371582,
+          18.662403106689453
+        ],
+        "represented": [
+          -13.388744936906733,
+          27.99367261910811
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_29_abs"
+        ],
+        "scale_name": "node_pow_29_abs_scale",
+        "zero_name": "node_pow_29_abs_zero_point",
+        "scale": 0.00042715505696833134,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.172325134277344e-07,
+          18.662403106689453
+        ],
+        "represented": [
+          0.0,
+          27.993606658419594
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_29_maxr"
+        ],
+        "scale_name": "node_pow_29_maxr_scale",
+        "zero_name": "node_pow_29_maxr_zero_point",
+        "scale": 0.00042715505696833134,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.508646488189697,
+          18.662403106689453
+        ],
+        "represented": [
+          0.0,
+          27.993606658419594
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_29_max"
+        ],
+        "scale_name": "node_pow_29_max_scale",
+        "zero_name": "node_pow_29_max_zero_point",
+        "scale": 0.0004271550860721618,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.508647441864014,
+          18.662405014038086
+        ],
+        "represented": [
+          0.0,
+          27.993608565739123
+        ]
+      },
+      {
+        "sources": [
+          "add_69"
+        ],
+        "scale_name": "add_69_scale",
+        "zero_name": "add_69_zero_point",
+        "scale": 0.0006150137633085251,
+        "zero": 21637,
+        "dtype": "uint16",
+        "observed": [
+          -8.871367454528809,
+          17.9980411529541
+        ],
+        "represented": [
+          -13.307052796706557,
+          26.997874181717634
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_32_abs"
+        ],
+        "scale_name": "node_pow_32_abs_scale",
+        "zero_name": "node_pow_32_abs_zero_point",
+        "scale": 0.0004119487712159753,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.4137476682662964e-06,
+          17.9980411529541
+        ],
+        "represented": [
+          0.0,
+          26.99706272163894
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_32_maxr"
+        ],
+        "scale_name": "node_pow_32_maxr_scale",
+        "zero_name": "node_pow_32_maxr_zero_point",
+        "scale": 0.0004119487712159753,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.936062812805176,
+          17.9980411529541
+        ],
+        "represented": [
+          0.0,
+          26.99706272163894
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_32_max"
+        ],
+        "scale_name": "node_pow_32_max_scale",
+        "zero_name": "node_pow_32_max_zero_point",
+        "scale": 0.0004119488294236362,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.936063766479492,
+          17.998043060302734
+        ],
+        "represented": [
+          0.0,
+          26.997066536278
+        ]
+      },
+      {
+        "sources": [
+          "add_71"
+        ],
+        "scale_name": "add_71_scale",
+        "zero_name": "add_71_zero_point",
+        "scale": 0.000678935379255563,
+        "zero": 20344,
+        "dtype": "uint16",
+        "observed": [
+          -9.208173751831055,
+          20.454387664794922
+        ],
+        "represented": [
+          -13.812261355575174,
+          30.68176872393815
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_33_abs"
+        ],
+        "scale_name": "node_pow_33_abs_scale",
+        "zero_name": "node_pow_33_abs_zero_point",
+        "scale": 0.00046817093971185386,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.8551945686340332e-06,
+          20.454387664794922
+        ],
+        "represented": [
+          0.0,
+          30.681582534016343
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_33_maxr"
+        ],
+        "scale_name": "node_pow_33_maxr_scale",
+        "zero_name": "node_pow_33_maxr_zero_point",
+        "scale": 0.00046817093971185386,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.701324224472046,
+          20.454387664794922
+        ],
+        "represented": [
+          0.0,
+          30.681582534016343
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_33_max"
+        ],
+        "scale_name": "node_pow_33_max_scale",
+        "zero_name": "node_pow_33_max_zero_point",
+        "scale": 0.0004681709979195148,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.7013251781463623,
+          20.454389572143555
+        ],
+        "represented": [
+          0.0,
+          30.6815863486554
+        ]
+      },
+      {
+        "sources": [
+          "add_78"
+        ],
+        "scale_name": "add_78_scale",
+        "zero_name": "add_78_zero_point",
+        "scale": 0.0006308918236754835,
+        "zero": 22836,
+        "dtype": "uint16",
+        "observed": [
+          -9.604680061340332,
+          17.958965301513672
+        ],
+        "represented": [
+          -14.40704568545334,
+          26.93844997911947
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_36_abs"
+        ],
+        "scale_name": "node_pow_36_abs_scale",
+        "zero_name": "node_pow_36_abs_zero_point",
+        "scale": 0.00041105441050603986,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.4603137969970703e-06,
+          17.958965301513672
+        ],
+        "represented": [
+          0.0,
+          26.938450792513322
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_36_maxr"
+        ],
+        "scale_name": "node_pow_36_maxr_scale",
+        "zero_name": "node_pow_36_maxr_zero_point",
+        "scale": 0.00041105441050603986,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.8608736991882324,
+          17.958965301513672
+        ],
+        "represented": [
+          0.0,
+          26.938450792513322
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_36_max"
+        ],
+        "scale_name": "node_pow_36_max_scale",
+        "zero_name": "node_pow_36_max_zero_point",
+        "scale": 0.0004110544396098703,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.860874652862549,
+          17.958967208862305
+        ],
+        "represented": [
+          0.0,
+          26.93845269983285
+        ]
+      },
+      {
+        "sources": [
+          "add_80"
+        ],
+        "scale_name": "add_80_scale",
+        "zero_name": "add_80_zero_point",
+        "scale": 0.0007164562703110278,
+        "zero": 21121,
+        "dtype": "uint16",
+        "observed": [
+          -10.088181495666504,
+          21.213518142700195
+        ],
+        "represented": [
+          -15.132272885239217,
+          31.820688789593987
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_37_abs"
+        ],
+        "scale_name": "node_pow_37_abs_scale",
+        "zero_name": "node_pow_37_abs_zero_point",
+        "scale": 0.0004855463339481503,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.811452865600586e-07,
+          21.213518142700195
+        ],
+        "represented": [
+          0.0,
+          31.82027899529203
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_37_maxr"
+        ],
+        "scale_name": "node_pow_37_maxr_scale",
+        "zero_name": "node_pow_37_maxr_zero_point",
+        "scale": 0.0004855463339481503,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.366689205169678,
+          21.213518142700195
+        ],
+        "represented": [
+          0.0,
+          31.82027899529203
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_37_max"
+        ],
+        "scale_name": "node_pow_37_max_scale",
+        "zero_name": "node_pow_37_max_zero_point",
+        "scale": 0.0004855463921558112,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.366690158843994,
+          21.213520050048828
+        ],
+        "represented": [
+          0.0,
+          31.820282809931086
+        ]
+      },
+      {
+        "sources": [
+          "add_87"
+        ],
+        "scale_name": "add_87_scale",
+        "zero_name": "add_87_zero_point",
+        "scale": 0.0007066591060720384,
+        "zero": 23364,
+        "dtype": "uint16",
+        "observed": [
+          -11.006921768188477,
+          19.86636734008789
+        ],
+        "represented": [
+          -16.510383354267105,
+          29.800521162163932
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_40_abs"
+        ],
+        "scale_name": "node_pow_40_abs_scale",
+        "zero_name": "node_pow_40_abs_zero_point",
+        "scale": 0.00045471201883628964,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.761317253112793e-05,
+          19.86636734008789
+        ],
+        "represented": [
+          0.0,
+          29.799552154436242
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_40_maxr"
+        ],
+        "scale_name": "node_pow_40_maxr_scale",
+        "zero_name": "node_pow_40_maxr_zero_point",
+        "scale": 0.00045471201883628964,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.79066276550293,
+          19.86636734008789
+        ],
+        "represented": [
+          0.0,
+          29.799552154436242
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_40_max"
+        ],
+        "scale_name": "node_pow_40_max_scale",
+        "zero_name": "node_pow_40_max_zero_point",
+        "scale": 0.00045471207704395056,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.790663719177246,
+          19.866369247436523
+        ],
+        "represented": [
+          0.0,
+          29.7995559690753
+        ]
+      },
+      {
+        "sources": [
+          "add_89"
+        ],
+        "scale_name": "add_89_scale",
+        "zero_name": "add_89_zero_point",
+        "scale": 0.0007789217052049935,
+        "zero": 23246,
+        "dtype": "uint16",
+        "observed": [
+          -12.071208000183105,
+          21.959754943847656
+        ],
+        "represented": [
+          -18.10681395919528,
+          32.93981999141397
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_41_abs"
+        ],
+        "scale_name": "node_pow_41_abs_scale",
+        "zero_name": "node_pow_41_abs_zero_point",
+        "scale": 0.0005026266444474459,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.2782554626464844e-07,
+          21.959754943847656
+        ],
+        "represented": [
+          0.0,
+          32.939637143863365
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_41_maxr"
+        ],
+        "scale_name": "node_pow_41_maxr_scale",
+        "zero_name": "node_pow_41_maxr_zero_point",
+        "scale": 0.0005026266444474459,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.027388095855713,
+          21.959754943847656
+        ],
+        "represented": [
+          0.0,
+          32.939637143863365
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_41_max"
+        ],
+        "scale_name": "node_pow_41_max_scale",
+        "zero_name": "node_pow_41_max_zero_point",
+        "scale": 0.0005026267026551068,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.027389049530029,
+          21.95975685119629
+        ],
+        "represented": [
+          0.0,
+          32.93964095850242
+        ]
+      },
+      {
+        "sources": [
+          "add_96"
+        ],
+        "scale_name": "add_96_scale",
+        "zero_name": "add_96_zero_point",
+        "scale": 0.0007811959367245436,
+        "zero": 23145,
+        "dtype": "uint16",
+        "observed": [
+          -12.053751945495605,
+          22.076595306396484
+        ],
+        "represented": [
+          -18.08077995548956,
+          33.1148957577534
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_44_abs"
+        ],
+        "scale_name": "node_pow_44_abs_scale",
+        "zero_name": "node_pow_44_abs_zero_point",
+        "scale": 0.0005053009372204542,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.0132789611816406e-05,
+          22.076595306396484
+        ],
+        "represented": [
+          0.0,
+          33.11489692074247
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_44_maxr"
+        ],
+        "scale_name": "node_pow_44_maxr_scale",
+        "zero_name": "node_pow_44_maxr_zero_point",
+        "scale": 0.0005053009372204542,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.646391868591309,
+          22.076595306396484
+        ],
+        "represented": [
+          0.0,
+          33.11489692074247
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_44_max"
+        ],
+        "scale_name": "node_pow_44_max_scale",
+        "zero_name": "node_pow_44_max_zero_point",
+        "scale": 0.0005053009954281151,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.646392822265625,
+          22.076597213745117
+        ],
+        "represented": [
+          0.0,
+          33.114900735381525
+        ]
+      },
+      {
+        "sources": [
+          "add_98"
+        ],
+        "scale_name": "add_98_scale",
+        "zero_name": "add_98_zero_point",
+        "scale": 0.0009738780790939927,
+        "zero": 20785,
+        "dtype": "uint16",
+        "observed": [
+          -13.494489669799805,
+          29.054027557373047
+        ],
+        "represented": [
+          -20.24205587396864,
+          43.581044039456174
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_45_abs"
+        ],
+        "scale_name": "node_pow_45_abs_scale",
+        "zero_name": "node_pow_45_abs_zero_point",
+        "scale": 0.0006650041323155165,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.7136335372924805e-06,
+          29.054027557373047
+        ],
+        "represented": [
+          0.0,
+          43.58104581129737
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_45_maxr"
+        ],
+        "scale_name": "node_pow_45_maxr_scale",
+        "zero_name": "node_pow_45_maxr_zero_point",
+        "scale": 0.0006650041323155165,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.147891044616699,
+          29.054027557373047
+        ],
+        "represented": [
+          0.0,
+          43.58104581129737
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_45_max"
+        ],
+        "scale_name": "node_pow_45_max_scale",
+        "zero_name": "node_pow_45_max_zero_point",
+        "scale": 0.0006650041905231774,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.147891998291016,
+          29.05402946472168
+        ],
+        "represented": [
+          0.0,
+          43.58104962593643
+        ]
+      },
+      {
+        "sources": [
+          "add_105"
+        ],
+        "scale_name": "add_105_scale",
+        "zero_name": "add_105_zero_point",
+        "scale": 0.0010156843345612288,
+        "zero": 20760,
+        "dtype": "uint16",
+        "observed": [
+          -14.057068824768066,
+          30.31759262084961
+        ],
+        "represented": [
+          -21.08560678549111,
+          45.47726607997902
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_48_abs"
+        ],
+        "scale_name": "node_pow_48_abs_scale",
+        "zero_name": "node_pow_48_abs_zero_point",
+        "scale": 0.0006939252489246428,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.3709068298339844e-06,
+          30.31759262084961
+        ],
+        "represented": [
+          0.0,
+          45.476391188276466
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_48_maxr"
+        ],
+        "scale_name": "node_pow_48_maxr_scale",
+        "zero_name": "node_pow_48_maxr_zero_point",
+        "scale": 0.0006939252489246428,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.795417785644531,
+          30.31759262084961
+        ],
+        "represented": [
+          0.0,
+          45.476391188276466
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_48_max"
+        ],
+        "scale_name": "node_pow_48_max_scale",
+        "zero_name": "node_pow_48_max_zero_point",
+        "scale": 0.0006939253071323037,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.795418739318848,
+          30.317594528198242
+        ],
+        "represented": [
+          0.0,
+          45.476395002915524
+        ]
+      },
+      {
+        "sources": [
+          "add_107"
+        ],
+        "scale_name": "add_107_scale",
+        "zero_name": "add_107_zero_point",
+        "scale": 0.0011105615412816405,
+        "zero": 20946,
+        "dtype": "uint16",
+        "observed": [
+          -15.507880210876465,
+          33.01199722290039
+        ],
+        "represented": [
+          -23.261822043685243,
+          49.51882856420707
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_49_abs"
+        ],
+        "scale_name": "node_pow_49_abs_scale",
+        "zero_name": "node_pow_49_abs_zero_point",
+        "scale": 0.0007555962656624615,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.2665987014770508e-06,
+          33.01199722290039
+        ],
+        "represented": [
+          0.0,
+          49.518001270189416
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_49_maxr"
+        ],
+        "scale_name": "node_pow_49_maxr_scale",
+        "zero_name": "node_pow_49_maxr_zero_point",
+        "scale": 0.0007555962656624615,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.236878871917725,
+          33.01199722290039
+        ],
+        "represented": [
+          0.0,
+          49.518001270189416
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_49_max"
+        ],
+        "scale_name": "node_pow_49_max_scale",
+        "zero_name": "node_pow_49_max_zero_point",
+        "scale": 0.0007555962656624615,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.236879825592041,
+          33.01199722290039
+        ],
+        "represented": [
+          0.0,
+          49.518001270189416
+        ]
+      },
+      {
+        "sources": [
+          "add_114"
+        ],
+        "scale_name": "add_114_scale",
+        "zero_name": "add_114_zero_point",
+        "scale": 0.0011650756932795048,
+        "zero": 21488,
+        "dtype": "uint16",
+        "observed": [
+          -16.68978500366211,
+          34.21205520629883
+        ],
+        "represented": [
+          -25.03514649719,
+          51.31808906188235
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_52_abs"
+        ],
+        "scale_name": "node_pow_52_abs_scale",
+        "zero_name": "node_pow_52_abs_zero_point",
+        "scale": 0.0007830638205632567,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.726912498474121e-06,
+          34.21205520629883
+        ],
+        "represented": [
+          0.0,
+          51.31808748061303
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_52_maxr"
+        ],
+        "scale_name": "node_pow_52_maxr_scale",
+        "zero_name": "node_pow_52_maxr_zero_point",
+        "scale": 0.0007830638205632567,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.177365779876709,
+          34.21205520629883
+        ],
+        "represented": [
+          0.0,
+          51.31808748061303
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_52_max"
+        ],
+        "scale_name": "node_pow_52_max_scale",
+        "zero_name": "node_pow_52_max_zero_point",
+        "scale": 0.0007830638205632567,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.177366733551025,
+          34.21205520629883
+        ],
+        "represented": [
+          0.0,
+          51.31808748061303
+        ]
+      },
+      {
+        "sources": [
+          "add_116"
+        ],
+        "scale_name": "add_116_scale",
+        "zero_name": "add_116_zero_point",
+        "scale": 0.0012203610967844725,
+        "zero": 20780,
+        "dtype": "uint16",
+        "observed": [
+          -16.90606689453125,
+          36.41053009033203
+        ],
+        "represented": [
+          -25.359103591181338,
+          54.617260886589065
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_53_abs"
+        ],
+        "scale_name": "node_pow_53_abs_scale",
+        "zero_name": "node_pow_53_abs_zero_point",
+        "scale": 0.0008333836449310184,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.8848648071289062e-05,
+          36.41053009033203
+        ],
+        "represented": [
+          0.0,
+          54.61579717055429
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_53_maxr"
+        ],
+        "scale_name": "node_pow_53_maxr_scale",
+        "zero_name": "node_pow_53_maxr_zero_point",
+        "scale": 0.0008333836449310184,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.423505783081055,
+          36.41053009033203
+        ],
+        "represented": [
+          0.0,
+          54.61579717055429
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_53_max"
+        ],
+        "scale_name": "node_pow_53_max_scale",
+        "zero_name": "node_pow_53_max_zero_point",
+        "scale": 0.0008333836449310184,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.423506736755371,
+          36.41053009033203
+        ],
+        "represented": [
+          0.0,
+          54.61579717055429
+        ]
+      },
+      {
+        "sources": [
+          "add_123"
+        ],
+        "scale_name": "add_123_scale",
+        "zero_name": "add_123_zero_point",
+        "scale": 0.001260050106793642,
+        "zero": 22119,
+        "dtype": "uint16",
+        "observed": [
+          -18.580116271972656,
+          36.47088623046875
+        ],
+        "represented": [
+          -27.87104831216857,
+          54.70633543655276
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_56_abs"
+        ],
+        "scale_name": "node_pow_56_abs_scale",
+        "zero_name": "node_pow_56_abs_zero_point",
+        "scale": 0.0008347651455551386,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          9.506940841674805e-06,
+          36.47088623046875
+        ],
+        "represented": [
+          0.0,
+          54.70633381395601
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_56_maxr"
+        ],
+        "scale_name": "node_pow_56_maxr_scale",
+        "zero_name": "node_pow_56_maxr_zero_point",
+        "scale": 0.0008347651455551386,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.512933254241943,
+          36.47088623046875
+        ],
+        "represented": [
+          0.0,
+          54.70633381395601
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_56_max"
+        ],
+        "scale_name": "node_pow_56_max_scale",
+        "zero_name": "node_pow_56_max_zero_point",
+        "scale": 0.0008347651455551386,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.51293420791626,
+          36.47088623046875
+        ],
+        "represented": [
+          0.0,
+          54.70633381395601
+        ]
+      },
+      {
+        "sources": [
+          "add_125"
+        ],
+        "scale_name": "add_125_scale",
+        "zero_name": "add_125_zero_point",
+        "scale": 0.0012943049659952521,
+        "zero": 20402,
+        "dtype": "uint16",
+        "observed": [
+          -17.60375213623047,
+          38.94390869140625
+        ],
+        "represented": [
+          -26.406409916235134,
+          58.415866030263714
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_57_abs"
+        ],
+        "scale_name": "node_pow_57_abs_scale",
+        "zero_name": "node_pow_57_abs_zero_point",
+        "scale": 0.0008913690107874572,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.6093254089355469e-06,
+          38.94390869140625
+        ],
+        "represented": [
+          0.0,
+          58.41586812195601
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_57_maxr"
+        ],
+        "scale_name": "node_pow_57_maxr_scale",
+        "zero_name": "node_pow_57_maxr_zero_point",
+        "scale": 0.0008913690107874572,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.950809001922607,
+          38.94390869140625
+        ],
+        "represented": [
+          0.0,
+          58.41586812195601
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_57_max"
+        ],
+        "scale_name": "node_pow_57_max_scale",
+        "zero_name": "node_pow_57_max_zero_point",
+        "scale": 0.0008913690107874572,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.950809955596924,
+          38.94390869140625
+        ],
+        "represented": [
+          0.0,
+          58.41586812195601
+        ]
+      },
+      {
+        "sources": [
+          "add_132"
+        ],
+        "scale_name": "add_132_scale",
+        "zero_name": "add_132_zero_point",
+        "scale": 0.0012390029150992632,
+        "zero": 21168,
+        "dtype": "uint16",
+        "observed": [
+          -17.48480796813965,
+          36.646209716796875
+        ],
+        "represented": [
+          -26.227213706821203,
+          54.97084233420901
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_60_abs"
+        ],
+        "scale_name": "node_pow_60_abs_scale",
+        "zero_name": "node_pow_60_abs_zero_point",
+        "scale": 0.0008387780399061739,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.0563602447509766e-06,
+          36.646209716796875
+        ],
+        "represented": [
+          0.0,
+          54.96931884525111
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_60_maxr"
+        ],
+        "scale_name": "node_pow_60_maxr_scale",
+        "zero_name": "node_pow_60_maxr_zero_point",
+        "scale": 0.0008387780399061739,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.10140323638916,
+          36.646209716796875
+        ],
+        "represented": [
+          0.0,
+          54.96931884525111
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_60_max"
+        ],
+        "scale_name": "node_pow_60_max_scale",
+        "zero_name": "node_pow_60_max_zero_point",
+        "scale": 0.0008387780399061739,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          7.101404190063477,
+          36.646209716796875
+        ],
+        "represented": [
+          0.0,
+          54.96931884525111
+        ]
+      },
+      {
+        "sources": [
+          "add_134"
+        ],
+        "scale_name": "add_134_scale",
+        "zero_name": "add_134_zero_point",
+        "scale": 0.001269139931537211,
+        "zero": 21555,
+        "dtype": "uint16",
+        "observed": [
+          -18.23741340637207,
+          37.211177825927734
+        ],
+        "represented": [
+          -27.356311224284582,
+          55.81677418900654
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_61_abs"
+        ],
+        "scale_name": "node_pow_61_abs_scale",
+        "zero_name": "node_pow_61_abs_zero_point",
+        "scale": 0.000851709337439388,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          6.556510925292969e-07,
+          37.211177825927734
+        ],
+        "represented": [
+          0.0,
+          55.816771429090295
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_61_maxr"
+        ],
+        "scale_name": "node_pow_61_maxr_scale",
+        "zero_name": "node_pow_61_maxr_zero_point",
+        "scale": 0.000851709337439388,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          11.71452522277832,
+          37.211177825927734
+        ],
+        "represented": [
+          0.0,
+          55.816771429090295
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_61_max"
+        ],
+        "scale_name": "node_pow_61_max_scale",
+        "zero_name": "node_pow_61_max_zero_point",
+        "scale": 0.000851709337439388,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          11.714526176452637,
+          37.211177825927734
+        ],
+        "represented": [
+          0.0,
+          55.816771429090295
+        ]
+      },
+      {
+        "sources": [
+          "add_141"
+        ],
+        "scale_name": "add_141_scale",
+        "zero_name": "add_141_zero_point",
+        "scale": 0.0014038040535524487,
+        "zero": 21295,
+        "dtype": "uint16",
+        "observed": [
+          -19.929336547851562,
+          41.40155792236328
+        ],
+        "represented": [
+          -29.894007320399396,
+          62.10429132916033
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_64_abs"
+        ],
+        "scale_name": "node_pow_64_abs_scale",
+        "zero_name": "node_pow_64_abs_zero_point",
+        "scale": 0.000947620952501893,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.377216100692749e-06,
+          41.40155792236328
+        ],
+        "represented": [
+          0.0,
+          62.10233912221156
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_64_maxr"
+        ],
+        "scale_name": "node_pow_64_maxr_scale",
+        "zero_name": "node_pow_64_maxr_zero_point",
+        "scale": 0.000947620952501893,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.66333293914795,
+          41.40155792236328
+        ],
+        "represented": [
+          0.0,
+          62.10233912221156
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_64_max"
+        ],
+        "scale_name": "node_pow_64_max_scale",
+        "zero_name": "node_pow_64_max_zero_point",
+        "scale": 0.000947620952501893,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.663333892822266,
+          41.40155792236328
+        ],
+        "represented": [
+          0.0,
+          62.10233912221156
+        ]
+      },
+      {
+        "sources": [
+          "add_143"
+        ],
+        "scale_name": "add_143_scale",
+        "zero_name": "add_143_zero_point",
+        "scale": 0.0014678657753393054,
+        "zero": 21532,
+        "dtype": "uint16",
+        "observed": [
+          -21.070722579956055,
+          43.05998229980469
+        ],
+        "represented": [
+          -31.606085874605924,
+          64.59049771225546
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_65_abs"
+        ],
+        "scale_name": "node_pow_65_abs_scale",
+        "zero_name": "node_pow_65_abs_zero_point",
+        "scale": 0.0009855799144133925,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.470348358154297e-06,
+          43.05998229980469
+        ],
+        "represented": [
+          0.0,
+          64.58997969108168
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_65_maxr"
+        ],
+        "scale_name": "node_pow_65_maxr_scale",
+        "zero_name": "node_pow_65_maxr_zero_point",
+        "scale": 0.0009855799144133925,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.857185363769531,
+          43.05998229980469
+        ],
+        "represented": [
+          0.0,
+          64.58997969108168
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_65_max"
+        ],
+        "scale_name": "node_pow_65_max_scale",
+        "zero_name": "node_pow_65_max_zero_point",
+        "scale": 0.0009855799144133925,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.857186317443848,
+          43.05998229980469
+        ],
+        "represented": [
+          0.0,
+          64.58997969108168
+        ]
+      },
+      {
+        "sources": [
+          "add_150"
+        ],
+        "scale_name": "add_150_scale",
+        "zero_name": "add_150_zero_point",
+        "scale": 0.0015297411009669304,
+        "zero": 21680,
+        "dtype": "uint16",
+        "observed": [
+          -22.10985565185547,
+          44.72410202026367
+        ],
+        "represented": [
+          -33.16478706896305,
+          67.08679598290473
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_68_abs"
+        ],
+        "scale_name": "node_pow_68_abs_scale",
+        "zero_name": "node_pow_68_abs_zero_point",
+        "scale": 0.0010236691450700164,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.4454126358032227e-05,
+          44.72410202026367
+        ],
+        "represented": [
+          0.0,
+          67.08615742216352
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_68_maxr"
+        ],
+        "scale_name": "node_pow_68_maxr_scale",
+        "zero_name": "node_pow_68_maxr_zero_point",
+        "scale": 0.0010236691450700164,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.740578651428223,
+          44.72410202026367
+        ],
+        "represented": [
+          0.0,
+          67.08615742216352
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_68_max"
+        ],
+        "scale_name": "node_pow_68_max_scale",
+        "zero_name": "node_pow_68_max_zero_point",
+        "scale": 0.0010236691450700164,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          10.740579605102539,
+          44.72410202026367
+        ],
+        "represented": [
+          0.0,
+          67.08615742216352
+        ]
+      },
+      {
+        "sources": [
+          "add_152"
+        ],
+        "scale_name": "add_152_scale",
+        "zero_name": "add_152_zero_point",
+        "scale": 0.0017665796913206577,
+        "zero": 19690,
+        "dtype": "uint16",
+        "observed": [
+          -23.189300537109375,
+          53.990745544433594
+        ],
+        "represented": [
+          -34.78395412210375,
+          80.98884594859555
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_69_abs"
+        ],
+        "scale_name": "node_pow_69_abs_scale",
+        "zero_name": "node_pow_69_abs_zero_point",
+        "scale": 0.0012357690138742328,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.3245811462402344e-06,
+          53.990745544433594
+        ],
+        "represented": [
+          0.0,
+          80.98612232424784
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_69_maxr"
+        ],
+        "scale_name": "node_pow_69_maxr_scale",
+        "zero_name": "node_pow_69_maxr_zero_point",
+        "scale": 0.0012357690138742328,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          13.84034538269043,
+          53.990745544433594
+        ],
+        "represented": [
+          0.0,
+          80.98612232424784
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_69_max"
+        ],
+        "scale_name": "node_pow_69_max_scale",
+        "zero_name": "node_pow_69_max_zero_point",
+        "scale": 0.0012357690138742328,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          13.840346336364746,
+          53.990745544433594
+        ],
+        "represented": [
+          0.0,
+          80.98612232424784
+        ]
+      },
+      {
+        "sources": [
+          "add_159"
+        ],
+        "scale_name": "add_159_scale",
+        "zero_name": "add_159_zero_point",
+        "scale": 0.0019005656940862536,
+        "zero": 19998,
+        "dtype": "uint16",
+        "observed": [
+          -25.337806701660156,
+          57.69736862182617
+        ],
+        "represented": [
+          -38.0075127503369,
+          86.54606001160573
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_72_abs"
+        ],
+        "scale_name": "node_pow_72_abs_scale",
+        "zero_name": "node_pow_72_abs_zero_point",
+        "scale": 0.0013206081930547953,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.470348358154297e-06,
+          57.69736862182617
+        ],
+        "represented": [
+          0.0,
+          86.54605793184601
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_72_maxr"
+        ],
+        "scale_name": "node_pow_72_maxr_scale",
+        "zero_name": "node_pow_72_maxr_zero_point",
+        "scale": 0.0013206081930547953,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          14.79421329498291,
+          57.69736862182617
+        ],
+        "represented": [
+          0.0,
+          86.54605793184601
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_72_max"
+        ],
+        "scale_name": "node_pow_72_max_scale",
+        "zero_name": "node_pow_72_max_zero_point",
+        "scale": 0.0013206081930547953,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          14.794214248657227,
+          57.69736862182617
+        ],
+        "represented": [
+          0.0,
+          86.54605793184601
+        ]
+      },
+      {
+        "sources": [
+          "add_161"
+        ],
+        "scale_name": "add_161_scale",
+        "zero_name": "add_161_zero_point",
+        "scale": 0.0020723440684378147,
+        "zero": 18565,
+        "dtype": "uint16",
+        "observed": [
+          -25.648710250854492,
+          64.89148712158203
+        ],
+        "represented": [
+          -38.47306763054803,
+          97.33800089452416
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_73_abs"
+        ],
+        "scale_name": "node_pow_73_abs_scale",
+        "zero_name": "node_pow_73_abs_zero_point",
+        "scale": 0.0014852710301056504,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          8.13603401184082e-06,
+          64.89148712158203
+        ],
+        "represented": [
+          0.0,
+          97.3372369579738
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_73_maxr"
+        ],
+        "scale_name": "node_pow_73_maxr_scale",
+        "zero_name": "node_pow_73_maxr_zero_point",
+        "scale": 0.0014852710301056504,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          16.625398635864258,
+          64.89148712158203
+        ],
+        "represented": [
+          0.0,
+          97.3372369579738
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_73_max"
+        ],
+        "scale_name": "node_pow_73_max_scale",
+        "zero_name": "node_pow_73_max_zero_point",
+        "scale": 0.0014852710301056504,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          16.62540054321289,
+          64.89148712158203
+        ],
+        "represented": [
+          0.0,
+          97.3372369579738
+        ]
+      },
+      {
+        "sources": [
+          "add_168"
+        ],
+        "scale_name": "add_168_scale",
+        "zero_name": "add_168_zero_point",
+        "scale": 0.0022611275780946016,
+        "zero": 18505,
+        "dtype": "uint16",
+        "observed": [
+          -27.894611358642578,
+          70.89388275146484
+        ],
+        "represented": [
+          -41.8421658326406,
+          106.34082999778911
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_76_abs"
+        ],
+        "scale_name": "node_pow_76_abs_scale",
+        "zero_name": "node_pow_76_abs_zero_point",
+        "scale": 0.0016226570587605238,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.9431114196777344e-05,
+          70.89388275146484
+        ],
+        "represented": [
+          0.0,
+          106.34083034587093
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_76_maxr"
+        ],
+        "scale_name": "node_pow_76_maxr_scale",
+        "zero_name": "node_pow_76_maxr_zero_point",
+        "scale": 0.0016226570587605238,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          17.549896240234375,
+          70.89388275146484
+        ],
+        "represented": [
+          0.0,
+          106.34083034587093
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_76_max"
+        ],
+        "scale_name": "node_pow_76_max_scale",
+        "zero_name": "node_pow_76_max_zero_point",
+        "scale": 0.0016226570587605238,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          17.549898147583008,
+          70.89388275146484
+        ],
+        "represented": [
+          0.0,
+          106.34083034587093
+        ]
+      },
+      {
+        "sources": [
+          "add_170"
+        ],
+        "scale_name": "add_170_scale",
+        "zero_name": "add_170_zero_point",
+        "scale": 0.002602647291496396,
+        "zero": 18492,
+        "dtype": "uint16",
+        "observed": [
+          -32.08543395996094,
+          81.6234130859375
+        ],
+        "represented": [
+          -48.128153714351356,
+          122.43633653386496
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_77_abs"
+        ],
+        "scale_name": "node_pow_77_abs_scale",
+        "zero_name": "node_pow_77_abs_zero_point",
+        "scale": 0.0018682403024286032,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.086162567138672e-07,
+          81.6234130859375
+        ],
+        "represented": [
+          0.0,
+          122.43512821965851
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_77_maxr"
+        ],
+        "scale_name": "node_pow_77_maxr_scale",
+        "zero_name": "node_pow_77_maxr_zero_point",
+        "scale": 0.0018682403024286032,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          19.407564163208008,
+          81.6234130859375
+        ],
+        "represented": [
+          0.0,
+          122.43512821965851
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_77_max"
+        ],
+        "scale_name": "node_pow_77_max_scale",
+        "zero_name": "node_pow_77_max_zero_point",
+        "scale": 0.0018682403024286032,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          19.40756607055664,
+          81.6234130859375
+        ],
+        "represented": [
+          0.0,
+          122.43512821965851
+        ]
+      },
+      {
+        "sources": [
+          "add_177"
+        ],
+        "scale_name": "add_177_scale",
+        "zero_name": "add_177_zero_point",
+        "scale": 0.0027269977144896984,
+        "zero": 18625,
+        "dtype": "uint16",
+        "observed": [
+          -33.858978271484375,
+          85.28230285644531
+        ],
+        "represented": [
+          -50.79033243237063,
+          127.92346278671175
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_80_abs"
+        ],
+        "scale_name": "node_pow_80_abs_scale",
+        "zero_name": "node_pow_80_abs_zero_point",
+        "scale": 0.0019519869238138199,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          4.464387893676758e-05,
+          85.28230285644531
+        ],
+        "represented": [
+          0.0,
+          127.92346305213869
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_80_maxr"
+        ],
+        "scale_name": "node_pow_80_maxr_scale",
+        "zero_name": "node_pow_80_maxr_zero_point",
+        "scale": 0.0019519869238138199,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          18.728939056396484,
+          85.28230285644531
+        ],
+        "represented": [
+          0.0,
+          127.92346305213869
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_80_max"
+        ],
+        "scale_name": "node_pow_80_max_scale",
+        "zero_name": "node_pow_80_max_zero_point",
+        "scale": 0.0019519869238138199,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          18.728940963745117,
+          85.28230285644531
+        ],
+        "represented": [
+          0.0,
+          127.92346305213869
+        ]
+      },
+      {
+        "sources": [
+          "add_179"
+        ],
+        "scale_name": "add_179_scale",
+        "zero_name": "add_179_zero_point",
+        "scale": 0.0031847951468080282,
+        "zero": 18879,
+        "dtype": "uint16",
+        "observed": [
+          -40.08282470703125,
+          99.05986022949219
+        ],
+        "represented": [
+          -60.125747576588765,
+          148.58980236947536
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_81_abs"
+        ],
+        "scale_name": "node_pow_81_abs_scale",
+        "zero_name": "node_pow_81_abs_zero_point",
+        "scale": 0.0022673350758850574,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          2.014636993408203e-05,
+          99.05986022949219
+        ],
+        "represented": [
+          0.0,
+          148.58980419812724
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_81_maxr"
+        ],
+        "scale_name": "node_pow_81_maxr_scale",
+        "zero_name": "node_pow_81_maxr_zero_point",
+        "scale": 0.0022673350758850574,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          21.95836639404297,
+          99.05986022949219
+        ],
+        "represented": [
+          0.0,
+          148.58980419812724
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_81_max"
+        ],
+        "scale_name": "node_pow_81_max_scale",
+        "zero_name": "node_pow_81_max_zero_point",
+        "scale": 0.0022673350758850574,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          21.9583683013916,
+          99.05986022949219
+        ],
+        "represented": [
+          0.0,
+          148.58980419812724
+        ]
+      },
+      {
+        "sources": [
+          "add_186"
+        ],
+        "scale_name": "add_186_scale",
+        "zero_name": "add_186_zero_point",
+        "scale": 0.003455498954281211,
+        "zero": 18828,
+        "dtype": "uint16",
+        "observed": [
+          -43.37342071533203,
+          107.5953369140625
+        ],
+        "represented": [
+          -65.06013431120664,
+          161.39598965761252
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_84_abs"
+        ],
+        "scale_name": "node_pow_84_abs_scale",
+        "zero_name": "node_pow_84_abs_zero_point",
+        "scale": 0.002462699543684721,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.334615707397461e-06,
+          107.5953369140625
+        ],
+        "represented": [
+          0.0,
+          161.3930145953782
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_84_maxr"
+        ],
+        "scale_name": "node_pow_84_maxr_scale",
+        "zero_name": "node_pow_84_maxr_zero_point",
+        "scale": 0.002462699543684721,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          24.553804397583008,
+          107.5953369140625
+        ],
+        "represented": [
+          0.0,
+          161.3930145953782
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_84_max"
+        ],
+        "scale_name": "node_pow_84_max_scale",
+        "zero_name": "node_pow_84_max_zero_point",
+        "scale": 0.002462699543684721,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          24.55380630493164,
+          107.5953369140625
+        ],
+        "represented": [
+          0.0,
+          161.3930145953782
+        ]
+      },
+      {
+        "sources": [
+          "add_188"
+        ],
+        "scale_name": "add_188_scale",
+        "zero_name": "add_188_zero_point",
+        "scale": 0.00414081197232008,
+        "zero": 18218,
+        "dtype": "uint16",
+        "observed": [
+          -50.290077209472656,
+          130.62051391601562
+        ],
+        "represented": [
+          -75.43731251172721,
+          195.93080009426922
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_85_abs"
+        ],
+        "scale_name": "node_pow_85_abs_scale",
+        "zero_name": "node_pow_85_abs_zero_point",
+        "scale": 0.002989712171256542,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.659989356994629e-05,
+          130.62051391601562
+        ],
+        "represented": [
+          0.0,
+          195.9307871432975
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_85_maxr"
+        ],
+        "scale_name": "node_pow_85_maxr_scale",
+        "zero_name": "node_pow_85_maxr_zero_point",
+        "scale": 0.002989712171256542,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          24.18954849243164,
+          130.62051391601562
+        ],
+        "represented": [
+          0.0,
+          195.9307871432975
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_85_max"
+        ],
+        "scale_name": "node_pow_85_max_scale",
+        "zero_name": "node_pow_85_max_zero_point",
+        "scale": 0.002989712171256542,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          24.189550399780273,
+          130.62051391601562
+        ],
+        "represented": [
+          0.0,
+          195.9307871432975
+        ]
+      },
+      {
+        "sources": [
+          "add_195"
+        ],
+        "scale_name": "add_195_scale",
+        "zero_name": "add_195_zero_point",
+        "scale": 0.004398669581860304,
+        "zero": 17808,
+        "dtype": "uint16",
+        "observed": [
+          -52.22029113769531,
+          139.95684814453125
+        ],
+        "represented": [
+          -78.33150791376829,
+          209.93530313344672
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_88_abs"
+        ],
+        "scale_name": "node_pow_88_abs_scale",
+        "zero_name": "node_pow_88_abs_zero_point",
+        "scale": 0.0032034071628004313,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.519390106201172e-05,
+          139.95684814453125
+        ],
+        "represented": [
+          0.0,
+          209.93528841412626
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_88_maxr"
+        ],
+        "scale_name": "node_pow_88_maxr_scale",
+        "zero_name": "node_pow_88_maxr_zero_point",
+        "scale": 0.0032034071628004313,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          28.17467498779297,
+          139.95684814453125
+        ],
+        "represented": [
+          0.0,
+          209.93528841412626
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_88_max"
+        ],
+        "scale_name": "node_pow_88_max_scale",
+        "zero_name": "node_pow_88_max_zero_point",
+        "scale": 0.0032034071628004313,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          28.1746768951416,
+          139.95684814453125
+        ],
+        "represented": [
+          0.0,
+          209.93528841412626
+        ]
+      },
+      {
+        "sources": [
+          "add_197"
+        ],
+        "scale_name": "add_197_scale",
+        "zero_name": "add_197_zero_point",
+        "scale": 0.005453045479953289,
+        "zero": 16909,
+        "dtype": "uint16",
+        "observed": [
+          -61.4697151184082,
+          176.77317810058594
+        ],
+        "represented": [
+          -92.20554602053016,
+          265.15978950820863
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_89_abs"
+        ],
+        "scale_name": "node_pow_89_abs_scale",
+        "zero_name": "node_pow_89_abs_zero_point",
+        "scale": 0.004046079237014055,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          3.039836883544922e-06,
+          176.77317810058594
+        ],
+        "represented": [
+          0.0,
+          265.1598027977161
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_89_maxr"
+        ],
+        "scale_name": "node_pow_89_maxr_scale",
+        "zero_name": "node_pow_89_maxr_zero_point",
+        "scale": 0.004046079237014055,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          37.726776123046875,
+          176.77317810058594
+        ],
+        "represented": [
+          0.0,
+          265.1598027977161
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_89_max"
+        ],
+        "scale_name": "node_pow_89_max_scale",
+        "zero_name": "node_pow_89_max_zero_point",
+        "scale": 0.004046079237014055,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          37.726776123046875,
+          176.77317810058594
+        ],
+        "represented": [
+          0.0,
+          265.1598027977161
+        ]
+      },
+      {
+        "sources": [
+          "add_204"
+        ],
+        "scale_name": "add_204_scale",
+        "zero_name": "add_204_zero_point",
+        "scale": 0.005739151034504175,
+        "zero": 17443,
+        "dtype": "uint16",
+        "observed": [
+          -66.7386703491211,
+          184.00047302246094
+        ],
+        "represented": [
+          -100.10801149485633,
+          276.0072515513748
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_92_abs"
+        ],
+        "scale_name": "node_pow_92_abs_scale",
+        "zero_name": "node_pow_92_abs_zero_point",
+        "scale": 0.004211501218378544,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          5.0067901611328125e-05,
+          184.00047302246094
+        ],
+        "represented": [
+          0.0,
+          276.00073234643787
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_92_maxr"
+        ],
+        "scale_name": "node_pow_92_maxr_scale",
+        "zero_name": "node_pow_92_maxr_zero_point",
+        "scale": 0.004211501218378544,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          33.682701110839844,
+          184.00047302246094
+        ],
+        "represented": [
+          0.0,
+          276.00073234643787
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_92_max"
+        ],
+        "scale_name": "node_pow_92_max_scale",
+        "zero_name": "node_pow_92_max_zero_point",
+        "scale": 0.004211501218378544,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          33.682701110839844,
+          184.00047302246094
+        ],
+        "represented": [
+          0.0,
+          276.00073234643787
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_93_abs"
+        ],
+        "scale_name": "node_pow_93_abs_scale",
+        "zero_name": "node_pow_93_abs_zero_point",
+        "scale": 0.005079594440758228,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          1.3589859008789062e-05,
+          221.92745971679688
+        ],
+        "represented": [
+          0.0,
+          332.8912216750905
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_93_maxr"
+        ],
+        "scale_name": "node_pow_93_maxr_scale",
+        "zero_name": "node_pow_93_maxr_zero_point",
+        "scale": 0.005079594440758228,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          36.44849395751953,
+          221.92745971679688
+        ],
+        "represented": [
+          0.0,
+          332.8912216750905
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_93_max"
+        ],
+        "scale_name": "node_pow_93_max_scale",
+        "zero_name": "node_pow_93_max_zero_point",
+        "scale": 0.005079594440758228,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          36.44849395751953,
+          221.92745971679688
+        ],
+        "represented": [
+          0.0,
+          332.8912216750905
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_96_abs"
+        ],
+        "scale_name": "node_pow_96_abs_scale",
+        "zero_name": "node_pow_96_abs_zero_point",
+        "scale": 0.005263643339276314,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          9.956955909729004e-05,
+          229.9685516357422
+        ],
+        "represented": [
+          0.0,
+          344.9528662394732
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_96_maxr"
+        ],
+        "scale_name": "node_pow_96_maxr_scale",
+        "zero_name": "node_pow_96_maxr_zero_point",
+        "scale": 0.005263643339276314,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          39.144081115722656,
+          229.9685516357422
+        ],
+        "represented": [
+          0.0,
+          344.9528662394732
+        ]
+      },
+      {
+        "sources": [
+          "node_pow_96_max"
+        ],
+        "scale_name": "node_pow_96_max_scale",
+        "zero_name": "node_pow_96_max_zero_point",
+        "scale": 0.005263643339276314,
+        "zero": 0,
+        "dtype": "uint16",
+        "observed": [
+          39.144081115722656,
+          229.9685516357422
+        ],
+        "represented": [
+          0.0,
+          344.9528662394732
+        ]
+      }
+    ],
+    "changed_groups": 168,
+    "threshold": 32,
+    "selection": "shared/later scale ratio on calibration only",
+    "source_sha256": "6ce931af751e1586d80216e1ed3dda9fead51e19393c1a19dc9261ad78ddf8b8",
+    "model_sha256": "7f4c789055800a665224b505edab14ef491693f3957776b15af564a6d0c250fb",
+    "node_sha256": "a2b5018d5ff0ab50d8398478281fe074ed01d111c769ef03607495966d621dd2",
+    "unexpected_initializer_changes": []
+  }
+}

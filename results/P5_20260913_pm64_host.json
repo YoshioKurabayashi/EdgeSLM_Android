@@ -1,0 +1,15 @@
+{
+  "fp32": "work/qwen_pm64/qwen05b_prefillmask_L24_S64_last.onnx",
+  "qdq": "work/ops/qwen_pm64/qwen_pm64_final_qdq.onnx",
+  "eval": "work/qwen_pm64/eval_pm64.npz",
+  "samples": 19,
+  "metrics": {
+    "top1_agreement": 0.7368421052631579,
+    "top5_overlap": 0.768421052631579,
+    "kl_fp32_to_quant": 0.12786418856826198,
+    "rank_of_fp32_top1_mean": 1.4210526315789473,
+    "rank_of_fp32_top1_p95": 3.099999999999998,
+    "logits_rel_l2": 0.1856822346971896,
+    "positions": 19
+  }
+}

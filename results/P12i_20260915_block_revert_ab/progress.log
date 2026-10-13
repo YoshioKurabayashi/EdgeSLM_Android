@@ -1,0 +1,15 @@
+評価点: chat_original(26), chat_english(26), point_B_music(1), point_A_first_div(1), sys_en_BANANA(1), sys_ja_banana(1)
+ブロック: L0-13/other=2, L0-13/residual=23, L0-13/rmsnorm_aux=66, L14-20/residual=14, L14-20/rmsnorm_aux=42, L21-27/residual=3, L21-27/rmsnorm_aux=18
+FP32 基準 53s
+focused                          1位保持  87.5%  margin保持   49.5%  最小margin  -1.38  KL 0.202  |  点B -0.38  BANANA +0.29 バナナ +6.00  (481s)
+revert L0-13/other               1位保持  82.1%  margin保持   46.0%  最小margin  -0.79  KL 0.211  |  点B +1.33  BANANA +0.02 バナナ +4.66  (462s)
+revert L0-13/residual            1位保持  80.4%  margin保持   31.5%  最小margin  -1.90  KL 0.225  |  点B -1.18  BANANA +0.61 バナナ +0.63  (480s)
+revert L0-13/rmsnorm_aux         1位保持  85.7%  margin保持   47.0%  最小margin  -1.74  KL 0.205  |  点B +0.65  BANANA +0.72 バナナ +5.54  (480s)
+revert L14-20/residual           1位保持  83.9%  margin保持   51.5%  最小margin  -1.46  KL 0.210  |  点B -0.74  BANANA +0.00 バナナ +6.26  (482s)
+revert L14-20/rmsnorm_aux        1位保持  85.7%  margin保持   50.2%  最小margin  -1.35  KL 0.200  |  点B -0.47  BANANA +0.36 バナナ +6.06  (486s)
+revert L21-27/residual           1位保持  85.7%  margin保持   49.7%  最小margin  -1.34  KL 0.202  |  点B -0.53  BANANA +0.32 バナナ +5.92  (465s)
+revert L21-27/rmsnorm_aux        1位保持  83.9%  margin保持   49.0%  最小margin  -1.40  KL 0.204  |  点B -0.41  BANANA +0.14 バナナ +5.94  (443s)
+revert ALL168                    1位保持  85.7%  margin保持   41.7%  最小margin  -1.32  KL 0.195  |  点B +3.35  BANANA +1.98 バナナ +4.45  (430s)
+
+対照: 全168本を戻したものと baseline の margin 一致 = True
+-> D:\AI\source\n_chap5\EdgeSLM_Android\results\P12i_20260915_block_revert_ab\results.json

@@ -1,0 +1,214 @@
+"""P3 準備: 本物の Qwen2.5-0.5B を ONNX に export し、**実際に出てくる op を数える**
+
+## なぜこれを最初にやるのか
+
+P2b では Transformer の構成要素13種を**手で書いて**検証した。しかしあれは
+「HuggingFace の export はこういう op を出すだろう」という**私の推測**である。
+実際の export が違う形を出すなら、P2b の結論はそのままは転用できない。
+
+推測した箇所と、違いうる形:
+
+| 部位 | P2b で書いた形 | 実際はこうかもしれない |
+|---|---|---|
+| GQA のヘッド複製 | `Concat` ×rep | `Expand` / `Tile` / `Unsqueeze`+`Expand`+`Reshape` |
+| 因果マスク | `Add`（定数 -60.0） | `Where` / `Trilu` / `Cast`+`Mul` |
+| RMSNorm | `Pow`/`ReduceMean`/`Sqrt`/`Div`/`Mul` | 同じか、`ReduceL2` など別の形 |
+| RoPE | `Split`/`Neg`/`Concat`/`Mul`/`Add` | `Slice` ベース |
+| SwiGLU | `Sigmoid`+`Mul` | 同じか、`Erf` ベースの GELU 相当 |
+
+**C-8（活性化×活性化の MatMul が 16bit で通らない）だけは実装に依存しない。**
+QK^T と PV はどう書いても両辺が活性化だからである。
+
+## 注意: `attn_implementation` で graph が変わる
+
+`sdpa`（既定）だと `scaled_dot_product_attention` が融合されて出るため、
+**HTP に載せたい形（明示的な MatMul / Softmax / MatMul）にならない**。
+本 export は `eager` を強制する。これは「HTP 向けにこう export すべき」という
+方針そのものなので、既定に任せずここで明示する。
+
+## 層数について
+
+op の**種類**を数えるだけなら 24層すべては要らない（同じブロックの繰り返し）。
+`--layers 2` で構造を保ったまま小さく出せる。重みは本物のまま先頭 N 層を使う。
+精度と容量を測る段になったら `--layers 0`（全層）にする。
+"""
+
+from __future__ import annotations
+
+import argparse
+import collections
+import json
+from pathlib import Path
+
+import torch
+
+MODEL_ID = "Qwen/Qwen2.5-0.5B-Instruct"
+
+
+def load(model_id: str, layers: int):
+    from transformers import AutoModelForCausalLM
+
+    kwargs = dict(attn_implementation="eager")
+    try:
+        model = AutoModelForCausalLM.from_pretrained(model_id, dtype=torch.float32, **kwargs)
+    except TypeError:
+        # transformers 4.x は torch_dtype
+        model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.float32, **kwargs)
+    model.eval()
+
+    n_full = len(model.model.layers)
+    if layers and 0 < layers < n_full:
+        # **重みは本物のまま**先頭 N 層だけ残す。op の種類は層数に依らない。
+        model.model.layers = torch.nn.ModuleList(list(model.model.layers[:layers]))
+        model.config.num_hidden_layers = layers
+    return model, n_full
+
+
+class Prefill(torch.nn.Module):
+    """prefill（AR-N）。KVキャッシュを使わない素の forward。
+
+    まず op の一覧を知るのが目的なので、キャッシュの配線は入れない。
+    入れると 24層×2 の入出力が増え、**知りたい op が埋もれる**。
+    """
+
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, input_ids):
+        return self.model(input_ids=input_ids, use_cache=False).logits
+
+
+class OneLayer(torch.nn.Module):
+    """Qwen2 の**デコーダ層1枚だけ**を export するラッパー。
+
+    埋め込み表（151936 x 896 = 1.4億パラメータ）と lm_head を外すので、
+    「**本物の重み・本物の形状でブロックが通るか**」だけを切り離して見られる。
+    埋め込みと出力射影は規模の話なので別に測る（P4/P5）。
+
+    因果マスクは**モデルが内部で作る形（`finfo.min`）をそのまま**与える。
+    C-9（マスク定数の置き換え）がパイプラインで効くことも同時に確かめたいため、
+    ここで手加減しない。
+    """
+
+    def __init__(self, model, seq: int):
+        super().__init__()
+        self.layer = model.model.layers[0]
+        self.rotary = model.model.rotary_emb
+        self.seq = seq
+        neg = torch.finfo(torch.float32).min
+        mask = torch.full((seq, seq), neg, dtype=torch.float32).triu(1)
+        self.register_buffer("mask", mask.view(1, 1, seq, seq), persistent=False)
+        self.register_buffer("pos", torch.arange(seq).unsqueeze(0), persistent=False)
+
+    def forward(self, hidden_states):
+        cos, sin = self.rotary(hidden_states, self.pos)
+        return self.layer(hidden_states,
+                          attention_mask=self.mask,
+                          position_ids=self.pos,
+                          position_embeddings=(cos, sin),
+                          use_cache=False)
+
+
+def op_inventory(path: Path) -> dict:
+    import onnx
+
+    model = onnx.load(str(path), load_external_data=False)
+    counts = collections.Counter(n.op_type for n in model.graph.node)
+    return {
+        "path": str(path).replace("\\", "/"),
+        "nodes": len(model.graph.node),
+        "op_types": len(counts),
+        "counts": dict(sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))),
+        "opset": {o.domain or "": o.version for o in model.opset_import},
+        "initializers": len(model.graph.initializer),
+    }
+
+
+# P2b で手書きした13モデルが使った op（make_op_models.py より）
+P2B_OPS = {
+    "MatMul", "Pow", "ReduceMean", "Add", "Sqrt", "Div", "Mul", "Identity",
+    "SimplifiedLayerNormalization", "LayerNormalization", "Split", "Neg",
+    "Concat", "RotaryEmbedding", "Softmax", "Sigmoid", "Reshape", "Transpose",
+    "Gather",
+}
+
+
+def compare(inv: dict) -> dict:
+    real = set(inv["counts"])
+    return {
+        "in_both": sorted(real & P2B_OPS),
+        "only_in_real_export": sorted(real - P2B_OPS),
+        "only_in_p2b": sorted(P2B_OPS - real),
+    }
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--model-id", default=MODEL_ID)
+    ap.add_argument("--layers", type=int, default=2,
+                    help="先頭N層だけ使う（0 で全層）。op の種類は層数に依らない")
+    ap.add_argument("--seq", type=int, default=16)
+    ap.add_argument("--out", type=Path, default=Path("work/qwen"))
+    ap.add_argument("--opset", type=int, default=17)
+    ap.add_argument("--mode", choices=["prefill", "layer"], default="prefill",
+                    help="layer: デコーダ層1枚だけ（埋め込み・lm_head を外す）")
+    ap.add_argument("--dynamo", action="store_true",
+                    help="新しい exporter を使う。transformers 5.x のマスク生成は "
+                         "aten::diff を含み、旧 TorchScript exporter では出せない")
+    args = ap.parse_args()
+
+    args.out.mkdir(parents=True, exist_ok=True)
+    print(f"=== load {args.model_id} (attn_implementation=eager, fp32, CPU) ===")
+    model, n_full = load(args.model_id, args.layers)
+    n_used = len(model.model.layers)
+    n_param = sum(p.numel() for p in model.parameters())
+    print(f"  layers {n_used}/{n_full}   params {n_param/1e6:.1f}M")
+
+    if args.mode == "layer":
+        wrapper = OneLayer(model, args.seq)
+        example = torch.zeros((1, args.seq, model.config.hidden_size), dtype=torch.float32)
+        in_names, out_names = ["hidden_states"], ["out"]
+        tag = f"layer1_S{args.seq}"
+    else:
+        wrapper = Prefill(model)
+        example = torch.zeros((1, args.seq), dtype=torch.long)
+        in_names, out_names = ["input_ids"], ["logits"]
+        tag = f"prefill_L{n_used}_S{args.seq}"
+
+    onnx_path = args.out / f"qwen05b_{tag}.onnx"
+    print(f"=== export -> {onnx_path} ===")
+    with torch.no_grad():
+        torch.onnx.export(
+            wrapper, (example,), str(onnx_path),
+            input_names=in_names, output_names=out_names,
+            # **動的軸を一切与えない**。QNN EP は動的形状を扱えないため、
+            # ここで dynamic_axes を渡すと後段で必ず作り直しになる。
+            dynamic_axes=None,
+            opset_version=args.opset,
+            do_constant_folding=True,
+            dynamo=args.dynamo,
+        )
+
+    inv = op_inventory(onnx_path)
+    cmp = compare(inv)
+    report = {"model_id": args.model_id, "mode": args.mode,
+              "layers_used": n_used, "layers_full": n_full,
+              "seq": args.seq, "params": n_param, "inventory": inv, "compare_with_p2b": cmp}
+    (args.out / f"{tag}_inventory.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    print(f"\n=== op 一覧（{inv['nodes']} ノード / {inv['op_types']} 種）===")
+    for op, c in inv["counts"].items():
+        mark = "  " if op in P2B_OPS else "★"
+        print(f"  {mark} {op:26s} {c}")
+
+    print("\n=== P2b の手書きモデルとの差分 ===")
+    print(f"  両方にある     : {', '.join(cmp['in_both'])}")
+    print(f"  ★実 export だけ: {', '.join(cmp['only_in_real_export']) or '(なし)'}")
+    print(f"  P2b だけ       : {', '.join(cmp['only_in_p2b']) or '(なし)'}")
+    print(f"\n  -> {args.out / (tag + '_inventory.json')}")
+
+
+if __name__ == "__main__":
+    main()

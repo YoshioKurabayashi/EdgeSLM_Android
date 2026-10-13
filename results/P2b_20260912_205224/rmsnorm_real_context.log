@@ -1,0 +1,14 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\rmsnorm_real\rmsnorm_real_a16w8_mixed_qdq.onnx --preserve_io_datatype --output_path work\ops\rmsnorm_real\ctx\rmsnorm_real.dlc
+  OK  0.01 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\rmsnorm_real\ctx\rmsnorm_real.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file rmsnorm_real_ctx --output_dir work\ops\rmsnorm_real\ctx\ctx_rmsnorm_real --htp_socs sm8350
+  OK  rmsnorm_real_ctx.SM8350.bin  0.04 MiB
+=== S7: qnn-context-binary-utility（socModel の検証用メタデータ） ===
+  OK  work/ops/rmsnorm_real/ctx/rmsnorm_real_meta.json
+
+生成物:
+  DLC : work/ops/rmsnorm_real/ctx/rmsnorm_real.dlc
+  BIN : work/ops/rmsnorm_real/ctx/ctx_rmsnorm_real/rmsnorm_real_ctx.SM8350.bin
+  META: work/ops/rmsnorm_real/ctx/rmsnorm_real_meta.json
+  CMD : work/ops/rmsnorm_real/ctx/rmsnorm_real_commands.txt

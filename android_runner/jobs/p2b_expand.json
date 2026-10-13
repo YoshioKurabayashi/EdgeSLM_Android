@@ -1,0 +1,19 @@
+{
+  "job_id": "p2b_expand_isolate",
+  "task": "op_check",
+  "model": "models/ops/matmul_weight_a16w8_epctx.onnx",
+  "ep": {
+    "provider": "QNN",
+    "backend": "libQnnHtp.so",
+    "options": { "offload_graph_io_quantization": "0", "qnn_context_priority": "high" },
+    "session": { "intra_op_num_threads": 1, "log_severity_level": 2 }
+  },
+  "protocol": { "warmup": 1, "iterations": 3 },
+  "input": { "kind": "random", "seed": 0 },
+  "models": [
+    { "name": "unsqueeze_only", "model": "models/ops/unsqueeze_only_a16w8_mixed_epctx.onnx" },
+    { "name": "expand_only",    "model": "models/ops/expand_only_a16w8_mixed_epctx.onnx" },
+    { "name": "gqa_concat",     "model": "models/ops/gqa_concat_a16w8_mixed_epctx.onnx" },
+    { "name": "gqa_repeat",     "model": "models/ops/gqa_repeat_a16w8_mixed_epctx.onnx" }
+  ]
+}

@@ -1,0 +1,31 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\gqa_repeat\gqa_repeat_a16w8_mixed_qdq.onnx --preserve_io_datatype --output_path work\ops\gqa_repeat\ctx\gqa_repeat.dlc
+  OK  0.01 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\gqa_repeat\ctx\gqa_repeat.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file gqa_repeat_ctx --output_dir work\ops\gqa_repeat\ctx\ctx_gqa_repeat --htp_socs sm8350
+  FAILED. ログ末尾:
+       109.1ms [ ERROR ] C:\repo_release\55_c5652\QAISW\FirstParty\QNN\HTP\HTP\src\hexagon\prepare\tcm_migration.cc:2214::ERROR:no properties registered for q::QNN_Convert
+    
+       155.0ms [ ERROR ] C:\repo_release\55_c5652\QAISW\FirstParty\QNN\HTP\HTP\src\hexagon\prepare\graph_prepare.cc:212::ERROR:could not create op: q::QNN_Convert
+    
+       155.0ms [ ERROR ] C:\repo_release\55_c5652\QAISW\FirstParty\QNN\HTP\HTP\src\hexagon\prepare\graph_prepare.cc:214::ERROR:Op creation failure, op id=0x10 (q::QNN_Convert) total_inputs=3
+    
+       155.0ms [ ERROR ] C:\repo_release\55_c5652\QAISW\FirstParty\QNN\HTP\HTP\src\hexagon\prepare\graph_prepare.cc:200:  Input 0: id=[0x106100000002] op=[*InputSlice@Ff.s4*6.] output0=[class ConcreteTensor<struct Tdefs::PlainFloat_TCM>]
+    
+       155.0ms [ ERROR ] C:\repo_release\55_c5652\QAISW\FirstParty\QNN\HTP\HTP\src\hexagon\prepare\graph_prepare.cc:200:  Input 1: id=[0x109e00000011] op=[ConvLayer.opt.weights_to_vtcm@FB.fB.] output0=[class ConcreteTensor<struct Tdefs::QuantUint8_TCM>]
+    
+       155.0ms [ ERROR ] C:\repo_release\55_c5652\QAISW\FirstParty\QNN\HTP\HTP\src\hexagon\prepare\graph_prepare.cc:200:  Input 2: id=[0x109e00000011] op=[ConvLayer.opt.weights_to_vtcm@FB.fB.] output0=[class ConcreteTensor<struct Tdefs::QuantUint8_TCM>]
+    
+       155.0ms [ ERROR ] C:\repo_release\55_c5652\QAISW\FirstParty\QNN\HTP\HTP\src\hexagon\prepare\graph_prepare.cc:1822::ERROR:Op 0x10 preparation failed with err:-1
+    
+    Completed stage: Graph Optimizations (64684 us)
+       155.4ms [ ERROR ]  <E> "QNN_DATATYPE_FLOAT_32_converted_k_QNN_DATATYPE_FLOAT_16" generated: could not create op
+    
+       155.4ms [ ERROR ]  <E> RouterX86 graph prepare failed 12
+    
+       155.7ms [ ERROR ]  <E> Failed to finalize graph (id: 1) with err 1002
+    
+       162.1ms [ ERROR ] Finalize Graph for Idx = 0 failed with error = 1002
+       162.1ms [ ERROR ] Encountered error 1 while finalizing graphs.
+    Graph Finalize failure
+    Cache binary for SM8350 copied to work\ops\gqa_repeat\ctx\ctx_gqa_repeat/gqa_repeat_ctx.SM8350

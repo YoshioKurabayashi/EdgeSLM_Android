@@ -1,0 +1,14 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\matmul_weight\matmul_weight_a16w8_qdq.onnx --preserve_io_datatype --output_path work\ops\matmul_weight\ctx\matmul_weight.dlc
+  OK  0.03 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\matmul_weight\ctx\matmul_weight.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file matmul_weight_ctx --output_dir work\ops\matmul_weight\ctx\ctx_matmul_weight --htp_socs sm8350
+  OK  matmul_weight_ctx.SM8350.bin  0.06 MiB
+=== S7: qnn-context-binary-utility（socModel の検証用メタデータ） ===
+  OK  work/ops/matmul_weight/ctx/matmul_weight_meta.json
+
+生成物:
+  DLC : work/ops/matmul_weight/ctx/matmul_weight.dlc
+  BIN : work/ops/matmul_weight/ctx/ctx_matmul_weight/matmul_weight_ctx.SM8350.bin
+  META: work/ops/matmul_weight/ctx/matmul_weight_meta.json
+  CMD : work/ops/matmul_weight/ctx/matmul_weight_commands.txt

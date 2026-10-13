@@ -1,0 +1,25 @@
+EdgeSLM_Android P0-b NDKクロスビルド検証
+取得時刻: 2026-09-12 15:02:15
+NDK: 21.4.7075529 / driver: aarch64-linux-android26-clang.cmd
+
+--- 1. コンパイラの存在確認 ---
+OK: D:/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/bin/aarch64-linux-android26-clang.cmd
+
+--- 2. ソース生成 ---
+OK: /d/AI/source/n_chap5/EdgeSLM_Android/build/p0b/hello_arm64.c
+
+--- 3. クロスコンパイル ---
+-rw-r--r-- 1 Yoshio 197609 8224 Sep 12 15:02 /d/AI/source/n_chap5/EdgeSLM_Android/build/p0b/hello_arm64
+
+--- 4. ELFヘッダ検査（e_machine=0xB7 が AArch64） ---
+ 7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+ 03 00 b7 00
+（offset 18-19 が 'b7 00' であれば AArch64。'3e 00' なら x86-64 で誤り）
+
+--- 5. 端末へ転送して実行 ---
+D:/AI/source/n_chap5/EdgeSLM_Android/build/p0b/hello_arm64: 1 file pushed, 0 skipped. 2.1 MB/s (8224 bytes in 0.004s)
+adb: error: failed to copy 'D:/AI/source/n_chap5/EdgeSLM_Android/build/p0b/hello_arm64' to 'C:/Program Files/Git/data/local/tmp/edgeslm/hello_arm64': remote secure_mkdirs failed: No such file or directory
+chmod: /data/local/tmp/edgeslm/hello_arm64: No such file or directory
+--- 端末上での実行結果 ---
+/system/bin/sh: C:/Program: inaccessible or not found
+ERROR: 端末上で実行できなかった（noexec や権限を確認）

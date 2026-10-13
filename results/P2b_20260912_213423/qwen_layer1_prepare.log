@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\AI\source\n_chap5\EdgeSLM_Android\app\pipeline\p2b_ops.py", line 243, in <module>
+    main()
+  File "D:\AI\source\n_chap5\EdgeSLM_Android\app\pipeline\p2b_ops.py", line 220, in main
+    st = prepare(args.work, args.name, args.scheme, args.n_random)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AI\source\n_chap5\EdgeSLM_Android\app\pipeline\p2b_ops.py", line 81, in prepare
+    "spec": {k: spec[k] for k in ("note", "priority", "op_types",
+                ~~~~^^^
+KeyError: 'op_types'

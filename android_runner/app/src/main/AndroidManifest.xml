@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 長時間の連続推論（サーマル試験は5分）中に OS に停止されないため -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- targetSdk 34 では foregroundServiceType に対応する権限が必須 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <!-- Android 13+ の通知権限。未付与でも Service は動くが adb から付与しておく -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--
+      画面消灯のまま連続実行するために PARTIAL_WAKE_LOCK を取る。
+      これを宣言し忘れると acquire() が SecurityException を投げ、
+      Service が起動直後に落ちる（2026-09-12 に実際に踏んだ）。
+    -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:label="EdgeSLM Runner"
+        android:allowBackup="false"
+        android:supportsRtl="false">
+
+        <!--
+          ★★ これが無いと NPU は一切使えない（2026-09-12 に半日かけて突き止めた）
+
+          Android 12+（API 31以降）では、アプリが vendor のネイティブライブラリを
+          dlopen するには <uses-native-library> での明示宣言が必要。宣言しないと
+          アプリのリンカ名前空間に入らず、FastRPC クライアント libcdsprpc.so に
+          到達できない。
+
+          症状は真因を示さない:
+            E qnn_execution_provider.cc GetCapability] QNN SetupBackend failed
+              Failed to create device. Error: QNN_DEVICE_ERROR_INVALID_CONFIG
+            → その後 "EPContext node is not compatible with any execution provider"
+
+          「config が不正」と言われるが実際は「DSP に繋がれない」状態である。
+          required=false にしているのは、DSP を持たない端末でもアプリ自体は
+          起動できるようにするため（ZipDepth も同じ）。
+        -->
+        <uses-native-library android:name="libcdsprpc.so" android:required="false" />
+        <uses-native-library android:name="libadsprpc.so" android:required="false" />
+
+        <!--
+          UI は作らない。このアクティビティは2つの役割だけを持つ。
+          ① インストール直後の「stopped 状態」から抜けるための入口
+          ② Foreground Service をフォアグラウンド文脈から起動する
+             （Android 12+ はバックグラウンドからの FGS 起動を制限するため、
+               アクティビティ経由で起動する必要がある）
+          起動後すぐ finish する。
+        -->
+        <activity
+            android:name=".RunnerActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          exported=true にしているのは adb（shell uid）から am で起動するため。
+          本アプリは検証用であり、一般配布しない。
+        -->
+        <service
+            android:name=".RunnerService"
+            android:exported="true"
+            android:foregroundServiceType="dataSync" />
+    </application>
+</manifest>

@@ -1,0 +1,19 @@
+WROTE work/ops/matmul_weight/matmul_weight_fp32.onnx  nodes=1 in=1 out=1
+WROTE work/ops/matmul_act/matmul_act_fp32.onnx  nodes=1 in=2 out=1
+WROTE work/ops/rmsnorm/rmsnorm_fp32.onnx  nodes=7 in=1 out=1
+WROTE work/ops/rmsnorm_fused/rmsnorm_fused_fp32.onnx  nodes=1 in=1 out=1  ※標準opset外（checker未実施）
+WROTE work/ops/layernorm/layernorm_fp32.onnx  nodes=1 in=1 out=1
+WROTE work/ops/rope/rope_fp32.onnx  nodes=6 in=1 out=1
+WROTE work/ops/rope_fused/rope_fused_fp32.onnx  nodes=1 in=2 out=1  ※標準opset外（checker未実施）
+WROTE work/ops/softmax/softmax_fp32.onnx  nodes=1 in=1 out=1
+WROTE work/ops/silu/silu_fp32.onnx  nodes=3 in=1 out=1
+WROTE work/ops/attention/attention_fp32.onnx  nodes=20 in=1 out=1
+WROTE work/ops/kvcache/kvcache_fp32.onnx  nodes=21 in=3 out=3
+WROTE work/ops/embed/embed_fp32.onnx  nodes=3 in=1 out=1
+WROTE work/ops/block/block_fp32.onnx  nodes=39 in=1 out=1
+WROTE work/ops/gqa_repeat/gqa_repeat_fp32.onnx  nodes=7 in=1 out=1
+WROTE work/ops/rope_slice/rope_slice_fp32.onnx  nodes=8 in=1 out=1
+WROTE work/ops/rmsnorm_real/rmsnorm_real_fp32.onnx  nodes=8 in=1 out=1
+WROTE work/ops/block_real/block_real_fp32.onnx  nodes=60 in=1 out=1
+
+17 models -> work\ops\manifest.json

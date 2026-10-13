@@ -1,0 +1,22 @@
+[
+  {
+    "top1_agreement": 0.8068181818181818,
+    "top5_overlap": 0.7829545454545456,
+    "kl_fp32_to_quant": 0.5476709230589463,
+    "rank_of_fp32_top1_mean": 1284.153409090909,
+    "rank_of_fp32_top1_p95": 448.0,
+    "logits_rel_l2": 0.3488720920852888,
+    "positions": 176,
+    "label": "24層 RMSNorm正規化+u16xu8[v68可]"
+  },
+  {
+    "top1_agreement": 0.045454545454545456,
+    "top5_overlap": 0.030681818181818185,
+    "kl_fp32_to_quant": 10.586164269243609,
+    "rank_of_fp32_top1_mean": 22692.227272727272,
+    "rank_of_fp32_top1_p95": 100813.25,
+    "logits_rel_l2": 1.2900172846084428,
+    "positions": 176,
+    "label": "24層 従来[破綻]"
+  }
+]

@@ -1,0 +1,186 @@
+{
+  "name": "calib_2",
+  "tokens": 6,
+  "window": 256,
+  "meta": {
+    "kind": "calibration"
+  },
+  "checks": [
+    {
+      "position": 0,
+      "logits_rel_l2": 0.0,
+      "top1_same": true,
+      "layer_3_rel_l2": 0.0,
+      "layer_6_rel_l2": 0.0
+    },
+    {
+      "position": 1,
+      "logits_rel_l2": 1.2322989266484958e-06,
+      "top1_same": true,
+      "layer_3_rel_l2": 7.654034748581549e-07,
+      "layer_6_rel_l2": 7.827868065839027e-07
+    },
+    {
+      "position": 2,
+      "logits_rel_l2": 1.157480914314564e-06,
+      "top1_same": true,
+      "layer_3_rel_l2": 6.946592029222907e-07,
+      "layer_6_rel_l2": 8.645046362643992e-07
+    },
+    {
+      "position": 3,
+      "logits_rel_l2": 1.4673398227514634e-06,
+      "top1_same": true,
+      "layer_3_rel_l2": 7.416525973256466e-07,
+      "layer_6_rel_l2": 1.1717431697434018e-06
+    },
+    {
+      "position": 4,
+      "logits_rel_l2": 1.2756932558230743e-06,
+      "top1_same": true,
+      "layer_3_rel_l2": 8.203600993408372e-07,
+      "layer_6_rel_l2": 1.0278510822171046e-06
+    },
+    {
+      "position": 5,
+      "logits_rel_l2": 1.5871624075035375e-06,
+      "top1_same": true,
+      "layer_3_rel_l2": 8.073719692175505e-07,
+      "layer_6_rel_l2": 9.279332584690029e-07
+    }
+  ],
+  "rows": [
+    {
+      "position": 0,
+      "token_id": 16,
+      "phase": "calibration",
+      "turn": 2,
+      "valid_tokens": 1,
+      "evicted": 0,
+      "layer_3": {
+        "min": -151.79127502441406,
+        "max": 6545.71630859375,
+        "max_abs_channel": 35,
+        "channel_35": 6545.71630859375,
+        "abs_gt_1000": 1
+      },
+      "layer_6": {
+        "min": -152.96002197265625,
+        "max": 6544.486328125,
+        "max_abs_channel": 35,
+        "channel_35": 6544.486328125,
+        "abs_gt_1000": 1
+      }
+    },
+    {
+      "position": 1,
+      "token_id": 11,
+      "phase": "calibration",
+      "turn": 2,
+      "valid_tokens": 2,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.8759689331054688,
+        "max": 5.896835803985596,
+        "max_abs_channel": 35,
+        "channel_35": 5.896835803985596,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.0973060131073,
+        "max": 9.583984375,
+        "max_abs_channel": 35,
+        "channel_35": 9.583984375,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 2,
+      "token_id": 220,
+      "phase": "calibration",
+      "turn": 2,
+      "valid_tokens": 3,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.346186399459839,
+        "max": 5.31719970703125,
+        "max_abs_channel": 35,
+        "channel_35": 5.31719970703125,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -3.09433650970459,
+        "max": 10.641192436218262,
+        "max_abs_channel": 35,
+        "channel_35": 10.641192436218262,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 3,
+      "token_id": 17,
+      "phase": "calibration",
+      "turn": 2,
+      "valid_tokens": 4,
+      "evicted": 0,
+      "layer_3": {
+        "min": -1.8428535461425781,
+        "max": 6.325137138366699,
+        "max_abs_channel": 35,
+        "channel_35": 6.325137138366699,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -2.1443347930908203,
+        "max": 11.104260444641113,
+        "max_abs_channel": 35,
+        "channel_35": 11.104260444641113,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 4,
+      "token_id": 11,
+      "phase": "calibration",
+      "turn": 2,
+      "valid_tokens": 5,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.5688257217407227,
+        "max": 4.566943168640137,
+        "max_abs_channel": 35,
+        "channel_35": 4.566943168640137,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -4.26782751083374,
+        "max": 11.289291381835938,
+        "max_abs_channel": 35,
+        "channel_35": 11.289291381835938,
+        "abs_gt_1000": 0
+      }
+    },
+    {
+      "position": 5,
+      "token_id": 220,
+      "phase": "calibration",
+      "turn": 2,
+      "valid_tokens": 6,
+      "evicted": 0,
+      "layer_3": {
+        "min": -2.085686445236206,
+        "max": 4.689522743225098,
+        "max_abs_channel": 35,
+        "channel_35": 4.689522743225098,
+        "abs_gt_1000": 0
+      },
+      "layer_6": {
+        "min": -2.9825668334960938,
+        "max": 11.142553329467773,
+        "max_abs_channel": 35,
+        "channel_35": 11.142553329467773,
+        "abs_gt_1000": 0
+      }
+    }
+  ]
+}

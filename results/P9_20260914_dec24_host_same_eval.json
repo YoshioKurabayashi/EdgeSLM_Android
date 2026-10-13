@@ -1,0 +1,22 @@
+[
+  {
+    "top1_agreement": 0.6875,
+    "top5_overlap": 0.8125,
+    "kl_fp32_to_quant": 0.6797163684873166,
+    "rank_of_fp32_top1_mean": 1908.75,
+    "rank_of_fp32_top1_p95": 6530.249999999993,
+    "logits_rel_l2": 0.31191376059850767,
+    "positions": 48,
+    "label": "per-tensor"
+  },
+  {
+    "top1_agreement": 0.8333333333333334,
+    "top5_overlap": 0.8791666666666668,
+    "kl_fp32_to_quant": 0.07279114714567665,
+    "rank_of_fp32_top1_mean": 1.3958333333333333,
+    "rank_of_fp32_top1_p95": 3.6499999999999986,
+    "logits_rel_l2": 0.14064984225635624,
+    "positions": 48,
+    "label": "per-channel"
+  }
+]

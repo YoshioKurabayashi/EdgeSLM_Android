@@ -1,0 +1,15 @@
+{
+  "fp32": "work/qwen_dec24/qwen05b_decode_L24_C64.onnx",
+  "qdq": "work/ops/qwen_dec24L/qwen_dec24L_final_qdq.onnx",
+  "eval": "work/qwen_dec24/eval_dec24_big.npz",
+  "samples": 48,
+  "metrics": {
+    "top1_agreement": 0.6875,
+    "top5_overlap": 0.8333333333333334,
+    "kl_fp32_to_quant": 0.6715916658795503,
+    "rank_of_fp32_top1_mean": 1743.1666666666667,
+    "rank_of_fp32_top1_p95": 6317.5499999999965,
+    "logits_rel_l2": 0.30718482592931623,
+    "positions": 48
+  }
+}

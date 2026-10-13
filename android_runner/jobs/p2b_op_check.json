@@ -1,0 +1,122 @@
+{
+  "job_id": "p2b_op_check",
+  "task": "op_check",
+  "model": "models/ops/attention_a16w8_mixed_epctx.onnx",
+  "ep": {
+    "provider": "QNN",
+    "backend": "libQnnHtp.so",
+    "options": {
+      "offload_graph_io_quantization": "0",
+      "qnn_context_priority": "high"
+    },
+    "session": {
+      "intra_op_num_threads": 1,
+      "log_severity_level": 2
+    }
+  },
+  "protocol": {
+    "warmup": 2,
+    "iterations": 5
+  },
+  "input": {
+    "kind": "random",
+    "seed": 0
+  },
+  "models": [
+    {
+      "name": "attention_a16w8_mixed",
+      "model": "models/ops/attention_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "attention_a8w8",
+      "model": "models/ops/attention_a8w8_epctx.onnx"
+    },
+    {
+      "name": "block_a16w8_mixed",
+      "model": "models/ops/block_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "block_a8w8",
+      "model": "models/ops/block_a8w8_epctx.onnx"
+    },
+    {
+      "name": "block_real_a16w8_mixed",
+      "model": "models/ops/block_real_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "embed_a16w8",
+      "model": "models/ops/embed_a16w8_epctx.onnx",
+      "input": {
+        "kind": "random",
+        "seed": 0,
+        "int_max": {
+          "ids": 511
+        }
+      }
+    },
+    {
+      "name": "expand_only_a16w8_mixed",
+      "model": "models/ops/expand_only_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "gqa_concat_a16w8_mixed",
+      "model": "models/ops/gqa_concat_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "gqa_repeat_a16w8_mixed",
+      "model": "models/ops/gqa_repeat_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "kvcache_a16w8_mixed",
+      "model": "models/ops/kvcache_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "kvcache_a8w8",
+      "model": "models/ops/kvcache_a8w8_epctx.onnx"
+    },
+    {
+      "name": "layernorm_a16w8",
+      "model": "models/ops/layernorm_a16w8_epctx.onnx"
+    },
+    {
+      "name": "matmul_act_a16w8_mixed",
+      "model": "models/ops/matmul_act_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "matmul_act_a8w8",
+      "model": "models/ops/matmul_act_a8w8_epctx.onnx"
+    },
+    {
+      "name": "matmul_weight_a16w8",
+      "model": "models/ops/matmul_weight_a16w8_epctx.onnx"
+    },
+    {
+      "name": "rmsnorm_a16w8",
+      "model": "models/ops/rmsnorm_a16w8_epctx.onnx"
+    },
+    {
+      "name": "rmsnorm_real_a16w8_mixed",
+      "model": "models/ops/rmsnorm_real_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "rope_a16w8",
+      "model": "models/ops/rope_a16w8_epctx.onnx"
+    },
+    {
+      "name": "rope_slice_a16w8_mixed",
+      "model": "models/ops/rope_slice_a16w8_mixed_epctx.onnx"
+    },
+    {
+      "name": "silu_a16w8",
+      "model": "models/ops/silu_a16w8_epctx.onnx"
+    },
+    {
+      "name": "softmax_a16w8",
+      "model": "models/ops/softmax_a16w8_epctx.onnx"
+    },
+    {
+      "name": "unsqueeze_only_a16w8_mixed",
+      "model": "models/ops/unsqueeze_only_a16w8_mixed_epctx.onnx"
+    }
+  ]
+}

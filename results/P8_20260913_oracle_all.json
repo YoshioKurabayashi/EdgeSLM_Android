@@ -1,0 +1,16 @@
+[
+  {
+    "case": "量子化を全部外す",
+    "spec": "量子化を全部外す:@weights,@layer=0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23,@in=past_,@out=present_",
+    "pairs_removed": 2408,
+    "metrics": {
+      "top1_agreement": 0.6458333333333334,
+      "top5_overlap": 0.8458333333333332,
+      "kl_fp32_to_quant": 0.7058222625947188,
+      "rank_of_fp32_top1_mean": 2380.9375,
+      "rank_of_fp32_top1_p95": 10793.199999999988,
+      "logits_rel_l2": 0.30114501282963063,
+      "positions": 48
+    }
+  }
+]

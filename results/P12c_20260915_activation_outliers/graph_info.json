@@ -1,0 +1,354 @@
+[
+  {
+    "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\work\\qwen3_dec28c256\\qwen05b_decode_L28_C256.onnx",
+    "nodes": [
+      {
+        "name": "node_add_53",
+        "op": "Add",
+        "inputs": [
+          "add_51",
+          "linear_41"
+        ],
+        "outputs": [
+          "add_53"
+        ]
+      },
+      {
+        "name": "node_pow_25",
+        "op": "Pow",
+        "inputs": [
+          "add_53",
+          "val_0"
+        ],
+        "outputs": [
+          "pow_25"
+        ]
+      },
+      {
+        "name": "node_mul_84",
+        "op": "Mul",
+        "inputs": [
+          "add_53",
+          "rsqrt_24"
+        ],
+        "outputs": [
+          "mul_84"
+        ]
+      },
+      {
+        "name": "node_add_60",
+        "op": "Add",
+        "inputs": [
+          "add_53",
+          "linear_45"
+        ],
+        "outputs": [
+          "add_60"
+        ]
+      }
+    ],
+    "params": {},
+    "outputs": [
+      "logits",
+      "present_k_0",
+      "present_v_0",
+      "present_k_1",
+      "present_v_1",
+      "present_k_2",
+      "present_v_2",
+      "present_k_3",
+      "present_v_3",
+      "present_k_4",
+      "present_v_4",
+      "present_k_5",
+      "present_v_5",
+      "present_k_6",
+      "present_v_6",
+      "present_k_7",
+      "present_v_7",
+      "present_k_8",
+      "present_v_8",
+      "present_k_9",
+      "present_v_9",
+      "present_k_10",
+      "present_v_10",
+      "present_k_11",
+      "present_v_11",
+      "present_k_12",
+      "present_v_12",
+      "present_k_13",
+      "present_v_13",
+      "present_k_14",
+      "present_v_14",
+      "present_k_15",
+      "present_v_15",
+      "present_k_16",
+      "present_v_16",
+      "present_k_17",
+      "present_v_17",
+      "present_k_18",
+      "present_v_18",
+      "present_k_19",
+      "present_v_19",
+      "present_k_20",
+      "present_v_20",
+      "present_k_21",
+      "present_v_21",
+      "present_k_22",
+      "present_v_22",
+      "present_k_23",
+      "present_v_23",
+      "present_k_24",
+      "present_v_24",
+      "present_k_25",
+      "present_v_25",
+      "present_k_26",
+      "present_v_26",
+      "present_k_27",
+      "present_v_27"
+    ]
+  },
+  {
+    "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\work\\ops\\qwen3_dec28c256\\qwen3_dec28c256_prepped.onnx",
+    "nodes": [
+      {
+        "name": "node_add_53",
+        "op": "Add",
+        "inputs": [
+          "add_51",
+          "linear_41"
+        ],
+        "outputs": [
+          "add_53"
+        ]
+      },
+      {
+        "name": "node_pow_25_abs_n",
+        "op": "Abs",
+        "inputs": [
+          "add_53"
+        ],
+        "outputs": [
+          "node_pow_25_abs"
+        ]
+      },
+      {
+        "name": "node_pow_25_xs_n",
+        "op": "Mul",
+        "inputs": [
+          "add_53",
+          "node_pow_25_rmax"
+        ],
+        "outputs": [
+          "node_pow_25_xs"
+        ]
+      },
+      {
+        "name": "node_add_60",
+        "op": "Add",
+        "inputs": [
+          "add_53",
+          "linear_45"
+        ],
+        "outputs": [
+          "add_60"
+        ]
+      }
+    ],
+    "params": {},
+    "outputs": [
+      "logits",
+      "present_k_0",
+      "present_v_0",
+      "present_k_1",
+      "present_v_1",
+      "present_k_2",
+      "present_v_2",
+      "present_k_3",
+      "present_v_3",
+      "present_k_4",
+      "present_v_4",
+      "present_k_5",
+      "present_v_5",
+      "present_k_6",
+      "present_v_6",
+      "present_k_7",
+      "present_v_7",
+      "present_k_8",
+      "present_v_8",
+      "present_k_9",
+      "present_v_9",
+      "present_k_10",
+      "present_v_10",
+      "present_k_11",
+      "present_v_11",
+      "present_k_12",
+      "present_v_12",
+      "present_k_13",
+      "present_v_13",
+      "present_k_14",
+      "present_v_14",
+      "present_k_15",
+      "present_v_15",
+      "present_k_16",
+      "present_v_16",
+      "present_k_17",
+      "present_v_17",
+      "present_k_18",
+      "present_v_18",
+      "present_k_19",
+      "present_v_19",
+      "present_k_20",
+      "present_v_20",
+      "present_k_21",
+      "present_v_21",
+      "present_k_22",
+      "present_v_22",
+      "present_k_23",
+      "present_v_23",
+      "present_k_24",
+      "present_v_24",
+      "present_k_25",
+      "present_v_25",
+      "present_k_26",
+      "present_v_26",
+      "present_k_27",
+      "present_v_27"
+    ]
+  },
+  {
+    "path": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\work\\ops\\qwen3_dec28c256\\qwen3_dec28c256_final_qdq.onnx",
+    "nodes": [
+      {
+        "name": "node_add_53",
+        "op": "Add",
+        "inputs": [
+          "add_51_DequantizeLinear_Output",
+          "linear_41_DequantizeLinear_Output"
+        ],
+        "outputs": [
+          "add_53"
+        ]
+      },
+      {
+        "name": "add_53_QuantizeLinear",
+        "op": "QuantizeLinear",
+        "inputs": [
+          "add_53",
+          "add_53_scale",
+          "add_53_zero_point"
+        ],
+        "outputs": [
+          "add_53_QuantizeLinear_Output"
+        ]
+      },
+      {
+        "name": "add_53_DequantizeLinear",
+        "op": "DequantizeLinear",
+        "inputs": [
+          "add_53_QuantizeLinear_Output",
+          "add_53_scale",
+          "add_53_zero_point"
+        ],
+        "outputs": [
+          "add_53_DequantizeLinear_Output"
+        ]
+      },
+      {
+        "name": "node_pow_25_abs_n",
+        "op": "Abs",
+        "inputs": [
+          "add_53_DequantizeLinear_Output"
+        ],
+        "outputs": [
+          "node_pow_25_abs"
+        ]
+      },
+      {
+        "name": "node_pow_25_xs_n",
+        "op": "Mul",
+        "inputs": [
+          "add_53_DequantizeLinear_Output",
+          "node_pow_25_rmax_DequantizeLinear_Output"
+        ],
+        "outputs": [
+          "node_pow_25_xs"
+        ]
+      },
+      {
+        "name": "node_add_60",
+        "op": "Add",
+        "inputs": [
+          "add_53_DequantizeLinear_Output",
+          "linear_45_DequantizeLinear_Output"
+        ],
+        "outputs": [
+          "add_60"
+        ]
+      }
+    ],
+    "params": {
+      "add_53_zero_point": 1496,
+      "add_53_scale": 0.11332666128873825
+    },
+    "outputs": [
+      "logits",
+      "present_k_0",
+      "present_v_0",
+      "present_k_1",
+      "present_v_1",
+      "present_k_2",
+      "present_v_2",
+      "present_k_3",
+      "present_v_3",
+      "present_k_4",
+      "present_v_4",
+      "present_k_5",
+      "present_v_5",
+      "present_k_6",
+      "present_v_6",
+      "present_k_7",
+      "present_v_7",
+      "present_k_8",
+      "present_v_8",
+      "present_k_9",
+      "present_v_9",
+      "present_k_10",
+      "present_v_10",
+      "present_k_11",
+      "present_v_11",
+      "present_k_12",
+      "present_v_12",
+      "present_k_13",
+      "present_v_13",
+      "present_k_14",
+      "present_v_14",
+      "present_k_15",
+      "present_v_15",
+      "present_k_16",
+      "present_v_16",
+      "present_k_17",
+      "present_v_17",
+      "present_k_18",
+      "present_v_18",
+      "present_k_19",
+      "present_v_19",
+      "present_k_20",
+      "present_v_20",
+      "present_k_21",
+      "present_v_21",
+      "present_k_22",
+      "present_v_22",
+      "present_k_23",
+      "present_v_23",
+      "present_k_24",
+      "present_v_24",
+      "present_k_25",
+      "present_v_25",
+      "present_k_26",
+      "present_v_26",
+      "present_k_27",
+      "present_v_27"
+    ]
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "groups": {
+    "first": {
+      "count": 5,
+      "min": -169.5126495361328,
+      "max": 7257.35009765625,
+      "rms": 208.7308652351618,
+      "hf_vs_export": {
+        "max_abs": 0.00390625,
+        "rel_l2": 4.1843572174064653e-07
+      },
+      "hf_vs_prepped": {
+        "max_abs": 0.9638671875,
+        "rel_l2": 9.612397179250968e-05
+      }
+    },
+    "later": {
+      "count": 25,
+      "min": -7.515928745269775,
+      "max": 17.262359619140625,
+      "rms": 0.6842624591664686,
+      "hf_vs_export": {
+        "max_abs": 7.62939453125e-06,
+        "rel_l2": 1.1419570792309453e-06
+      },
+      "hf_vs_prepped": {
+        "max_abs": 0.00244903564453125,
+        "rel_l2": 0.0003546493232003797
+      }
+    }
+  },
+  "max_per_sample_export_rel_l2": 1.8293195901624985e-06,
+  "max_per_sample_prepped_rel_l2": 0.0006231467345936502,
+  "device_input": {
+    "token_id": 271,
+    "valid_tokens": 41
+  },
+  "host_comparison_range": {
+    "min": -4.079759806394577,
+    "max": 10.539379499852657,
+    "unique_codes": 30,
+    "code_span": 129,
+    "quant_range_span": 7426.862747557461,
+    "span_ratio": 508.0232558139535
+  },
+  "largest_5000_fraction": 0.00016276041666666666
+}

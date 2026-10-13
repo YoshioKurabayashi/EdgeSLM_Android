@@ -1,0 +1,1 @@
+{"job_id": "only_backend", "task": "probe", "model": "models/zipdepth.onnx", "ep": {"provider": "QNN", "backend": "libQnnHtp.so", "options": {}, "session": {"intra_op_num_threads": 1, "log_severity_level": 0}}}

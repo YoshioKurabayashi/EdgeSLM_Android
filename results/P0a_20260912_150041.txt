@@ -1,0 +1,271 @@
+EdgeSLM_Android P0-a 端末素性取得
+取得時刻: 2026-09-12 15:00:41
+ホスト: MINGW64_NT-10.0-26200 / adb: Android Debug Bridge version 1.0.41
+
+############################################################
+# 0. 接続確認
+############################################################
+List of devices attached
+QV780Y6DA3             device product:SOG05_jp_kdi model:SOG05 device:SOG05 transport_id:2
+
+
+############################################################
+# 1. 端末識別（期待値: ro.board.platform=lahaina / ro.product.cpu.abi=arm64-v8a）
+############################################################
+ro.board.platform = lahaina
+ro.product.cpu.abi = arm64-v8a
+ro.product.cpu.abilist = arm64-v8a,armeabi-v7a,armeabi
+ro.build.version.release = 13
+ro.build.version.sdk = 33
+ro.build.id = 61.2.D.0.153
+ro.build.display.id = 61.2.D.0.153 release-keys
+ro.product.manufacturer = Sony
+ro.product.model = SOG05
+ro.product.name = SOG05_jp_kdi
+ro.hardware = qcom
+ro.soc.manufacturer = QTI
+ro.soc.model = SM8350
+
+############################################################
+# 2. CPU 構成（big.LITTLE の確認。スレッド数・親和性の設計に使う）
+############################################################
+cores: 8
+cpu0 max=1804800 min=300000 gov=schedutil
+cpu1 max=1804800 min=300000 gov=schedutil
+cpu2 max=1804800 min=300000 gov=schedutil
+cpu3 max=1804800 min=300000 gov=schedutil
+cpu4 max=2419200 min=710400 gov=schedutil
+cpu5 max=2419200 min=710400 gov=schedutil
+cpu6 max=2419200 min=710400 gov=schedutil
+cpu7 max=2841600 min=844800 gov=schedutil
+
+############################################################
+# 3. メモリ
+############################################################
+MemTotal:        7370900 kB
+MemFree:          218056 kB
+MemAvailable:    3021052 kB
+SwapTotal:       4194300 kB
+SwapFree:        3234456 kB
+
+############################################################
+# 4. thermal zone（★基本設計①の主入力。type と現在温度、読めないゾーンも記録）
+############################################################
+thermal_zone0  type=modem-mmw0-usr  temp=27000
+thermal_zone1  type=modem-mmw1-usr  temp=27000
+thermal_zone10  type=modem-mmw2-mod-usr  temp=2000
+thermal_zone11  type=modem-mmw3-mod-usr  temp=27000
+thermal_zone12  type=mdmss-1-step  temp=33400
+thermal_zone13  type=mdmss-2-step  temp=32700
+thermal_zone14  type=cpu-0-0-step  temp=35600
+thermal_zone15  type=cpu-0-1-step  temp=34900
+thermal_zone16  type=cpu-0-2-step  temp=34300
+thermal_zone17  type=cpu-0-3-step  temp=35300
+thermal_zone18  type=cpu-1-0-step  temp=35900
+thermal_zone19  type=cpu-1-1-step  temp=39300
+thermal_zone2  type=modem-mmw2-usr  temp=27000
+thermal_zone20  type=cpu-1-2-step  temp=35900
+thermal_zone21  type=cpu-1-3-step  temp=37600
+thermal_zone22  type=cpu-1-4-step  temp=38900
+thermal_zone23  type=cpu-1-5-step  temp=36300
+thermal_zone24  type=cpu-1-6-step  temp=37300
+thermal_zone25  type=cpu-1-7-step  temp=36600
+thermal_zone26  type=gpuss-0-step  temp=33400
+thermal_zone27  type=gpuss-1-step  temp=33700
+thermal_zone28  type=nspss-0-step  temp=33100
+thermal_zone29  type=nspss-1-step  temp=33100
+thermal_zone3  type=modem-mmw3-usr  temp=27000
+thermal_zone30  type=nspss-2-step  temp=33100
+thermal_zone31  type=pop-mem-step  temp=34400
+thermal_zone32  type=aoss-0-usr  temp=34600
+thermal_zone33  type=cpu-0-0-usr  temp=35300
+thermal_zone34  type=cpu-0-1-usr  temp=35600
+thermal_zone35  type=cpu-0-2-usr  temp=34300
+thermal_zone36  type=cpu-0-3-usr  temp=35600
+thermal_zone37  type=cpuss-0-usr  temp=36900
+thermal_zone38  type=cpuss-1-usr  temp=36900
+thermal_zone39  type=cpu-1-0-usr  temp=36300
+thermal_zone4  type=modem-skin-usr  temp=27000
+thermal_zone40  type=cpu-1-1-usr  temp=36300
+thermal_zone41  type=cpu-1-2-usr  temp=39900
+thermal_zone42  type=cpu-1-3-usr  temp=39900
+thermal_zone43  type=cpu-1-4-usr  temp=35900
+thermal_zone44  type=cpu-1-5-usr  temp=39900
+thermal_zone45  type=cpu-1-6-usr  temp=36300
+thermal_zone46  type=cpu-1-7-usr  temp=35900
+thermal_zone47  type=aoss-1-usr  temp=34700
+thermal_zone48  type=gpuss-0-usr  temp=34100
+thermal_zone49  type=gpuss-1-usr  temp=33700
+thermal_zone5  type=modem-wifi-usr  temp=27000
+thermal_zone50  type=nspss-0-usr  temp=33400
+thermal_zone51  type=nspss-1-usr  temp=33100
+thermal_zone52  type=nspss-2-usr  temp=33400
+thermal_zone53  type=video-usr  temp=35400
+thermal_zone54  type=ddr-usr  temp=34700
+thermal_zone55  type=mdmss-0-usr  temp=34100
+thermal_zone56  type=mdmss-1-usr  temp=34100
+thermal_zone57  type=mdmss-2-usr  temp=33400
+thermal_zone58  type=mdmss-3-usr  temp=33700
+thermal_zone59  type=camera-0-usr  temp=34100
+thermal_zone6  type=modem-ambient-usr  temp=27000
+thermal_zone60  type=camera-1-usr  temp=33400
+thermal_zone61  type=mx-pe-step  temp=0
+thermal_zone62  type=cx-pe-step  temp=0
+thermal_zone63  type=pm8350_tz  temp=31451
+thermal_zone64  type=pm8350c_tz  temp=37000
+thermal_zone65  type=pm8350c-bcl-lvl0  temp=-274000
+thermal_zone66  type=pm8350c-bcl-lvl1  temp=-274000
+thermal_zone67  type=pm8350c-bcl-lvl2  temp=-274000
+thermal_zone68  type=pm8350b_tz  temp=32220
+thermal_zone69  type=pm8350b-ibat-lvl0  temp=-78
+thermal_zone7  type=modem-streamer-usr  temp=27000
+thermal_zone70  type=pm8350b-ibat-lvl1  temp=-78
+thermal_zone71  type=pm8350b-bcl-lvl0  temp=0
+thermal_zone72  type=pm8350b-bcl-lvl1  temp=0
+thermal_zone73  type=pm8350b-bcl-lvl2  temp=0
+thermal_zone74  type=socd  temp=50
+thermal_zone75  type=pmr735a_tz  temp=29578
+thermal_zone76  type=xo-therm-step  temp=32900
+thermal_zone77  type=sdm_therm  temp=33785
+thermal_zone78  type=flash_therm  temp=30692
+thermal_zone79  type=assign2_therm  temp=31768
+thermal_zone8  type=modem-mmw0-mod-usr  temp=27000
+thermal_zone80  type=assign3_therm  temp=32462
+thermal_zone81  type=assign1_therm  temp=31505
+thermal_zone82  type=xo_therm  temp=32911
+thermal_zone83  type=qtm_w_therm  temp=27000
+thermal_zone84  type=qtm_n_therm  temp=32000
+thermal_zone85  type=sdr_mmw_therm  temp=32000
+thermal_zone86  type=vbat  temp=3836
+thermal_zone87  type=sony_cam_back0  temp=UNREADABLE
+thermal_zone88  type=sony_cam_back1  temp=UNREADABLE
+thermal_zone89  type=sony_cam_back1_ext  temp=UNREADABLE
+thermal_zone9  type=modem-mmw1-mod-usr  temp=2000
+thermal_zone90  type=sony_cam_back2  temp=UNREADABLE
+thermal_zone91  type=battery  temp=29900
+thermal_zone92  type=usb  temp=-40000
+
+############################################################
+# 5. cooling device（スロットリングの観測対象）
+############################################################
+cooling_device0  type=thermal-cpufreq-0  cur=0/max=15
+cooling_device1  type=thermal-cpufreq-4  cur=0/max=15
+cooling_device10  type=cpu-isolate4  cur=0/max=1
+cooling_device11  type=cpu-isolate5  cur=0/max=1
+cooling_device12  type=cpu-isolate6  cur=0/max=1
+cooling_device13  type=cpu-hotplug4  cur=0/max=1
+cooling_device14  type=cpu-isolate7  cur=0/max=1
+cooling_device15  type=cpu-hotplug5  cur=0/max=1
+cooling_device16  type=cpu-hotplug3  cur=0/max=1
+cooling_device17  type=cpu-hotplug6  cur=0/max=1
+cooling_device18  type=cpu-hotplug7  cur=0/max=1
+cooling_device19  type=thermal-cluster-4-7  cur=0/max=18
+cooling_device2  type=thermal-cpufreq-7  cur=0/max=18
+cooling_device20  type=thermal-devfreq-0  cur=0/max=9
+cooling_device21  type=ddr-cdev  cur=0/max=12
+cooling_device22  type=panel0-backlight  cur=0/max=1023
+cooling_device23  type=cdsp_hw  cur=0/max=1
+cooling_device24  type=cdsp  cur=0/max=7
+cooling_device25  type=battery  cur=0/max=4
+cooling_device26  type=modem_pa  cur=0/max=3
+cooling_device27  type=modem_pa_fr1  cur=0/max=3
+cooling_device28  type=modem_tj  cur=0/max=3
+cooling_device29  type=modem_bcl  cur=0/max=3
+cooling_device3  type=cpu-isolate0  cur=0/max=1
+cooling_device30  type=modem_charge_state  cur=0/max=3
+cooling_device31  type=modem_skin  cur=0/max=3
+cooling_device32  type=modem_mmw0  cur=0/max=3
+cooling_device33  type=modem_mmw1  cur=0/max=3
+cooling_device34  type=modem_mmw2  cur=0/max=3
+cooling_device35  type=modem_mmw3  cur=0/max=3
+cooling_device36  type=modem_mmw_skin0  cur=0/max=3
+cooling_device37  type=modem_mmw_skin1  cur=0/max=3
+cooling_device38  type=modem_mmw_skin2  cur=0/max=3
+cooling_device39  type=modem_mmw_skin3  cur=0/max=3
+cooling_device4  type=cpu-isolate1  cur=0/max=1
+cooling_device40  type=modem_mmw_skin0_dsc  cur=0/max=15
+cooling_device41  type=modem_mmw_skin1_dsc  cur=0/max=15
+cooling_device42  type=modem_mmw_skin2_dsc  cur=0/max=15
+cooling_device43  type=modem_mmw_skin3_dsc  cur=0/max=15
+cooling_device44  type=modem_wlan  cur=0/max=4
+cooling_device45  type=modem_skin_lte_dsc  cur=0/max=255
+cooling_device46  type=modem_skin_nr_dsc  cur=0/max=255
+cooling_device47  type=modem_pa_dsc  cur=0/max=255
+cooling_device48  type=modem_pa_fr1_dsc  cur=0/max=255
+cooling_device5  type=cpu-isolate2  cur=0/max=1
+cooling_device6  type=cpu-hotplug0  cur=0/max=1
+cooling_device7  type=cpu-hotplug1  cur=0/max=1
+cooling_device8  type=cpu-hotplug2  cur=0/max=1
+cooling_device9  type=cpu-isolate3  cur=0/max=1
+
+############################################################
+# 6. ★QNN / FastRPC ランタイムの在否（P1 の成否見通しに直結）
+############################################################
+FOUND  /vendor/lib64/libcdsprpc.so
+FOUND  /vendor/lib/libcdsprpc.so
+FOUND  /vendor/lib64/libadsprpc.so
+FOUND  /vendor/lib64/libsdsprpc.so
+--- /vendor/lib64 の QNN/SNPE 関連 ---
+libSNPE.so
+libadsp_default_listener.so
+libadsprpc.so
+libcdsp_default_listener.so
+libcdsprpc.so
+libfastcvdsp_stub.so
+libhta.so
+libmdsprpc.so
+libsdsprpc.so
+libsnpe_dsp_domains_v3.so
+libsysmon_cdsp_skel.so
+vendor.qti.hardware.dsp@1.0.so
+--- DSP 用 rfsa ディレクトリ ---
+/vendor/lib/rfsa/adsp
+(none)
+--- rpc デバイスノード ---
+crw-rw-r-- 1 system system 506,   0 1971-03-16 00:33 /dev/adsprpc-smd
+crw-r--r-- 1 system system 506,   1 1971-03-16 00:33 /dev/adsprpc-smd-secure
+
+############################################################
+# 7. GPU（Adreno 660 / OpenCL の在否）
+############################################################
+libEGL_adreno.so
+libGLESv2_adreno.so
+libOpenCL.so
+libadreno_app_profiles.so
+libadreno_utils.so
+libgsl.so
+libq3dtools_adreno.so
+Adreno660v2
+
+############################################################
+# 8. /data/local/tmp の実行可否（P0-b のネイティブCLI配置先）
+############################################################
+EXEC_OK
+EXEC_OK
+--- 空き容量 ---
+Filesystem       1K-blocks    Used Available Use% Mounted on
+/dev/block/dm-42 105280892 8781672  96368148   9% /storage/emulated/0/Android/obb
+
+############################################################
+# 9. 測定条件として記録すべき項目（電池・充電・SELinux）
+############################################################
+  AC powered: false
+  USB powered: true
+  Wireless powered: false
+  status: 2
+  present: true
+  level: 50
+  temperature: 299
+SELinux: Enforcing
+uptime:  15:00:45 up  5:05,  0 users,  load average: 3.85, 4.46, 4.67
+
+############################################################
+# 10. まとめ（期待値との突き合わせ）
+############################################################
+ro.board.platform = 'lahaina'  (期待: lahaina)
+ro.product.cpu.abi = 'arm64-v8a'  (期待: arm64-v8a)
+Android SDK level  = '33' (minSdk 26 以上であること)
+=> PLATFORM OK
+=> ABI OK
+
+（このファイルの内容をそのまま基本設計①の入力とする）

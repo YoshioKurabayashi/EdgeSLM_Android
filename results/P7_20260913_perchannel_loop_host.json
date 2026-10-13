@@ -1,0 +1,38 @@
+[
+  {
+    "prompt": "The capital city of Japan is Tokyo. The capital city of France is",
+    "fp32": " Paris. The capital city of the United States is Washington D. C. The capital city of the United Kingdom is London",
+    "per-tensor": {
+      "host_match": 9,
+      "device_match": -1
+    },
+    "per-channel": {
+      "host_match": 24,
+      "device_match": -1
+    }
+  },
+  {
+    "prompt": "The largest planet in our solar system is",
+    "fp32": " ____\nA. Venus\nB. Mars\nC. Jupiter\nD. Saturn\nAnswer:\n\nC\n\nThe most",
+    "per-tensor": {
+      "host_match": 18,
+      "device_match": -1
+    },
+    "per-channel": {
+      "host_match": 20,
+      "device_match": -1
+    }
+  },
+  {
+    "prompt": "Water boils at one hundred degrees Celsius. Ice melts at",
+    "fp32": " a certain temperature. If the temperature of a pot of water is increased from forty-five degrees Celsius to one hundred degrees Celsius",
+    "per-tensor": {
+      "host_match": 1,
+      "device_match": -1
+    },
+    "per-channel": {
+      "host_match": 0,
+      "device_match": -1
+    }
+  }
+]

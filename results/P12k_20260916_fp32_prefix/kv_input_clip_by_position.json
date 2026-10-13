@@ -1,0 +1,1734 @@
+{
+ "chat_original": [
+  {
+   "pos": 0,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 29,
+   "worst_ratio": 1.681456208229065,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 1,
+   "token": "system",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.126908302307129,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 2,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.5374796390533447,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 3,
+   "token": "あなた",
+   "phase": "prompt",
+   "clipped": 5,
+   "worst_ratio": 1.3350633382797241,
+   "worst_tensor": "past_v_15"
+  },
+  {
+   "pos": 4,
+   "token": "は",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.204705834388733,
+   "worst_tensor": "past_v_11"
+  },
+  {
+   "pos": 5,
+   "token": "車",
+   "phase": "prompt",
+   "clipped": 6,
+   "worst_ratio": 1.2577255964279175,
+   "worst_tensor": "past_v_6"
+  },
+  {
+   "pos": 6,
+   "token": "載",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.4258549213409424,
+   "worst_tensor": "past_v_6"
+  },
+  {
+   "pos": 7,
+   "token": "ア",
+   "phase": "prompt",
+   "clipped": 1033,
+   "worst_ratio": 8.52975845336914,
+   "worst_tensor": "past_v_14"
+  },
+  {
+   "pos": 8,
+   "token": "シ",
+   "phase": "prompt",
+   "clipped": 989,
+   "worst_ratio": 7.816486835479736,
+   "worst_tensor": "past_v_14"
+  },
+  {
+   "pos": 9,
+   "token": "スタ",
+   "phase": "prompt",
+   "clipped": 23,
+   "worst_ratio": 1.4225586652755737,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 10,
+   "token": "ント",
+   "phase": "prompt",
+   "clipped": 10,
+   "worst_ratio": 1.4000864028930664,
+   "worst_tensor": "past_v_16"
+  },
+  {
+   "pos": 11,
+   "token": "です",
+   "phase": "prompt",
+   "clipped": 2,
+   "worst_ratio": 1.2366968393325806,
+   "worst_tensor": "past_v_15"
+  },
+  {
+   "pos": 12,
+   "token": "。",
+   "phase": "prompt",
+   "clipped": 2,
+   "worst_ratio": 1.0810284614562988,
+   "worst_tensor": "past_v_8"
+  },
+  {
+   "pos": 13,
+   "token": "短",
+   "phase": "prompt",
+   "clipped": 13,
+   "worst_ratio": 1.4470218420028687,
+   "worst_tensor": "past_v_22"
+  },
+  {
+   "pos": 14,
+   "token": "く",
+   "phase": "prompt",
+   "clipped": 2,
+   "worst_ratio": 1.0396745204925537,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 15,
+   "token": "答",
+   "phase": "prompt",
+   "clipped": 13,
+   "worst_ratio": 1.1352742910385132,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 16,
+   "token": "えて",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.2056962251663208,
+   "worst_tensor": "past_v_6"
+  },
+  {
+   "pos": 17,
+   "token": "ください",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.152136206626892,
+   "worst_tensor": "past_k_8"
+  },
+  {
+   "pos": 18,
+   "token": "。",
+   "phase": "prompt",
+   "clipped": 4,
+   "worst_ratio": 1.1524739265441895,
+   "worst_tensor": "past_v_12"
+  },
+  {
+   "pos": 19,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 21,
+   "worst_ratio": 1.8881497383117676,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 20,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.2564014196395874,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 21,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 16,
+   "worst_ratio": 1.309033989906311,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 22,
+   "token": "user",
+   "phase": "prompt",
+   "clipped": 7,
+   "worst_ratio": 1.1369844675064087,
+   "worst_tensor": "past_k_6"
+  },
+  {
+   "pos": 23,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.0794079303741455,
+   "worst_tensor": "past_v_4"
+  },
+  {
+   "pos": 24,
+   "token": "エ",
+   "phase": "prompt",
+   "clipped": 22,
+   "worst_ratio": 1.9630405902862549,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 25,
+   "token": "ア",
+   "phase": "prompt",
+   "clipped": 24,
+   "worst_ratio": 1.4795581102371216,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 26,
+   "token": "コン",
+   "phase": "prompt",
+   "clipped": 14,
+   "worst_ratio": 1.350820541381836,
+   "worst_tensor": "past_v_16"
+  },
+  {
+   "pos": 27,
+   "token": "を",
+   "phase": "prompt",
+   "clipped": 4,
+   "worst_ratio": 1.189651608467102,
+   "worst_tensor": "past_k_20"
+  },
+  {
+   "pos": 28,
+   "token": "2",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.3634212017059326,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 29,
+   "token": "2",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.441637396812439,
+   "worst_tensor": "past_v_7"
+  },
+  {
+   "pos": 30,
+   "token": "度",
+   "phase": "prompt",
+   "clipped": 10,
+   "worst_ratio": 1.2519174814224243,
+   "worst_tensor": "past_v_17"
+  },
+  {
+   "pos": 31,
+   "token": "にして",
+   "phase": "prompt",
+   "clipped": 2,
+   "worst_ratio": 1.1430788040161133,
+   "worst_tensor": "past_v_7"
+  },
+  {
+   "pos": 32,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 27,
+   "worst_ratio": 1.723268985748291,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 33,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.260716199874878,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 34,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 17,
+   "worst_ratio": 1.3391878604888916,
+   "worst_tensor": "past_v_15"
+  },
+  {
+   "pos": 35,
+   "token": "assistant",
+   "phase": "prompt",
+   "clipped": 13,
+   "worst_ratio": 1.2011148929595947,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 36,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 5,
+   "worst_ratio": 1.2137116193771362,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 37,
+   "token": "<think>",
+   "phase": "prompt",
+   "clipped": 16,
+   "worst_ratio": 1.3903559446334839,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 38,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 5,
+   "worst_ratio": 1.2588196992874146,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 39,
+   "token": "</think>",
+   "phase": "prompt",
+   "clipped": 23,
+   "worst_ratio": 1.3629695177078247,
+   "worst_tensor": "past_v_0"
+  },
+  {
+   "pos": 40,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.1674588918685913,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 41,
+   "token": "エ",
+   "phase": "generated",
+   "clipped": 20,
+   "worst_ratio": 1.8173450231552124,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 42,
+   "token": "ア",
+   "phase": "generated",
+   "clipped": 24,
+   "worst_ratio": 1.629501461982727,
+   "worst_tensor": "past_v_9"
+  },
+  {
+   "pos": 43,
+   "token": "コン",
+   "phase": "generated",
+   "clipped": 12,
+   "worst_ratio": 1.3026098012924194,
+   "worst_tensor": "past_v_16"
+  },
+  {
+   "pos": 44,
+   "token": "を",
+   "phase": "generated",
+   "clipped": 8,
+   "worst_ratio": 1.213804006576538,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 45,
+   "token": "2",
+   "phase": "generated",
+   "clipped": 1032,
+   "worst_ratio": 8.16395092010498,
+   "worst_tensor": "past_v_14"
+  },
+  {
+   "pos": 46,
+   "token": "2",
+   "phase": "generated",
+   "clipped": 14,
+   "worst_ratio": 1.4910064935684204,
+   "worst_tensor": "past_v_7"
+  },
+  {
+   "pos": 47,
+   "token": "度",
+   "phase": "generated",
+   "clipped": 10,
+   "worst_ratio": 1.1506749391555786,
+   "worst_tensor": "past_k_8"
+  },
+  {
+   "pos": 48,
+   "token": "に",
+   "phase": "generated",
+   "clipped": 10,
+   "worst_ratio": 1.1666179895401,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 49,
+   "token": "設定",
+   "phase": "generated",
+   "clipped": 2,
+   "worst_ratio": 1.1031514406204224,
+   "worst_tensor": "past_v_4"
+  },
+  {
+   "pos": 50,
+   "token": "できます",
+   "phase": "generated",
+   "clipped": 5,
+   "worst_ratio": 1.1432209014892578,
+   "worst_tensor": "past_v_7"
+  },
+  {
+   "pos": 51,
+   "token": "。",
+   "phase": "generated",
+   "clipped": 2,
+   "worst_ratio": 1.0176695585250854,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 52,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 37,
+   "worst_ratio": 1.7621089220046997,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 53,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 4,
+   "worst_ratio": 1.1508464813232422,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 54,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 27,
+   "worst_ratio": 1.4706714153289795,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 55,
+   "token": "user",
+   "phase": "prompt",
+   "clipped": 25,
+   "worst_ratio": 1.2819372415542603,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 56,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.1015121936798096,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 57,
+   "token": "音",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.4080990552902222,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 58,
+   "token": "楽",
+   "phase": "prompt",
+   "clipped": 14,
+   "worst_ratio": 1.2417032718658447,
+   "worst_tensor": "past_v_4"
+  },
+  {
+   "pos": 59,
+   "token": "を",
+   "phase": "prompt",
+   "clipped": 14,
+   "worst_ratio": 1.1888374090194702,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 60,
+   "token": "かけて",
+   "phase": "prompt",
+   "clipped": 4,
+   "worst_ratio": 1.1688494682312012,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 61,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 41,
+   "worst_ratio": 1.6798937320709229,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 62,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 21,
+   "worst_ratio": 1.1834142208099365,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 63,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 27,
+   "worst_ratio": 1.5939873456954956,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 64,
+   "token": "assistant",
+   "phase": "prompt",
+   "clipped": 29,
+   "worst_ratio": 1.343235731124878,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 65,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 21,
+   "worst_ratio": 1.2183812856674194,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 66,
+   "token": "<think>",
+   "phase": "prompt",
+   "clipped": 27,
+   "worst_ratio": 1.3874261379241943,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 67,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 12,
+   "worst_ratio": 1.3477652072906494,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 68,
+   "token": "</think>",
+   "phase": "prompt",
+   "clipped": 26,
+   "worst_ratio": 1.3673763275146484,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 69,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.2922980785369873,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 70,
+   "token": "音",
+   "phase": "generated",
+   "clipped": 21,
+   "worst_ratio": 1.3737144470214844,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 71,
+   "token": "楽",
+   "phase": "generated",
+   "clipped": 16,
+   "worst_ratio": 1.1746883392333984,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 72,
+   "token": "を",
+   "phase": "generated",
+   "clipped": 21,
+   "worst_ratio": 1.234776496887207,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 73,
+   "token": "かけて",
+   "phase": "generated",
+   "clipped": 10,
+   "worst_ratio": 1.3562616109848022,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 74,
+   "token": "ます",
+   "phase": "generated",
+   "clipped": 3,
+   "worst_ratio": 1.0523579120635986,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 75,
+   "token": "。",
+   "phase": "generated",
+   "clipped": 10,
+   "worst_ratio": 1.201149821281433,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 76,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 39,
+   "worst_ratio": 1.6155833005905151,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 77,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 12,
+   "worst_ratio": 1.1985424757003784,
+   "worst_tensor": "past_v_9"
+  },
+  {
+   "pos": 78,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 29,
+   "worst_ratio": 1.5971896648406982,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 79,
+   "token": "user",
+   "phase": "prompt",
+   "clipped": 28,
+   "worst_ratio": 1.3357971906661987,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 80,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 13,
+   "worst_ratio": 1.258989930152893,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 81,
+   "token": "さ",
+   "phase": "prompt",
+   "clipped": 34,
+   "worst_ratio": 1.438339114189148,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 82,
+   "token": "っき",
+   "phase": "prompt",
+   "clipped": 11,
+   "worst_ratio": 1.3022099733352661,
+   "worst_tensor": "past_v_7"
+  },
+  {
+   "pos": 83,
+   "token": "何度",
+   "phase": "prompt",
+   "clipped": 11,
+   "worst_ratio": 1.3436414003372192,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 84,
+   "token": "に",
+   "phase": "prompt",
+   "clipped": 25,
+   "worst_ratio": 1.4434430599212646,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 85,
+   "token": "した",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.2793773412704468,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 86,
+   "token": "っ",
+   "phase": "prompt",
+   "clipped": 41,
+   "worst_ratio": 1.32746422290802,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 87,
+   "token": "け",
+   "phase": "prompt",
+   "clipped": 22,
+   "worst_ratio": 1.3950618505477905,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 88,
+   "token": "？",
+   "phase": "prompt",
+   "clipped": 14,
+   "worst_ratio": 1.277076244354248,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 89,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 47,
+   "worst_ratio": 1.6340476274490356,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 90,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 21,
+   "worst_ratio": 1.3164085149765015,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 91,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 30,
+   "worst_ratio": 1.6689780950546265,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 92,
+   "token": "assistant",
+   "phase": "prompt",
+   "clipped": 30,
+   "worst_ratio": 1.4187660217285156,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 93,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 27,
+   "worst_ratio": 1.3499723672866821,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 94,
+   "token": "<think>",
+   "phase": "prompt",
+   "clipped": 30,
+   "worst_ratio": 1.384627103805542,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 95,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 20,
+   "worst_ratio": 1.3719042539596558,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 96,
+   "token": "</think>",
+   "phase": "prompt",
+   "clipped": 32,
+   "worst_ratio": 1.3972413539886475,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 97,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 19,
+   "worst_ratio": 1.3361890316009521,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 98,
+   "token": "さ",
+   "phase": "generated",
+   "clipped": 35,
+   "worst_ratio": 1.358170986175537,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 99,
+   "token": "っき",
+   "phase": "generated",
+   "clipped": 29,
+   "worst_ratio": 1.3023585081100464,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 100,
+   "token": "は",
+   "phase": "generated",
+   "clipped": 18,
+   "worst_ratio": 1.3184012174606323,
+   "worst_tensor": "past_k_14"
+  },
+  {
+   "pos": 101,
+   "token": "2",
+   "phase": "generated",
+   "clipped": 12,
+   "worst_ratio": 1.3932260274887085,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 102,
+   "token": "2",
+   "phase": "generated",
+   "clipped": 13,
+   "worst_ratio": 1.2968668937683105,
+   "worst_tensor": "past_v_7"
+  },
+  {
+   "pos": 103,
+   "token": "度",
+   "phase": "generated",
+   "clipped": 9,
+   "worst_ratio": 1.1505844593048096,
+   "worst_tensor": "past_k_8"
+  },
+  {
+   "pos": 104,
+   "token": "にして",
+   "phase": "generated",
+   "clipped": 14,
+   "worst_ratio": 1.2465505599975586,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 105,
+   "token": "ました",
+   "phase": "generated",
+   "clipped": 3,
+   "worst_ratio": 1.1570261716842651,
+   "worst_tensor": "past_v_7"
+  },
+  {
+   "pos": 106,
+   "token": "。",
+   "phase": "generated",
+   "clipped": 16,
+   "worst_ratio": 1.1463065147399902,
+   "worst_tensor": "past_k_15"
+  }
+ ],
+ "chat_english": [
+  {
+   "pos": 0,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 29,
+   "worst_ratio": 1.681456208229065,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 1,
+   "token": "system",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.126908302307129,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 2,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.5374796390533447,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 3,
+   "token": "You",
+   "phase": "prompt",
+   "clipped": 11,
+   "worst_ratio": 1.3302247524261475,
+   "worst_tensor": "past_v_22"
+  },
+  {
+   "pos": 4,
+   "token": " are",
+   "phase": "prompt",
+   "clipped": 7,
+   "worst_ratio": 1.1495827436447144,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 5,
+   "token": " an",
+   "phase": "prompt",
+   "clipped": 1159,
+   "worst_ratio": 9.135838508605957,
+   "worst_tensor": "past_v_14"
+  },
+  {
+   "pos": 6,
+   "token": " in",
+   "phase": "prompt",
+   "clipped": 857,
+   "worst_ratio": 7.169011116027832,
+   "worst_tensor": "past_v_8"
+  },
+  {
+   "pos": 7,
+   "token": "-car",
+   "phase": "prompt",
+   "clipped": 10,
+   "worst_ratio": 1.3568451404571533,
+   "worst_tensor": "past_v_12"
+  },
+  {
+   "pos": 8,
+   "token": " assistant",
+   "phase": "prompt",
+   "clipped": 10,
+   "worst_ratio": 1.285316824913025,
+   "worst_tensor": "past_v_19"
+  },
+  {
+   "pos": 9,
+   "token": ".",
+   "phase": "prompt",
+   "clipped": 5,
+   "worst_ratio": 1.2349249124526978,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 10,
+   "token": " Keep",
+   "phase": "prompt",
+   "clipped": 2,
+   "worst_ratio": 1.1371214389801025,
+   "worst_tensor": "past_v_16"
+  },
+  {
+   "pos": 11,
+   "token": " your",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.1085278987884521,
+   "worst_tensor": "past_k_12"
+  },
+  {
+   "pos": 12,
+   "token": " answers",
+   "phase": "prompt",
+   "clipped": 7,
+   "worst_ratio": 1.2376197576522827,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 13,
+   "token": " short",
+   "phase": "prompt",
+   "clipped": 10,
+   "worst_ratio": 1.4290989637374878,
+   "worst_tensor": "past_v_12"
+  },
+  {
+   "pos": 14,
+   "token": ".",
+   "phase": "prompt",
+   "clipped": 6,
+   "worst_ratio": 1.237833023071289,
+   "worst_tensor": "past_v_12"
+  },
+  {
+   "pos": 15,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 24,
+   "worst_ratio": 1.795204758644104,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 16,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 10,
+   "worst_ratio": 1.2867037057876587,
+   "worst_tensor": "past_v_12"
+  },
+  {
+   "pos": 17,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 14,
+   "worst_ratio": 1.3247933387756348,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 18,
+   "token": "user",
+   "phase": "prompt",
+   "clipped": 5,
+   "worst_ratio": 1.1120173931121826,
+   "worst_tensor": "past_v_15"
+  },
+  {
+   "pos": 19,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.1449222564697266,
+   "worst_tensor": "past_v_4"
+  },
+  {
+   "pos": 20,
+   "token": "Set",
+   "phase": "prompt",
+   "clipped": 7,
+   "worst_ratio": 1.19983971118927,
+   "worst_tensor": "past_v_8"
+  },
+  {
+   "pos": 21,
+   "token": " the",
+   "phase": "prompt",
+   "clipped": 6,
+   "worst_ratio": 1.2932246923446655,
+   "worst_tensor": "past_v_6"
+  },
+  {
+   "pos": 22,
+   "token": " temperature",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.322561502456665,
+   "worst_tensor": "past_v_19"
+  },
+  {
+   "pos": 23,
+   "token": " to",
+   "phase": "prompt",
+   "clipped": 4,
+   "worst_ratio": 1.0491538047790527,
+   "worst_tensor": "past_v_22"
+  },
+  {
+   "pos": 24,
+   "token": " ",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.4974581003189087,
+   "worst_tensor": "past_v_22"
+  },
+  {
+   "pos": 25,
+   "token": "2",
+   "phase": "prompt",
+   "clipped": 1025,
+   "worst_ratio": 8.198314666748047,
+   "worst_tensor": "past_v_14"
+  },
+  {
+   "pos": 26,
+   "token": "2",
+   "phase": "prompt",
+   "clipped": 12,
+   "worst_ratio": 1.3090094327926636,
+   "worst_tensor": "past_v_7"
+  },
+  {
+   "pos": 27,
+   "token": " degrees",
+   "phase": "prompt",
+   "clipped": 0,
+   "worst_ratio": 0.0,
+   "worst_tensor": null
+  },
+  {
+   "pos": 28,
+   "token": ".",
+   "phase": "prompt",
+   "clipped": 0,
+   "worst_ratio": 0.0,
+   "worst_tensor": null
+  },
+  {
+   "pos": 29,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 27,
+   "worst_ratio": 1.6909385919570923,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 30,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 12,
+   "worst_ratio": 1.415298342704773,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 31,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 17,
+   "worst_ratio": 1.34903883934021,
+   "worst_tensor": "past_v_15"
+  },
+  {
+   "pos": 32,
+   "token": "assistant",
+   "phase": "prompt",
+   "clipped": 17,
+   "worst_ratio": 1.2420271635055542,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 33,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.1315193176269531,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 34,
+   "token": "<think>",
+   "phase": "prompt",
+   "clipped": 13,
+   "worst_ratio": 1.338449478149414,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 35,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 2,
+   "worst_ratio": 1.2676795721054077,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 36,
+   "token": "</think>",
+   "phase": "prompt",
+   "clipped": 22,
+   "worst_ratio": 1.3629695177078247,
+   "worst_tensor": "past_v_0"
+  },
+  {
+   "pos": 37,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 3,
+   "worst_ratio": 1.1635181903839111,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 38,
+   "token": "Set",
+   "phase": "generated",
+   "clipped": 6,
+   "worst_ratio": 1.2598944902420044,
+   "worst_tensor": "past_v_19"
+  },
+  {
+   "pos": 39,
+   "token": " the",
+   "phase": "generated",
+   "clipped": 4,
+   "worst_ratio": 1.0724968910217285,
+   "worst_tensor": "past_v_19"
+  },
+  {
+   "pos": 40,
+   "token": " temperature",
+   "phase": "generated",
+   "clipped": 6,
+   "worst_ratio": 1.3288626670837402,
+   "worst_tensor": "past_v_19"
+  },
+  {
+   "pos": 41,
+   "token": " to",
+   "phase": "generated",
+   "clipped": 7,
+   "worst_ratio": 1.0785802602767944,
+   "worst_tensor": "past_k_20"
+  },
+  {
+   "pos": 42,
+   "token": " ",
+   "phase": "generated",
+   "clipped": 6,
+   "worst_ratio": 1.1828911304473877,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 43,
+   "token": "2",
+   "phase": "generated",
+   "clipped": 1113,
+   "worst_ratio": 8.653990745544434,
+   "worst_tensor": "past_v_14"
+  },
+  {
+   "pos": 44,
+   "token": "2",
+   "phase": "generated",
+   "clipped": 13,
+   "worst_ratio": 1.205133318901062,
+   "worst_tensor": "past_v_4"
+  },
+  {
+   "pos": 45,
+   "token": " degrees",
+   "phase": "generated",
+   "clipped": 5,
+   "worst_ratio": 1.1800857782363892,
+   "worst_tensor": "past_v_24"
+  },
+  {
+   "pos": 46,
+   "token": ".",
+   "phase": "generated",
+   "clipped": 1,
+   "worst_ratio": 1.0592577457427979,
+   "worst_tensor": "past_k_9"
+  },
+  {
+   "pos": 47,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 36,
+   "worst_ratio": 1.8279871940612793,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 48,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 7,
+   "worst_ratio": 1.186516523361206,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 49,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 25,
+   "worst_ratio": 1.4139739274978638,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 50,
+   "token": "user",
+   "phase": "prompt",
+   "clipped": 22,
+   "worst_ratio": 1.3597666025161743,
+   "worst_tensor": "past_v_14"
+  },
+  {
+   "pos": 51,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 12,
+   "worst_ratio": 1.1481773853302002,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 52,
+   "token": "Please",
+   "phase": "prompt",
+   "clipped": 14,
+   "worst_ratio": 1.5041519403457642,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 53,
+   "token": " turn",
+   "phase": "prompt",
+   "clipped": 7,
+   "worst_ratio": 1.1971492767333984,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 54,
+   "token": " down",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.06895911693573,
+   "worst_tensor": "past_k_20"
+  },
+  {
+   "pos": 55,
+   "token": " the",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.1502807140350342,
+   "worst_tensor": "past_k_14"
+  },
+  {
+   "pos": 56,
+   "token": " fan",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.3415565490722656,
+   "worst_tensor": "past_v_15"
+  },
+  {
+   "pos": 57,
+   "token": " without",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.1549636125564575,
+   "worst_tensor": "past_k_20"
+  },
+  {
+   "pos": 58,
+   "token": " changing",
+   "phase": "prompt",
+   "clipped": 7,
+   "worst_ratio": 1.2588926553726196,
+   "worst_tensor": "past_v_4"
+  },
+  {
+   "pos": 59,
+   "token": " the",
+   "phase": "prompt",
+   "clipped": 5,
+   "worst_ratio": 1.2111849784851074,
+   "worst_tensor": "past_v_19"
+  },
+  {
+   "pos": 60,
+   "token": " temperature",
+   "phase": "prompt",
+   "clipped": 4,
+   "worst_ratio": 1.232370138168335,
+   "worst_tensor": "past_v_19"
+  },
+  {
+   "pos": 61,
+   "token": ".",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.1116979122161865,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 62,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 46,
+   "worst_ratio": 1.6526546478271484,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 63,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 15,
+   "worst_ratio": 1.2044997215270996,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 64,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 27,
+   "worst_ratio": 1.5175855159759521,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 65,
+   "token": "assistant",
+   "phase": "prompt",
+   "clipped": 22,
+   "worst_ratio": 1.4193143844604492,
+   "worst_tensor": "past_v_15"
+  },
+  {
+   "pos": 66,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 17,
+   "worst_ratio": 1.2049020528793335,
+   "worst_tensor": "past_k_9"
+  },
+  {
+   "pos": 67,
+   "token": "<think>",
+   "phase": "prompt",
+   "clipped": 25,
+   "worst_ratio": 1.336792230606079,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 68,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.35237717628479,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 69,
+   "token": "</think>",
+   "phase": "prompt",
+   "clipped": 28,
+   "worst_ratio": 1.3629695177078247,
+   "worst_tensor": "past_v_0"
+  },
+  {
+   "pos": 70,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.2181873321533203,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 71,
+   "token": "Please",
+   "phase": "generated",
+   "clipped": 19,
+   "worst_ratio": 1.20829176902771,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 72,
+   "token": " turn",
+   "phase": "generated",
+   "clipped": 16,
+   "worst_ratio": 1.2506465911865234,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 73,
+   "token": " down",
+   "phase": "generated",
+   "clipped": 19,
+   "worst_ratio": 1.2213188409805298,
+   "worst_tensor": "past_v_23"
+  },
+  {
+   "pos": 74,
+   "token": " the",
+   "phase": "generated",
+   "clipped": 13,
+   "worst_ratio": 1.2382466793060303,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 75,
+   "token": " fan",
+   "phase": "generated",
+   "clipped": 16,
+   "worst_ratio": 1.2521629333496094,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 76,
+   "token": " without",
+   "phase": "generated",
+   "clipped": 13,
+   "worst_ratio": 1.182978868484497,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 77,
+   "token": " changing",
+   "phase": "generated",
+   "clipped": 15,
+   "worst_ratio": 1.2603713274002075,
+   "worst_tensor": "past_v_15"
+  },
+  {
+   "pos": 78,
+   "token": " the",
+   "phase": "generated",
+   "clipped": 9,
+   "worst_ratio": 1.2138534784317017,
+   "worst_tensor": "past_v_14"
+  },
+  {
+   "pos": 79,
+   "token": " temperature",
+   "phase": "generated",
+   "clipped": 17,
+   "worst_ratio": 1.2188432216644287,
+   "worst_tensor": "past_v_27"
+  },
+  {
+   "pos": 80,
+   "token": ".",
+   "phase": "generated",
+   "clipped": 18,
+   "worst_ratio": 1.2247517108917236,
+   "worst_tensor": "past_k_9"
+  },
+  {
+   "pos": 81,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 40,
+   "worst_ratio": 1.569174885749817,
+   "worst_tensor": "past_v_26"
+  },
+  {
+   "pos": 82,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 13,
+   "worst_ratio": 1.2671892642974854,
+   "worst_tensor": "past_v_9"
+  },
+  {
+   "pos": 83,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 27,
+   "worst_ratio": 1.5222289562225342,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 84,
+   "token": "user",
+   "phase": "prompt",
+   "clipped": 28,
+   "worst_ratio": 1.350970983505249,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 85,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 21,
+   "worst_ratio": 1.324812412261963,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 86,
+   "token": "What",
+   "phase": "prompt",
+   "clipped": 6,
+   "worst_ratio": 1.1598445177078247,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 87,
+   "token": " temperature",
+   "phase": "prompt",
+   "clipped": 11,
+   "worst_ratio": 1.1835302114486694,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 88,
+   "token": " did",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.2173690795898438,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 89,
+   "token": " I",
+   "phase": "prompt",
+   "clipped": 8,
+   "worst_ratio": 1.2552567720413208,
+   "worst_tensor": "past_v_5"
+  },
+  {
+   "pos": 90,
+   "token": " ask",
+   "phase": "prompt",
+   "clipped": 12,
+   "worst_ratio": 1.2782137393951416,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 91,
+   "token": " for",
+   "phase": "prompt",
+   "clipped": 9,
+   "worst_ratio": 1.1963762044906616,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 92,
+   "token": "?",
+   "phase": "prompt",
+   "clipped": 17,
+   "worst_ratio": 1.1664310693740845,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 93,
+   "token": "<|im_end|>",
+   "phase": "prompt",
+   "clipped": 43,
+   "worst_ratio": 1.6398711204528809,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 94,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 20,
+   "worst_ratio": 1.2544833421707153,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 95,
+   "token": "<|im_start|>",
+   "phase": "prompt",
+   "clipped": 28,
+   "worst_ratio": 1.588708519935608,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 96,
+   "token": "assistant",
+   "phase": "prompt",
+   "clipped": 24,
+   "worst_ratio": 1.4220609664916992,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 97,
+   "token": "\n",
+   "phase": "prompt",
+   "clipped": 28,
+   "worst_ratio": 1.3144798278808594,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 98,
+   "token": "<think>",
+   "phase": "prompt",
+   "clipped": 28,
+   "worst_ratio": 1.3380717039108276,
+   "worst_tensor": "past_v_1"
+  },
+  {
+   "pos": 99,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 17,
+   "worst_ratio": 1.393315076828003,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 100,
+   "token": "</think>",
+   "phase": "prompt",
+   "clipped": 31,
+   "worst_ratio": 1.3629695177078247,
+   "worst_tensor": "past_v_0"
+  },
+  {
+   "pos": 101,
+   "token": "\n\n",
+   "phase": "prompt",
+   "clipped": 21,
+   "worst_ratio": 1.2574270963668823,
+   "worst_tensor": "past_k_4"
+  },
+  {
+   "pos": 102,
+   "token": "What",
+   "phase": "generated",
+   "clipped": 25,
+   "worst_ratio": 1.2889676094055176,
+   "worst_tensor": "past_k_12"
+  },
+  {
+   "pos": 103,
+   "token": " temperature",
+   "phase": "generated",
+   "clipped": 15,
+   "worst_ratio": 1.2569303512573242,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 104,
+   "token": " did",
+   "phase": "generated",
+   "clipped": 25,
+   "worst_ratio": 1.3090226650238037,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 105,
+   "token": " you",
+   "phase": "generated",
+   "clipped": 7,
+   "worst_ratio": 1.1590605974197388,
+   "worst_tensor": "past_k_17"
+  },
+  {
+   "pos": 106,
+   "token": " ask",
+   "phase": "generated",
+   "clipped": 18,
+   "worst_ratio": 1.326815128326416,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 107,
+   "token": " for",
+   "phase": "generated",
+   "clipped": 17,
+   "worst_ratio": 1.2622644901275635,
+   "worst_tensor": "past_k_15"
+  },
+  {
+   "pos": 108,
+   "token": "?",
+   "phase": "generated",
+   "clipped": 24,
+   "worst_ratio": 1.313483476638794,
+   "worst_tensor": "past_k_9"
+  }
+ ]
+}

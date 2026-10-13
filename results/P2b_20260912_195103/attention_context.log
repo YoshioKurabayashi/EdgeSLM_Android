@@ -1,0 +1,14 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\attention\attention_a8w8_qdq.onnx --preserve_io_datatype --output_path work\ops\attention\ctx\attention.dlc
+  OK  0.07 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\attention\ctx\attention.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file attention_ctx --output_dir work\ops\attention\ctx\ctx_attention --htp_socs sm8350
+  OK  attention_ctx.SM8350.bin  0.10 MiB
+=== S7: qnn-context-binary-utility（socModel の検証用メタデータ） ===
+  OK  work/ops/attention/ctx/attention_meta.json
+
+生成物:
+  DLC : work/ops/attention/ctx/attention.dlc
+  BIN : work/ops/attention/ctx/ctx_attention/attention_ctx.SM8350.bin
+  META: work/ops/attention/ctx/attention_meta.json
+  CMD : work/ops/attention/ctx/attention_commands.txt

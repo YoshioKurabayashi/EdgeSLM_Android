@@ -1,0 +1,1 @@
+{"job_id": "soc30_arch68", "task": "probe", "model": "models/zipdepth.onnx", "ep": {"provider": "QNN", "backend": "libQnnHtp.so", "options": {"soc_model": "30", "htp_arch": "68", "device_id": "0"}, "session": {"intra_op_num_threads": 1, "log_severity_level": 0}}}

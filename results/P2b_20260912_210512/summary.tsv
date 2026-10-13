@@ -1,0 +1,4 @@
+name	S2_S4	S5_convert	S6_context	S8_epctx	verdict	detail
+unsqueeze_only	OK	OK	OK	OK	ready_for_device	
+expand_only	OK	OK	OK	OK	ready_for_device	
+gqa_concat	OK	OK	OK	OK	ready_for_device	

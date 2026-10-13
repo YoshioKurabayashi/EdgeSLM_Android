@@ -1,0 +1,11 @@
+{
+  "samples": 11,
+  "positions": "all",
+  "primary_output": "out",
+  "other_outputs": {},
+  "rel_l2_mean": 0.13429399767047845,
+  "rel_l2_max": 0.1899671728812242,
+  "cosine_mean": 0.9927075685497129,
+  "cosine_min": 0.9853805645892403,
+  "ort_run_ms_mean": 3.84319145842032
+}

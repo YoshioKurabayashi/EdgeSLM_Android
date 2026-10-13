@@ -1,0 +1,42 @@
+[project]
+name = "edge-slm-android"
+version = "0.1.0"
+description = "Xperia 5 III SOG05（SM8350 / HTP v68）へのSLMポーティング要素技術の検証プロジェクト"
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.12.0",
+    "numpy>=1.26.0",
+    "psutil>=6.0.0",
+    "matplotlib>=3.9.0",
+    # 量子化（FR-4）。get_qnn_qdq_config を使うため onnxruntime 本体が必要。
+    # QNN EP 入りのビルドはホストでは使わない（ホストはCPUで量子化するだけ）。
+    "onnx>=1.16.0",
+    "onnxruntime>=1.27.0",
+    # キャリブレーション用の画像前処理（ZipDepth の再現に必要）
+    "opencv-python>=4.10.0",
+    # quant_pre_process の symbolic shape inference に必須。
+    # 入れないと ImportError になる（形状が埋まらないと per-channel 量子化が成立しない）。
+    "sympy>=1.13",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.0",
+    "pytest>=8.0.0",
+]
+
+# 重要: QAIRT 付属の Python ツール（qairt-converter 等）は本 .venv では動かさない。
+# QAIRT 側が onnx / numpy / protobuf のバージョンを固定で要求するため、
+# SDK 同梱の check-python-dependency で確認した専用環境を別に用意する（NFR-5）。
+# 実行時は PATH に <QAIRT>/bin/x86_64-windows-msvc と <QAIRT>/lib/x86_64-windows-msvc、
+# PYTHONPATH に <QAIRT>\lib\python、PYTHONUTF8=1 が必要。
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

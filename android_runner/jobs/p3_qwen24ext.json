@@ -1,0 +1,28 @@
+{
+  "job_id": "p3_qwen24ext",
+  "task": "bench",
+  "model": "models/ops/qwen24ext_epctx.onnx",
+  "ep": {
+    "provider": "QNN",
+    "backend": "libQnnHtp.so",
+    "options": {
+      "offload_graph_io_quantization": "0",
+      "qnn_context_priority": "high"
+    },
+    "session": {
+      "intra_op_num_threads": 1,
+      "log_severity_level": 2
+    }
+  },
+  "protocol": {
+    "warmup": 2,
+    "iterations": 5
+  },
+  "input": {
+    "kind": "random",
+    "seed": 0,
+    "int_max": {
+      "input_ids": 151935
+    }
+  }
+}

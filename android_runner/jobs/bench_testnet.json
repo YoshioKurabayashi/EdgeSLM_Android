@@ -1,0 +1,13 @@
+{
+  "job_id": "p2_bench_testnet_a16w8",
+  "task": "bench",
+  "model": "models/testnet_a16w8_epctx.onnx",
+  "ep": {
+    "provider": "QNN",
+    "backend": "libQnnHtp.so",
+    "options": { "offload_graph_io_quantization": "0", "qnn_context_priority": "high" },
+    "session": { "intra_op_num_threads": 1, "log_severity_level": 2 }
+  },
+  "protocol": { "warmup": 3, "iterations": 10 },
+  "input": { "kind": "random", "seed": 0 }
+}

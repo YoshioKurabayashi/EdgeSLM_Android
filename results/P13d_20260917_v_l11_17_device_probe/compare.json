@@ -1,0 +1,174 @@
+{
+ "baseline": {
+  "L11_write": {
+   "scale": 0.0006433684029616416,
+   "zero": 30636,
+   "dtype": "uint16",
+   "exact_rate": 0.9963226318359375,
+   "within1_rate": 0.9967536926269531,
+   "code_max_diff": 14,
+   "code_rms_diff": 0.3826330893358382,
+   "real_rel_l2": 0.0006564978507003942,
+   "cosine": 0.9999997845057282,
+   "clip_rate_host": 0.0
+  },
+  "L11_read": {
+   "scale": 0.1653456836938858,
+   "zero": 119,
+   "dtype": "uint8",
+   "exact_rate": 0.9993324279785156,
+   "within1_rate": 1.0,
+   "code_max_diff": 1,
+   "code_rms_diff": 0.025837415147115142,
+   "real_rel_l2": 0.011379155580086075,
+   "cosine": 0.9999352652985343,
+   "clip_rate_host": 0.0
+  },
+  "L14_write": {
+   "scale": 0.001247915206477046,
+   "zero": 38461,
+   "dtype": "uint16",
+   "exact_rate": 0.9961128234863281,
+   "within1_rate": 0.9961395263671875,
+   "code_max_diff": 317,
+   "code_rms_diff": 6.150489862052688,
+   "real_rel_l2": 0.01720688386636248,
+   "cosine": 0.9998519522695801,
+   "clip_rate_host": 0.0
+  },
+  "L14_read": {
+   "scale": 0.32071420550346375,
+   "zero": 150,
+   "dtype": "uint8",
+   "exact_rate": 0.9982261657714844,
+   "within1_rate": 0.9999923706054688,
+   "code_max_diff": 2,
+   "code_rms_diff": 0.042387762527755286,
+   "real_rel_l2": 0.030368703334319697,
+   "cosine": 0.999538801098907,
+   "clip_rate_host": 0.0
+  },
+  "L17_write": {
+   "scale": 0.00047019580961205065,
+   "zero": 28827,
+   "dtype": "uint16",
+   "exact_rate": 0.99609375,
+   "within1_rate": 0.9961013793945312,
+   "code_max_diff": 1694,
+   "code_rms_diff": 32.96820877860337,
+   "real_rel_l2": 0.017414520632338584,
+   "cosine": 0.9998483816104006,
+   "clip_rate_host": 0.0
+  },
+  "L17_read": {
+   "scale": 0.12084032595157623,
+   "zero": 112,
+   "dtype": "uint8",
+   "exact_rate": 0.9963302612304688,
+   "within1_rate": 0.9982376098632812,
+   "code_max_diff": 7,
+   "code_rms_diff": 0.13271193343249366,
+   "real_rel_l2": 0.01801438374898389,
+   "cosine": 0.9998377633968183,
+   "clip_rate_host": 0.0
+  },
+  "L18_entry_hidden": {
+   "scale": 0.11299772560596466,
+   "zero": 1557,
+   "dtype": "uint16",
+   "exact_rate": 0.2275390625,
+   "within1_rate": 0.5908203125,
+   "code_max_diff": 12,
+   "code_rms_diff": 1.8765618495003036,
+   "real_rel_l2": 0.08231548596005242,
+   "cosine": 0.9966068408687992,
+   "clip_rate_host": 0.0
+  }
+ },
+ "condA": {
+  "L11_write": {
+   "scale": 0.0007536355988122523,
+   "zero": 30434,
+   "dtype": "uint16",
+   "exact_rate": 0.9871826171875,
+   "within1_rate": 0.9967422485351562,
+   "code_max_diff": 14,
+   "code_rms_diff": 0.39976609066564633,
+   "real_rel_l2": 0.0008034498626231969,
+   "cosine": 0.9999996772387302,
+   "clip_rate_host": 0.0
+  },
+  "L11_read": {
+   "scale": 0.19436883926391602,
+   "zero": 118,
+   "dtype": "uint8",
+   "exact_rate": 0.9994926452636719,
+   "within1_rate": 1.0,
+   "code_max_diff": 1,
+   "code_rms_diff": 0.0225245363177164,
+   "real_rel_l2": 0.01165900815683874,
+   "cosine": 0.999932036470646,
+   "clip_rate_host": 0.0
+  },
+  "L14_write": {
+   "scale": 0.0014652700629085302,
+   "zero": 38961,
+   "dtype": "uint16",
+   "exact_rate": 0.9918403625488281,
+   "within1_rate": 0.9961585998535156,
+   "code_max_diff": 324,
+   "code_rms_diff": 5.226292442107472,
+   "real_rel_l2": 0.017170314543636846,
+   "cosine": 0.9998526253552078,
+   "clip_rate_host": 0.0
+  },
+  "L14_read": {
+   "scale": 0.3780396580696106,
+   "zero": 152,
+   "dtype": "uint8",
+   "exact_rate": 0.9986457824707031,
+   "within1_rate": 1.0,
+   "code_max_diff": 1,
+   "code_rms_diff": 0.036799694690267136,
+   "real_rel_l2": 0.031021668075727087,
+   "cosine": 0.9995191988074885,
+   "clip_rate_host": 0.0
+  },
+  "L17_write": {
+   "scale": 0.0006907059578225017,
+   "zero": 32865,
+   "dtype": "uint16",
+   "exact_rate": 0.9690933227539062,
+   "within1_rate": 0.9961051940917969,
+   "code_max_diff": 1930,
+   "code_rms_diff": 26.94418089258176,
+   "real_rel_l2": 0.020903411138009448,
+   "cosine": 0.9997815785227533,
+   "clip_rate_host": 0.0
+  },
+  "L17_read": {
+   "scale": 0.17767541110515594,
+   "zero": 128,
+   "dtype": "uint8",
+   "exact_rate": 0.9967536926269531,
+   "within1_rate": 0.9985466003417969,
+   "code_max_diff": 8,
+   "code_rms_diff": 0.1090431629078739,
+   "real_rel_l2": 0.021749786053362856,
+   "cosine": 0.9997635233886462,
+   "clip_rate_host": 0.0
+  },
+  "L18_entry_hidden": {
+   "scale": 0.11299772560596466,
+   "zero": 1557,
+   "dtype": "uint16",
+   "exact_rate": 0.193359375,
+   "within1_rate": 0.5634765625,
+   "code_max_diff": 7,
+   "code_rms_diff": 2.0353324359917226,
+   "real_rel_l2": 0.08922901050193417,
+   "cosine": 0.9960165968214683,
+   "clip_rate_host": 0.0
+  }
+ }
+}

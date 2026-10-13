@@ -1,0 +1,46 @@
+[
+  {
+    "n": 11,
+    "rel_l2_mean": 0.054972256165734375,
+    "rel_l2_max": 0.05983984531827999,
+    "cosine_mean": 0.9985161841891613,
+    "cosine_min": 0.998214977239745,
+    "max_abs_err": 0.36009979248046875,
+    "ref_abs_max": 6.192103385925293,
+    "label": "A16W8素[C-8で動かない]",
+    "model": "work/ops/qwen_layer1/qwen_layer1_a16w8_qdq.onnx"
+  },
+  {
+    "n": 11,
+    "rel_l2_mean": 0.0927615871162704,
+    "rel_l2_max": 0.1076788578671297,
+    "cosine_mean": 0.9956742287681614,
+    "cosine_min": 0.9942411529867407,
+    "max_abs_err": 0.4615931510925293,
+    "ref_abs_max": 6.192103385925293,
+    "label": "u8xu16[左側Q,Pを8bit]",
+    "model": "work/ops/qwen_layer1/qwen_layer1_lhs8_qdq.onnx"
+  },
+  {
+    "n": 11,
+    "rel_l2_mean": 0.19228649802313755,
+    "rel_l2_max": 0.3125276996327887,
+    "cosine_mean": 0.9804153715409384,
+    "cosine_min": 0.9516143695873228,
+    "max_abs_err": 1.434218168258667,
+    "ref_abs_max": 6.192103385925293,
+    "label": "u16xu8[右側K,Vを8bit]",
+    "model": "work/ops/qwen_layer1/qwen_layer1_rhs8_qdq.onnx"
+  },
+  {
+    "n": 11,
+    "rel_l2_mean": 0.3039037199246955,
+    "rel_l2_max": 0.421447306570489,
+    "cosine_mean": 0.9520971992763002,
+    "cosine_min": 0.9139926718653119,
+    "max_abs_err": 2.431692834943533,
+    "ref_abs_max": 6.192103385925293,
+    "label": "従来のC-8回避[両側A8]",
+    "model": "work/ops/qwen_layer1/qwen_layer1_a16w8_mixed_qdq.onnx"
+  }
+]

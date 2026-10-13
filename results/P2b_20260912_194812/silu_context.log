@@ -1,0 +1,14 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\silu\silu_a16w8_qdq.onnx --preserve_io_datatype --output_path work\ops\silu\ctx\silu.dlc
+  OK  0.01 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\silu\ctx\silu.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file silu_ctx --output_dir work\ops\silu\ctx\ctx_silu --htp_socs sm8350
+  OK  silu_ctx.SM8350.bin  0.04 MiB
+=== S7: qnn-context-binary-utility（socModel の検証用メタデータ） ===
+  OK  work/ops/silu/ctx/silu_meta.json
+
+生成物:
+  DLC : work/ops/silu/ctx/silu.dlc
+  BIN : work/ops/silu/ctx/ctx_silu/silu_ctx.SM8350.bin
+  META: work/ops/silu/ctx/silu_meta.json
+  CMD : work/ops/silu/ctx/silu_commands.txt

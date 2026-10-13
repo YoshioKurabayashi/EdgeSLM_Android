@@ -1,0 +1,22 @@
+{"phase": "compare", "tag": "baseline", "strict_no_cpu_fallback": true, "ort_run_ms": 13.244374990463257}
+
+  [baseline] strict=True
+    L11_write        real_rel=  0.07%  cos=1.00000  code_max_diff=14
+    L11_read         real_rel=  1.14%  cos=0.99994  code_max_diff=1
+    L14_write        real_rel=  1.72%  cos=0.99985  code_max_diff=317
+    L14_read         real_rel=  3.04%  cos=0.99954  code_max_diff=2
+    L17_write        real_rel=  1.74%  cos=0.99985  code_max_diff=1694
+    L17_read         real_rel=  1.80%  cos=0.99984  code_max_diff=7
+    L18_entry_hidden real_rel=  8.23%  cos=0.99661  code_max_diff=12
+{"phase": "compare", "tag": "condA", "strict_no_cpu_fallback": true, "ort_run_ms": 13.644999980926514}
+
+  [condA] strict=True
+    L11_write        real_rel=  0.08%  cos=1.00000  code_max_diff=14
+    L11_read         real_rel=  1.17%  cos=0.99993  code_max_diff=1
+    L14_write        real_rel=  1.72%  cos=0.99985  code_max_diff=324
+    L14_read         real_rel=  3.10%  cos=0.99952  code_max_diff=1
+    L17_write        real_rel=  2.09%  cos=0.99978  code_max_diff=1930
+    L17_read         real_rel=  2.17%  cos=0.99976  code_max_diff=8
+    L18_entry_hidden real_rel=  8.92%  cos=0.99602  code_max_diff=7
+{"phase": "skip", "tag": "condB", "reason": "context binary が無い（条件B は C-8 で実機不可）"}
+{"phase": "compare", "wrote": "D:\\AI\\source\\n_chap5\\EdgeSLM_Android\\results\\P13d_20260917_v_l11_17_device_probe\\compare.json"}

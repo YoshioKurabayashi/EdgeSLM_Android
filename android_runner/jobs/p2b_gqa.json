@@ -1,0 +1,18 @@
+{
+  "job_id": "p2b_gqa_isolate",
+  "task": "op_check",
+  "model": "models/ops/gqa_repeat_a16w8_mixed_epctx.onnx",
+  "ep": {
+    "provider": "QNN",
+    "backend": "libQnnHtp.so",
+    "options": { "offload_graph_io_quantization": "0", "qnn_context_priority": "high" },
+    "session": { "intra_op_num_threads": 1, "log_severity_level": 2 }
+  },
+  "protocol": { "warmup": 1, "iterations": 3 },
+  "input": { "kind": "random", "seed": 0 },
+  "models": [
+    { "name": "gqa_repeat(Unsqueeze+Expand)", "model": "models/ops/gqa_repeat_a16w8_mixed_epctx.onnx" },
+    { "name": "block_real", "model": "models/ops/block_real_a16w8_mixed_epctx.onnx" },
+    { "name": "block(推測形/対照)", "model": "models/ops/block_a16w8_mixed_epctx.onnx" }
+  ]
+}

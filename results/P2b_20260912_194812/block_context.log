@@ -1,0 +1,23 @@
+=== S5: qairt-converter ===
+  qairt-converter --input_network work\ops\block\block_a16w8_qdq.onnx --preserve_io_datatype --output_path work\ops\block\ctx\block.dlc
+  OK  0.17 MiB
+=== S6: qnn-context-binary-generator ===
+  qnn-context-binary-generator --dlc_path work\ops\block\ctx\block.dlc --backend D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626\lib\x86_64-windows-msvc\QnnHtp.dll --binary_file block_ctx --output_dir work\ops\block\ctx\ctx_block --htp_socs sm8350
+  FAILED. ログ末尾:
+    qnn-context-binary-generator pid:4784
+        37.9ms [ ERROR ] WindowsFileIO couldn't open libcdsprpc.dll
+        90.3ms [ ERROR ]  <E> [4294967295] has incorrect Value 68, expected >= 73.
+    
+        90.3ms [ ERROR ]  <E> QnnBackend_validateOpConfig failed 3110
+    
+        90.3ms [ ERROR ]  <E> Failed to validate op att_qk with error 0xc26
+    
+        51.9ms [ ERROR ] Exception encountered: Validate OpConfig failed: QNN_OP_PACKAGE_ERROR_VALIDATION_FAILURE: Op configuration failed validation
+        51.9ms [ ERROR ] Failed to successfully compose graph
+        51.9ms [ ERROR ] Graph composer failed, no graphs were created
+        90.3ms [ ERROR ] Failed in QnnSystemDlc_composeGraphs() with error code 1002
+        90.4ms [ ERROR ] Received nullptr for graphsInput.
+        90.4ms [ ERROR ] Failed to copy graph infos while composing graphs from dlc.
+        90.4ms [ ERROR ] ComposeGraphs Failed with error = 1
+    Graph Compose failure
+    Cache binary for SM8350 copied to work\ops\block\ctx\ctx_block/block_ctx.SM8350

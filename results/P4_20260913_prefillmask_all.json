@@ -1,0 +1,10 @@
+{
+  "samples": 8,
+  "positions": "all",
+  "rel_l2_mean": 0.9014964418363047,
+  "rel_l2_max": 1.0659816871284098,
+  "cosine_mean": 0.6344164167240846,
+  "cosine_min": 0.5287691261623539,
+  "ort_run_ms_mean": 35.82059250213206,
+  "top1_agreement": 0.2421875
+}

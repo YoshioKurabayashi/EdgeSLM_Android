@@ -1,0 +1,86 @@
+[
+  {
+    "case": "none",
+    "spec": "none",
+    "pairs_removed": 0,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6797163684873166,
+      "rank_of_fp32_top1_mean": 1908.75,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.31191376059850767,
+      "positions": 48
+    }
+  },
+  {
+    "case": "層12のみ",
+    "spec": "層12のみ:@layer=12",
+    "pairs_removed": 80,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8083333333333335,
+      "kl_fp32_to_quant": 0.6789099091238814,
+      "rank_of_fp32_top1_mean": 1928.8958333333333,
+      "rank_of_fp32_top1_p95": 6196.449999999993,
+      "logits_rel_l2": 0.3115148160932344,
+      "positions": 48
+    }
+  },
+  {
+    "case": "層22のみ",
+    "spec": "層22のみ:@layer=22",
+    "pairs_removed": 80,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6930085253820897,
+      "rank_of_fp32_top1_mean": 1201.2083333333333,
+      "rank_of_fp32_top1_p95": 9619.599999999991,
+      "logits_rel_l2": 0.30953482646773295,
+      "positions": 48
+    }
+  },
+  {
+    "case": "層0-5",
+    "spec": "層0-5:@layer=0|1|2|3|4|5",
+    "pairs_removed": 480,
+    "metrics": {
+      "top1_agreement": 0.6666666666666666,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.67654687676407,
+      "rank_of_fp32_top1_mean": 1987.5208333333333,
+      "rank_of_fp32_top1_p95": 4601.199999999998,
+      "logits_rel_l2": 0.3095397386482408,
+      "positions": 48
+    }
+  },
+  {
+    "case": "層18-23",
+    "spec": "層18-23:@layer=18|19|20|21|22|23",
+    "pairs_removed": 482,
+    "metrics": {
+      "top1_agreement": 0.6666666666666666,
+      "top5_overlap": 0.8291666666666666,
+      "kl_fp32_to_quant": 0.7304486924533643,
+      "rank_of_fp32_top1_mean": 2349.1875,
+      "rank_of_fp32_top1_p95": 10542.899999999989,
+      "logits_rel_l2": 0.3116841335494686,
+      "positions": 48
+    }
+  },
+  {
+    "case": "全層",
+    "spec": "全層:@layer=0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|20|21|22|23",
+    "pairs_removed": 1922,
+    "metrics": {
+      "top1_agreement": 0.625,
+      "top5_overlap": 0.8416666666666667,
+      "kl_fp32_to_quant": 0.708790281037215,
+      "rank_of_fp32_top1_mean": 2388.4375,
+      "rank_of_fp32_top1_p95": 10816.149999999989,
+      "logits_rel_l2": 0.301182330831689,
+      "positions": 48
+    }
+  }
+]

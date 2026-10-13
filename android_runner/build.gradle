@@ -1,0 +1,6 @@
+// ZipDepth（P1 で実機動作を確認した構成）と同じ版に揃える。
+// 版を変えると QNN ランタイム・ORT との整合が崩れうるため、FR-12 の管理対象。
+plugins {
+    id 'com.android.application' version '8.7.3' apply false
+    id 'org.jetbrains.kotlin.android' version '2.1.10' apply false
+}

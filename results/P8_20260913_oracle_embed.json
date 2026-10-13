@@ -1,0 +1,58 @@
+[
+  {
+    "case": "none",
+    "spec": "none",
+    "pairs_removed": 0,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6797163684873166,
+      "rank_of_fp32_top1_mean": 1908.75,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.31191376059850767,
+      "positions": 48
+    }
+  },
+  {
+    "case": "埋め込みのみ",
+    "spec": "埋め込みのみ:@t=embedding",
+    "pairs_removed": 1,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6797163684873166,
+      "rank_of_fp32_top1_mean": 1908.75,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.31191376059850767,
+      "positions": 48
+    }
+  },
+  {
+    "case": "層0のRMSNormのみ",
+    "spec": "層0のRMSNormのみ:@t=node_pow_1_abs,@t=node_pow_1_maxr,@t=node_pow_1_max,@t=node_pow_1_rmax,@t=node_pow_1_xs,@t=pow_1,@t=mean,@t=add,@t=val_5,@t=rsqrt,@t=mul",
+    "pairs_removed": 11,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6804029910763417,
+      "rank_of_fp32_top1_mean": 1908.75,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.31172597451607786,
+      "positions": 48
+    }
+  },
+  {
+    "case": "埋め込み+層0RMSNorm",
+    "spec": "埋め込み+層0RMSNorm:@t=embedding,@t=node_pow_1_abs,@t=node_pow_1_maxr,@t=node_pow_1_max,@t=node_pow_1_rmax,@t=node_pow_1_xs,@t=pow_1,@t=mean,@t=add,@t=val_5,@t=rsqrt,@t=mul",
+    "pairs_removed": 12,
+    "metrics": {
+      "top1_agreement": 0.6875,
+      "top5_overlap": 0.8125,
+      "kl_fp32_to_quant": 0.6804029910763417,
+      "rank_of_fp32_top1_mean": 1908.75,
+      "rank_of_fp32_top1_p95": 6530.249999999993,
+      "logits_rel_l2": 0.31172597451607786,
+      "positions": 48
+    }
+  }
+]

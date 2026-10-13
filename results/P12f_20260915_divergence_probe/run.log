@@ -1,0 +1,21 @@
+
+=== A_first_divergence  prefix 49 トークン ===
+  fp32           FP32 1位の順位     1  KL 0.0000  relL2   0.00%  | '設定':16.59 'します':14.82 'すること':14.28 '変':13.83 'すると':13.72
+  baseline       FP32 1位の順位     2  KL 1.3279  relL2  24.34%  | '調':14.50 '設定':13.59 'できます':13.50 'チュ':12.78 'すると':12.67
+  focused_split  FP32 1位の順位     2  KL 0.8652  relL2  17.72%  | 'すると':15.11 '設定':14.24 'できます':14.19 '調':13.76 'すること':13.34
+  clip[fp32_on_focused_ranges] 最終位置   0 本 / prefix で一度でも   0 本 / 最初の clip 位置 None
+  clip[baseline              ] 最終位置   0 本 / prefix で一度でも   0 本 / 最初の clip 位置 None
+  clip[focused_split         ] 最終位置   0 本 / prefix で一度でも   0 本 / 最初の clip 位置 None
+  観測テンソルの FP32 比誤差: FP32 と同名 168 本
+
+=== B_music_turn  prefix 80 トークン ===
+  fp32           FP32 1位の順位     1  KL 0.0000  relL2   0.00%  | '音':18.76 '車':14.14 'エ':13.68 '、':12.75 'あなたの':12.46
+  baseline       FP32 1位の順位     1  KL 0.1254  relL2  32.48%  | '音':18.23 'エ':14.88 'え':14.31 'エン':13.79 'ご':13.33
+  focused_split  FP32 1位の順位     2  KL 1.3264  relL2  29.34%  | 'エ':16.11 '音':15.73 'え':14.92 '車':13.53 '可能です':13.45
+  clip[fp32_on_focused_ranges] 最終位置   0 本 / prefix で一度でも   0 本 / 最初の clip 位置 None
+  clip[baseline              ] 最終位置   0 本 / prefix で一度でも   0 本 / 最初の clip 位置 None
+  clip[focused_split         ] 最終位置   0 本 / prefix で一度でも   0 本 / 最初の clip 位置 None
+  観測テンソルの FP32 比誤差: FP32 と同名 168 本
+
+-> D:\AI\source\n_chap5\EdgeSLM_Android\results\P12f_20260915_divergence_probe\report.json
+exit=0

@@ -12,6 +12,15 @@ K単独の回復(+1.8598)とV単独の回復(+2.2018)の合計(+4.0616)は、両
 
 final-stepはP12zと同じくoracleモデルに固定。先入観を排し、4ブロックを同じ条件で測る。
 
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P13 系（StudyMemo 11.5 節）。P12z（global_kv_swap_gate.py）の続き、後は P13b（kv_combo_swap.py）
+- 結果（results/P13a_20260917_layer_block_kv_swap.md）: V は L7〜13・L14〜20 が大きく効く（+1.27・+1.88）分散型。
+  K は L0〜6 単独では悪化（−1.54）するのに全 K 一括では改善（+1.86）する、強い相互作用型
+- 入力: oracle のモデル（linear20_oracle.ORACLE_FULL）・baseline の QDQ（SOURCE）・点B の入力（block_revert_ab.eval_points）
+- 出力: work/p13a_layer_block_kv_swap/ の caches.npz（oracle・baseline の全層の K・V。鍵は oracle_k_<層> など）と meta.json、
+  results/P13a_20260917_layer_block_kv_swap/result.json。caches.npz は P13b 以降（kv_combo_swap.py など）も使う
+- プロジェクトの直下からなら python -m app.pipeline.layer_block_kv_swap --phase cache のようにも動く
 ## 使い方
 
   python layer_block_kv_swap.py --phase cache   # oracle/baselineのKVキャッシュを保存(初回のみ)
@@ -31,11 +40,13 @@ from temporal_qdq_experiment import SOURCE  # noqa: E402
 
 import numpy as np  # noqa: E402
 
+# 結果の置き場・キャッシュの置き場・層の数・基準の語（FP32 の 1 位）
 OUT = ROOT / "results/P13a_20260917_layer_block_kv_swap"
 WORK = ROOT / "work/p13a_layer_block_kv_swap"
 N_LAYERS = 28
 T1 = 78685  # FP32自身の1位トークン(P12w/P12x/P12y/P12zと同じ基準)
 
+# 28 層を 7 層ずつ 4 つに分けたブロック
 BLOCKS = {
     "L0-6": list(range(0, 7)),
     "L7-13": list(range(7, 14)),
@@ -45,10 +56,12 @@ BLOCKS = {
 
 
 def emit(o):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(o, ensure_ascii=False), flush=True)
 
 
 def build_cache(model_sess, cos, sin, ids):
+    """ids を先頭から 1 つずつ model_sess に流し（teacher forcing）、最後のキャッシュ {past_k_i/past_v_i} を返す。"""
     r = Runner(model_sess, cos, sin)
     for tid in ids:
         r.feed(tid, model_sess)
@@ -56,6 +69,10 @@ def build_cache(model_sess, cos, sin, ids):
 
 
 def feed_final(model_sess, cos, sin, cache, last_tid, pos):
+    """キャッシュ cache を与えて最後の 1 トークン last_tid（位置 pos）だけを流し、logits（float64 の 1 次元）を返す。
+
+    マスクは右詰めで直近 pos+1 個だけ 0、ほかは −60。cos/sin は Qwen3 の head_dim 128 の行。global_kv_swap_gate.py と同じ
+    """
     mask = np.full((1, 1, 1, 256), -60, np.float32)
     mask[..., 256 - min(pos + 1, 256):] = 0
     inputs = {"input_ids": np.array([[last_tid]], np.int64),
@@ -67,12 +84,14 @@ def feed_final(model_sess, cos, sin, cache, last_tid, pos):
 
 
 def margin_of(lg):
+    """基準の語 T1 の logit − それ以外の最大の logit（正なら FP32 と同じ語を選ぶ）。"""
     mask = np.ones(lg.size, dtype=bool)
     mask[T1] = False
     return float(lg[T1] - lg[mask].max())
 
 
 def phase_cache():
+    """点B の位置 0〜78 を oracle と baseline でそれぞれ流し、全層の K・V と最後の語・位置を保存する（初回だけ）。"""
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
@@ -106,6 +125,7 @@ def phase_cache():
 
 
 def phase_run():
+    """保存したキャッシュから、ブロック × K/V の 8 変種と対照を作り、最後の 1 歩を oracle で流して margin を比べる。"""
     OUT.mkdir(parents=True, exist_ok=True)
     npz = dict(np.load(WORK / "caches.npz"))
     meta = json.loads((WORK / "meta.json").read_text(encoding="utf-8"))
@@ -114,6 +134,7 @@ def phase_run():
     oracle_sess = sess(ORACLE_FULL)
 
     def mixed_cache(k_swap_layers, v_swap_layers):
+        # 指定した層だけ baseline、ほかは oracle のキャッシュを使う
         c = {}
         for L in range(N_LAYERS):
             c[f"past_k_{L}"] = npz[f"baseline_k_{L}"] if L in k_swap_layers else npz[f"oracle_k_{L}"]
@@ -149,6 +170,7 @@ def phase_run():
 
 
 def main():
+    """コマンドの入口。--phase cache か run のどちらか 1 段を流す。"""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["cache", "run"], required=True)
     a = ap.parse_args()

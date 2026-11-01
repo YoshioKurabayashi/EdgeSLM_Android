@@ -19,6 +19,18 @@ P12mでは、層2の mul_41/linear_20 だけを後続範囲にすると、実機
 判定は「① L2-ML単独で崩れるか」(十分性)と、後続でP12o-minus-Layer2を見る「② 全層narrowから
 層2だけ戻すと回復するか」(必要性)の両方向で行う。本スクリプトは①のみ(L2-M/L2-L/L2-MLの3変種)。
 
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節・11.8 節）
+- 結果: results/P12t_20260916_session_summary_layer2_htp_tradeoff.md の「P12q」の節（P12t が挙げる P12q の md は results に見当たらず、
+  数字は results/P12q_20260916_layer2_only_variants/report.json）。1位保持は L2-M 85.7%・L2-L 85.7%・L2-ML 87.5%（baseline 超え）
+  なのに、自由生成は 3 つとも崩れた（L2-ML は turn1 が turn0 を繰り返す）。「集計指標は生成の健全性を予測しない」の例
+- 入力: baseline の QDQ（SOURCE。重みを中に持つ形であること）、P12e の build_audit.json（REP。後続の範囲の値）、
+  work/ops/qwen3_dec28c256/ の prepped.onnx（FP32）
+- 出力: work/p12q_layer2_only/l2only_<M|L|ML>_qdq.onnx、results/P12q_20260916_layer2_only_variants/ の build_audit_<tag>.json・report.json
+- 「narrow」= P12e の較正の「後続トークンだけ」の範囲（margin 1.5）。「wide」= 既存の範囲（位置0 の巨大値を含む）。
+  評価では位置0 をいつも baseline で流す（Pipeline の first = baseline、later = 変種）
+- プロジェクトの直下からなら python -m app.pipeline.layer2_only_variants --phase build のようにも動く
 ## 使い方
 
   python layer2_only_variants.py --phase build
@@ -40,12 +52,14 @@ import numpy as np  # noqa: E402
 import onnx  # noqa: E402
 from onnx import numpy_helper  # noqa: E402
 
+# 結果・作ったモデルの置き場と、FP32 のモデルの置き場
 OUT = ROOT / "results/P12q_20260916_layer2_only_variants"
 WORK = ROOT / "work/p12q_layer2_only"
 OPS_DIR = ROOT / "work/ops/qwen3_dec28c256"
 
 LAYER2_MUL, LAYER2_LINEAR = "mul_41", "linear_20"  # P12j/P12mと同じ層2の対象
 
+# 変種の名前 → narrow にするテンソル。MODELS はその保存先
 VARIANTS = {
     "M": [LAYER2_MUL],
     "L": [LAYER2_LINEAR],
@@ -55,10 +69,16 @@ MODELS = {tag: WORK / f"l2only_{tag}_qdq.onnx" for tag in VARIANTS}
 
 
 def emit(obj):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(obj, ensure_ascii=False), flush=True)
 
 
 def build_one(tag, tensors):
+    """baseline の QDQ のうち、tensors の Q/DQ の scale・zero point だけを P12e の「後続」の値にしたモデルを作る。
+
+    置き換えを許した初期化子以外が変わっていないこと・ノードが同じことを hash で確かめてから保存し、監査の記録を残す
+    （focused_qdq_experiment.build_focused と同じやり方）
+    """
     audit = json.loads((REP / "build_audit.json").read_text(encoding="utf-8"))
     later = {c["scale_name"]: c for c in audit["later"]["changes"] if len(c["sources"]) == 1}
     selected = [t + "_scale" for t in tensors]
@@ -99,6 +119,7 @@ def build_one(tag, tensors):
 
 
 def build():
+    """3 変種（M・L・ML）をすべて作る。"""
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     for tag, tensors in VARIANTS.items():
@@ -106,6 +127,7 @@ def build():
 
 
 def summarize(sc):
+    """score の結果を 1 行の要約にする。"""
     a = sc["ALL"]
     return (f"1位保持 {a['top1_keep']*100:5.1f}%  margin保持 {a['retention_mean']*100:6.1f}%  "
             f"最小margin {a['margin_min']:+6.2f}  KL {a['kl_mean']:.3f} | "
@@ -114,6 +136,7 @@ def summarize(sc):
 
 
 def evaluate():
+    """FP32 の基準を作り、3 変種を P12i と同じ評価点・指標（teacher forcing）と自由生成で評価して report.json に書く。"""
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)
@@ -146,6 +169,7 @@ def evaluate():
     emit({"phase": "evaluate", "wrote": str(OUT / "report.json")})
 
 
+# コマンドの入口。--phase build か evaluate のどちらか 1 段を流す
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["build", "evaluate"], required=True)

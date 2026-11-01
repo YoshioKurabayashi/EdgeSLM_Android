@@ -24,6 +24,18 @@ P12e の focused_split は、固定入力の一致率が上がったのに自由
   baseline      : P12e の観測出力付き既存 QDQ（範囲は既存のまま）
   focused_split : position 0 は focused_shared.onnx、以降は focused_later.onnx
   FP32          : work/ops/qwen3_dec28c256/qwen3_dec28c256_prepped.onnx（外部 .data はハードリンクで共有）
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節）。P12e（temporal_qdq_experiment.py・focused_qdq_experiment.py）の直後
+- 結果（results/P12f_20260915_divergence_probe.md）: 崩れの原因は clip ではない（168 本すべて、2 つの分岐点の prefix の全位置で
+  clip 0。FP32 の値を focused の範囲に当てる陽性対照では 168 本とも検出できた）。点B で FP32 は「音」を 2 位と 4.62 差で選ぶが、
+  focused_split は「エ」16.11・「音」15.73 に逆転。誤差の大きさではなく「ずれの向き」が効いている → P12h（kv_error_direction.py）へ
+- 入力: P12e の成果物（ART）と記録（REP の focused_build_audit.json・free_generation.json・focused_free_generation.json）、
+  P12d の対話（chat_original.json）、work/ops/qwen3_dec28c256/ の final_qdq.onnx・prepped.onnx
+- 出力: --out（既定 results/P12f_20260915_divergence_probe/）の report.json。
+  観測用の複製は ART/probe/ に作る（あれば作り直さない）
+- 動かし方: python -m app.pipeline.divergence_probe [--out …]
 """
 from pathlib import Path
 import argparse
@@ -43,11 +55,14 @@ REP = ROOT / "results/P12e_20260915_temporal_qdq"
 
 
 def load_json(p):
+    """UTF-8 の JSON ファイルを読む。"""
     return json.loads(Path(p).read_text(encoding="utf-8"))
 
 
 def changed_groups():
     """P12e で範囲を変えた 168 本。量子化される**入力テンソル名**と、各相の表現範囲。"""
+    # （2026-10-18 追記）戻り値: [{source（量子化される入力テンソル名）, scale_name, zero_name,
+    #   shared_range（位置0 用モデルでの表現範囲 [lo, hi]）, later_range（位置1 以降用での表現範囲）}, …]
     a = load_json(REP / "focused_build_audit.json")
     later = {c["scale_name"]: c for c in a["later"]["changes"]}
     return [{"source": c["sources"][0], "scale_name": c["scale_name"], "zero_name": c["zero_name"],
@@ -57,6 +72,8 @@ def changed_groups():
 
 def baseline_ranges(groups):
     """既存 QDQ の同じ scale/zero point から、既存の表現範囲を復元する。"""
+    # （2026-10-18 追記）表現範囲 = (0 − zp) × scale 〜 (qmax − zp) × scale。qmax は uint16 なら 65535、uint8 なら 255。
+    # 戻り値: {source: [lo, hi]}
     m = onnx.load(str(OPS / "qwen3_dec28c256_final_qdq.onnx"), load_external_data=False)
     init = {t.name: t for t in m.graph.initializer}
     out = {}
@@ -71,6 +88,9 @@ def baseline_ranges(groups):
 
 def probe_model(src, dst, names, data_link=None):
     """観測したいテンソルを出力に足した複製を作る（元モデルは触らない）。"""
+    # （2026-10-18 追記）src → dst に、names のうちグラフの中で作られているものを出力として足して保存する。
+    #   dst が既にあれば何もしない（names を変えても作り直さないので、変えたときは手で消す。2026-10-18 注）。
+    #   data_link を渡すと、重みの .data を dst と同じフォルダにハードリンクする（数 GB をコピーしないため）
     if dst.exists():
         return dst
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -89,12 +109,15 @@ def probe_model(src, dst, names, data_link=None):
 
 
 def softmax(x):
+    """1 次元の softmax（最大値を引いてからあふれないように exp を取る）。"""
     e = np.exp(x - x.max())
     return e / e.sum()
 
 
 def run_prefix(first, later, ids, groups, ranges_for):
     """ids を順に食べさせ、最後の位置の出力と、全位置の clip 記録を返す。"""
+    # （2026-10-18 追記）first は位置0、later は位置1 以降のセッション。ranges_for(g, pos) はその位置での表現範囲を返す関数。
+    # 戻り値: (最後の位置の出力の dict, 位置ごとの {source: clip の記録}（clip が無い本は入れない）)
     cos, sin = tables()
     r = Runner(first, cos, sin)
     clip_by_pos = []
@@ -118,6 +141,11 @@ def run_prefix(first, later, ids, groups, ranges_for):
 
 
 def summarize_logits(name, lg, ref, tok):
+    """1 つのモデルの最後の位置の logits を、FP32（ref）と比べてまとめる。
+
+    戻り値: top10（語・logit・確率）・fp32_top1_rank・top1_top2_margin（そのモデル自身の 1 位と 2 位の差）・
+            kl_fp32_to_q・logits_rel_l2
+    """
     p, q = softmax(ref.astype(np.float64)), softmax(lg.astype(np.float64))
     t1 = int(ref.argmax())
     top = np.argsort(-lg)[:10]
@@ -148,6 +176,7 @@ def clip_summary(clip):
 
 
 def main():
+    """① 2 つの分岐点の入力を作る → ② 観測用の複製を作る → ③ 点ごとに FP32・baseline・focused_split を流して比べる。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", type=Path, default=ROOT / "results/P12f_20260915_divergence_probe")
     args = ap.parse_args()
@@ -167,6 +196,7 @@ def main():
         "B_music_turn": chunks[0] + f0 + chunks[1],
     }
 
+    # ② 範囲を変えた 168 本と logits を出力させた複製を、4 つのモデル（baseline・focused 2 つ・FP32）について作る
     groups = changed_groups()
     base_rng = baseline_ranges(groups)
     obs = ["logits"] + [g["source"] for g in groups]
@@ -181,6 +211,7 @@ def main():
     def split_range(g, pos):
         return g["shared_range"] if pos == 0 else g["later_range"]
 
+    # ③ 点ごとに 3 通りを流す。FP32 は「focused の範囲に当てたら clip するか」を見る陽性対照も兼ねる
     report = {"divergence_index_turn1": k, "changed_groups": len(groups), "points": {}}
     for pname, ids in points.items():
         print(f"\n=== {pname}  prefix {len(ids)} トークン ===", flush=True)

@@ -8,6 +8,16 @@
   - |値| の上位（位置・チャンネル・値・トークン）
   - 位置0 と位置1以降それぞれの最大 |値|
 を出す。あわせて、層3 に入る残差（hidden_states[3]）でも同じ位置・チャンネルかを確認する。
+
+【補足（学習用、2026-10-18 追記）】
+どの段か: StudyMemo 11.4 節「なぜ scale がこんなに粗いのか — 位置0 の巨大活性」の表（9 通りのプロンプト）の出どころ。
+    記録は results/P12k_20260916_fp32_prefix.md（P12k「FP32 で固定 prefix を事前計算する案」の 1 段目）。
+結果: 9 通りすべてで位置0 の最大はチャンネル35（<|im_start|> で始まるものは 8142.7、生テキストは 5749.7〜7259.2）。
+    位置1以降の最大は 2.50〜4.79。2 ターン目以降の <|im_start|>（位置0 でない）は 1.25〜1.75 にとどまる。
+    → 巨大値はトークンの種類ではなく「位置0」で出る。
+入力:  Qwen3-0.6B の公式スナップショット（HF のキャッシュ。ネットには出ない）。
+出力:  results/P12k_20260916_fp32_prefix/massive_origin.json（プロンプトごとの記録）と画面の 1 行要約。
+動かし方: & $PY2 -B app/pipeline/massive_origin_check.py（引数なし。パスは Windows の絶対パスで固定）
 """
 from pathlib import Path
 import json
@@ -23,15 +33,19 @@ OUT = ROOT / "results/P12k_20260916_fp32_prefix/massive_origin.json"
 
 
 def main():
+    """9 通りのプロンプトを公式 HF の FP32 に通し、層2 の MLP 出力と層3 に入る残差の大きな値の場所を記録する。"""
     tok = AutoTokenizer.from_pretrained(str(SNAP), local_files_only=True)
     m = AutoModelForCausalLM.from_pretrained(str(SNAP), dtype=torch.float32, local_files_only=True).eval()
+    # ① 層2 の MLP の出力をフックで写す（値は変えない）。ONNX の linear_20（down_proj の出力）に当たる。
     cap = {}
     m.model.layers[2].mlp.register_forward_hook(lambda mod, a, o: cap.__setitem__("mlp2", o.detach().numpy()))  # MLP の出力はテンソル [1,T,1024]
 
+    # ② チャットの形のプロンプトをトークン列にする（思考は無し）。生テキストはそのまま encode する。
     def chat(msgs):
         return tok(tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True,
                                            enable_thinking=False))["input_ids"]
 
+    # ③ 比べるプロンプト: system あり・英語・長い system・system 無し・2 ターン分の履歴・生テキスト 3 本・改行で始まる文。
     cases = {
         "chat_ja_car": chat([{"role": "system", "content": "あなたは車載アシスタントです。短く答えてください。"},
                              {"role": "user", "content": "エアコンを22度にして"}]),
@@ -73,6 +87,7 @@ def main():
               f"位置1以降 最大 {r['later_max_abs']:7.2f}(pos{r['later_argmax_pos']})  "
               f"層3残差 pos0/ch35 {r['h3_pos0_ch35']:8.1f} 後続最大 {r['h3_later_max_abs']:6.2f}"
               + ("  | 位置0以外の特殊トークン: " + ", ".join(f"pos{s['pos']}{s['token']!r}={s['max_abs']:.2f}" for s in specials) if specials else ""))
+    # ④ 全プロンプトの記録を JSON に書く。
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(res, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"-> {OUT}")

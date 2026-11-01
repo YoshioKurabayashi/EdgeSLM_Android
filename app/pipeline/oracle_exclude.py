@@ -18,6 +18,18 @@
 戻り方が小さければ「残差が主因」という仮説は**外れ**であり、
 別の場所を疑い直す必要がある。**対策を実装する前にここを踏む。**
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: StudyMemo 4.1・4.2 節「Oracle 実験」（3 章の表・12 章「量子化に耐えるか」でも使う道具）。
+# 結果（results/P3_oracle6.json、Qwen2.5 の 6 層・ホスト）: top-1 は 全部量子化 6.2% → 残差（Add）だけ外す 6.2%
+#   → RMSNorm だけ外す 74.4% → 両方 80.1%、活性化×活性化 MatMul を外しても 6.2%。
+#   → 犯人は残差ではなく RMSNorm（の中の x²）だと消去法で確定し、C-11（RMSNorm を max で正規化）へ進んだ。
+# 入力:  --prepped（S2 前処理後の ONNX）・--fp32（基準の ONNX）・--calib-npz（較正データ）・--eval-npz（評価データ）。
+# 出力:  --workdir に oracle_<パターン>_qdq.onnx、--out にパターンごとの指標の JSON。
+# 動かし方: & $PY2 -m app.pipeline.oracle_exclude --prepped … --fp32 … --calib-npz … --eval-npz … --workdir … --out …
+# 注意: QDQ を「作り直す」版。できあがった QDQ から Q/DQ を外す版は oracle_qdq.py（多入力のモデルにも使える）。
+#   npz の最初の配列を入力として使うので、入力が 1 つのモデル（input_ids だけの prefill）向け。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -41,6 +53,11 @@ PATTERNS = {
 
 
 def nodes_of(prepped: Path, pattern: str) -> list[str]:
+    """パターンに当たるノードの名前の一覧を返す（量子化から外すノード）。
+
+    matmul_act は「両方の入力が初期化子（重み）でない MatMul」＝ 活性化×活性化 の MatMul（QK^T・注意×V）。
+    名前の無いノードは除外の指定に使えないので数えない。
+    """
     model = onnx.load(str(prepped), load_external_data=False)
     inits = {i.name for i in model.graph.initializer}
     if pattern == "matmul_act":
@@ -51,6 +68,7 @@ def nodes_of(prepped: Path, pattern: str) -> list[str]:
 
 
 def main() -> None:
+    """パターンごとに、そのノードを除外して量子化し直し、fp32 と logits を比べる。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--prepped", type=Path, required=True)
     ap.add_argument("--fp32", required=True)
@@ -63,6 +81,8 @@ def main() -> None:
 
     from app.pipeline.accuracy_logits import _run, metrics
 
+    # ① 較正データと評価データを読む（どちらも npz の最初の配列を使う）。評価は 1 サンプルずつ流す。
+    #    fp32 の logits（基準）は 1 回だけ計算しておく。
     z = np.load(args.calib_npz)
     cname = list(z.files)[0]
     n = z[cname].shape[0]
@@ -72,6 +92,7 @@ def main() -> None:
     feeds = [{ename: ze[ename][i:i + 1]} for i in range(ze[ename].shape[0])]
     ref = _run(args.fp32, feeds)
 
+    # ② パターンごとに量子化をやり直す（A16W8）。失敗したパターンは理由を出して次へ進む。
     args.workdir.mkdir(parents=True, exist_ok=True)
     rows = []
     for pat in args.patterns:

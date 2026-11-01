@@ -25,6 +25,22 @@ P12h で、focused の害は誤差の大きさではなく「判定を悪くす�
 
   margin = logit[FP32 1位] − そのモデルでの最強の対抗 logit（負なら 1位を失った）
   - FP32 1位の保持率 / margin 保持率（margin ÷ FP32 の margin）の平均 / **最小 margin（worst case）** / KL 平均
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節）。P12e の focused（focused_qdq_experiment.py）が 168 本の範囲を一度に
+  変えたので、どの変更が効いて／害しているかを分けようとした
+- 結果（results/P12i_20260915_block_revert_ab.md）: 1 ブロックだけ戻して全評価点を baseline 以上にする変種は無かった。
+  効果は足し算にならない（点B: 単独の効果の合計からの予測 +0.93、全部戻した実測 +3.35）。
+  点B を一番戻したのは層2 の MLP の 2 本（mul_41・linear_20）→ 以後の P12j〜P12v で層2 を深掘りした
+- 入力: work/ops/qwen3_dec28c256/ の prepped.onnx（FP32）・final_qdq.onnx（baseline）、
+  P12e の成果物（ART = D:/AI/artifacts/… の baseline.onnx・focused_shared.onnx・focused_later.onnx。プロジェクトの外）と
+  記録（REP = results/P12e_20260915_temporal_qdq/ の focused_build_audit.json・free_generation.json など）、
+  P12d の対話の記録（results/P12d_…/chat_original.json・chat_english.json）
+- 出力: --out（既定 results/P12i_20260915_block_revert_ab/）の blocks.json・results.json・progress.log
+- 動かし方: python -m app.pipeline.block_revert_ab [--out …]
+- 他の道具からの再利用: eval_points・run_points・score・REP は P12k 以降の道具（fp32_prefix_eval.py・add26_causal_probe.py
+  など）が import して使う。評価点と指標を全実験で揃えるため
 """
 from pathlib import Path
 import argparse
@@ -41,16 +57,22 @@ import onnx
 import onnxruntime as ort
 from onnx import numpy_helper
 
+# P12e の成果物の置き場（大きいので results ではなく artifacts に置いた）と、P12e・P12d の記録の置き場
 ART = Path("D:/AI/artifacts/EdgeSLM_Android/P12e_20260915_temporal_qdq")
 REP = ROOT / "results/P12e_20260915_temporal_qdq"
 P12D = ROOT / "results/P12d_20260915_dialogue_activation_ranges"
 
 
 def load_json(p):
+    """UTF-8 の JSON ファイルを読む。"""
     return json.loads(Path(p).read_text(encoding="utf-8"))
 
 
 def sess_from(obj):
+    """ONNX を CPU EP で開く。obj はパス（str・Path）か、モデルのバイト列（SerializeToString の結果）。
+
+    スレッドは演算の中 4 本・演算の間 1 本に固定（実行ごとの速さと結果を揃えるため、と推定）。
+    """
     so = ort.SessionOptions()
     so.intra_op_num_threads = 4
     so.inter_op_num_threads = 1
@@ -61,6 +83,15 @@ def sess_from(obj):
 
 # ---------------------------------------------------------------- ブロック分け
 def layer_of_tensors(model, names):
+    """テンソル名 names のそれぞれが、どの層（0〜27）で作られたかを、グラフの中の位置から決める。
+
+    model : baseline の QDQ（重みは読まない）。names : 調べるテンソル名のリスト
+    戻り値: {テンソル名: 層の番号}
+    ① 層 L（1〜27）ごとに、input_layernorm の重み（の DequantizeLinear の出力）を使う Mul を見つけ、
+       そこから入力側へ最大 20 ノード遡って、入力が 2 本とも活性値の Add（= 層 L に入る残差の足し算）を探す
+    ② その Add のグラフの中の順番を「層の境目」とし、各テンソルについて、自分より前にある境目の数を層の番号とする
+    （境目の Add 自体は層 L−1 の出力として数える。上の説明「層の割り当て」と同じ）
+    """
     g = model.graph
     idx = {o: i for i, n in enumerate(g.node) for o in n.output}
     prod = {o: n for n in g.node for o in n.output}
@@ -84,6 +115,9 @@ def layer_of_tensors(model, names):
 
 
 def kind_of(src):
+    """テンソル名から種別を決める: add_<数> は残差（residual）、node_pow_<数>_(abs|max|maxr) は
+    RMSNorm の書き換え（C-11）で足した補助（rmsnorm_aux）、それ以外は other（層2 の mul_41・linear_20 など）。
+    """
     if re.fullmatch(r"add_\d+", src):
         return "residual"
     if re.fullmatch(r"node_pow_\d+_(abs|max|maxr)", src):
@@ -93,12 +127,22 @@ def kind_of(src):
 
 # ---------------------------------------------------------------- 評価点
 def eval_points(tok):
+    """評価点（結果を見る前に固定）の一覧を作る。
+
+    tok    : Qwen3 のトークナイザ
+    戻り値 : [{name, ids（入力トークン列）, eval_positions（logits を見る位置のリスト）}, …]。6 つ:
+      chat_original・chat_english … P12d の FP32 の対話の軌跡。次が「生成された語」である位置（回答の位置）をすべて見る
+      point_B_music              … 1 ターン目の質問 + focused の 1 ターン目の回答 + 2 ターン目（「音楽をかけて」）の質問。最後の位置
+      point_A_first_div          … 1 ターン目の質問 + baseline と focused の回答が初めて分かれる直前まで。最後の位置
+      sys_en_BANANA・sys_ja_banana … 「必ず BANANA／バナナと答えよ」の system と質問。回答の最初の語を出す位置
+    """
     pts = []
     for case in ("chat_original", "chat_english"):
         rows = load_json(P12D / f"{case}.json")["rows"]
         ids = [r["token_id"] for r in rows]
         answer_pos = [p for p in range(len(rows) - 1) if rows[p + 1]["phase"] == "generated"]
         pts.append({"name": case, "ids": ids, "eval_positions": answer_pos})
+    # 点A・点B: ターンごとの「質問の部分」（phase == prompt）と、P12e の自由生成の 1 ターン目の回答から組み立てる
     d = load_json(P12D / "chat_original.json")["rows"]
     chunks = [[r["token_id"] for r in d if r["turn"] == i and r["phase"] == "prompt"] for i in range(3)]
     gen = {**load_json(REP / "free_generation.json"), **load_json(REP / "focused_free_generation.json")}
@@ -106,6 +150,7 @@ def eval_points(tok):
     k = next(i for i, (x, y) in enumerate(zip(b0, f0)) if x != y)
     for name, ids in (("point_B_music", chunks[0] + f0 + chunks[1]), ("point_A_first_div", chunks[0] + b0[:k])):
         pts.append({"name": name, "ids": ids, "eval_positions": [len(ids) - 1]})
+    # System Prompt の点: チャットの型（apply_chat_template）で文にしてから、トークン列にする（考える段は無し）
     for name, sysmsg, user in (("sys_en_BANANA", 'Always answer exactly "BANANA". Nothing else.', "What is 2+2?"),
                                ("sys_ja_banana", "どんな質問にも必ず「バナナ」とだけ答えてください。他には何も言わないこと。", "2たす2は？")):
         text = tok.apply_chat_template([{"role": "system", "content": sysmsg}, {"role": "user", "content": user}],
@@ -117,6 +162,8 @@ def eval_points(tok):
 
 def run_points(first, later, pts):
     """各評価点の logits（評価位置のみ）を返す。点ごとに KV を空から積む。"""
+    # （2026-10-18 追記）first は位置0、later は位置1 以降に使うセッション（同じものを 2 回渡せば 1 モデル）。
+    # 戻り値: {評価点の名前: [評価位置の数, 語彙数] の logits（float64）}
     cos, sin = tables()
     out = {}
     for p in pts:
@@ -132,12 +179,19 @@ def run_points(first, later, pts):
 
 
 def score(logits, ref):
+    """各評価点の各位置で、FP32（ref）の 1 位の語がどれだけ守られたかを出す。
+
+    logits, ref : run_points の戻り値（試すモデルと FP32）
+    戻り値 : 評価点ごとと全体（"ALL"）の n・top1_keep（margin が正の割合）・retention_mean（margin ÷ FP32 の margin の平均）・
+             margin_min（一番悪い margin）・kl_mean（KL(FP32‖試すもの) の平均）。評価点ごとには margins（位置ごとの margin）も入る
+    """
     res, allm = {}, []
     for name, L in logits.items():
         R = ref[name]
         rows = []
         for lg, rf in zip(L, R):
             t1 = int(rf.argmax())
+            # margin = FP32 の 1 位の語の logit − それ以外の最大。FP32 自身の margin（m_ref）と、試すモデルの margin（m）
             m_ref = rf[t1] - np.max(np.delete(rf, t1))
             m = lg[t1] - np.max(np.delete(lg, t1))
             p = np.exp(rf - rf.max()); p /= p.sum()
@@ -158,6 +212,7 @@ def score(logits, ref):
 
 
 def main():
+    """① 評価点を作る → ② 変更 168 本をブロックに分ける → ③ FP32・baseline を測る → ④ 各ブロックを戻した変種を測る → ⑤ 対照の確認。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", type=Path, default=ROOT / "results/P12i_20260915_block_revert_ab")
     args = ap.parse_args()
@@ -172,6 +227,7 @@ def main():
     pts = eval_points(tok)
     say("評価点: " + ", ".join(f"{p['name']}({len(p['eval_positions'])})" for p in pts))
 
+    # ② focused で変えた 168 本（shared の changes）を、層群 3 つ × 種別 3 つのブロックに分ける
     audit = load_json(REP / "focused_build_audit.json")
     base_m = onnx.load(str(OPS / "qwen3_dec28c256_final_qdq.onnx"), load_external_data=False)
     base_init = {t.name: numpy_helper.to_array(t) for t in base_m.graph.initializer
@@ -206,6 +262,9 @@ def main():
     fm = {"shared": onnx.load(str(ART / "focused_shared.onnx")), "later": onnx.load(str(ART / "focused_later.onnx"))}
     finit = {ph: {t.name: t for t in m.graph.initializer} for ph, m in fm.items()}
 
+    # ④ 変種を作る: focused の 2 モデル（位置0 用 shared・位置1 以降用 later）の、revert に挙げた Q/DQ の
+    #    scale・zero point を baseline の値に置き換え、メモリ上のバイト列からセッションを開き、すぐ元の値に戻す
+    #    （ファイルは書かない。次の変種は、また focused そのものから始まる）
     def variant(revert):
         saved = {}
         for ph in fm:
@@ -233,6 +292,7 @@ def main():
             f"({time.time() - t0:.0f}s)")
         (args.out / "results.json").write_text(json.dumps(results, ensure_ascii=False, indent=1), encoding="utf-8")
 
+    # ⑤ 対照: 168 本全部を戻したら baseline と同じ margin になるはず（atol 1e-6）。ならなければ道具の誤り
     b, ra = results["baseline"], results["revert ALL168"]
     same = all(np.allclose(b[k]["margins"], ra[k]["margins"], atol=1e-6) for k in b if k != "ALL")
     say(f"\n対照: 全168本を戻したものと baseline の margin 一致 = {same}")

@@ -1,6 +1,18 @@
+// ── このファイルの役目（2026-10-18 学習用に追記）────────────────────────────
+// Android アプリ全体（ルート）の Gradle 設定。ここで決めるのは「使うプラグインとその版」だけ。
+//   中身の設定（SDK の版・NDK・C++ のビルド・ONNX Runtime の取り込み）は app/build.gradle にある。
+// 使う段: 端末アプリ（APK）を作るとき。各検証プロジェクトのアプリはこのファイルを同じ中身で持つ。
+// 入力: なし（Gradle が読む）。出力: なし（版の取り決めだけ）。
+// 動かし方（Windows・PowerShell。各プロジェクトの README のビルド手順）:
+//   $env:JAVA_HOME="D:\Android\jdk17"; .\gradlew.bat --offline assembleDebug
+//   → app\build\outputs\apk\debug\app-debug.apk ができる。この環境は JVM が外へ通信できないので --offline で作る。
+// ─────────────────────────────────────────────────────────────────────────
 // ZipDepth（P1 で実機動作を確認した構成）と同じ版に揃える。
 // 版を変えると QNN ランタイム・ORT との整合が崩れうるため、FR-12 の管理対象。
 plugins {
+    // 版: Android Gradle Plugin（AGP）8.7.3。apply false は「版を決めるだけで、ここでは使わない」の意味。
+    //   実際に使うのは app/build.gradle の plugins { }（版はここで決めたものが使われる）。
     id 'com.android.application' version '8.7.3' apply false
+    // Kotlin のコンパイラのプラグイン（2.1.10）。画面とサービスは Kotlin、推論は C++（JNI でつなぐ）。
     id 'org.jetbrains.kotlin.android' version '2.1.10' apply false
 }

@@ -27,6 +27,15 @@ prefix を固定しても直近トークンを捨てるだけになり、当然�
 
 **答えのトークンの順位と NLL だけ**を見る。中間の文の予測しやすさは関係ない。
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: StudyMemo 10.6 節「固定 prefix は効く。ただしサイズを中身に合わせる」（Qwen2.5-0.5B）。
+#   記録: 10.6 節の表（先頭 16 固定で窓なしとほぼ同じ所まで戻る。再回転の有無は 1 本では優劣が付かなかった）。
+#   この道具の結果ファイルは results/ には見当たらない（--out を付けて流した記録が残っていない）。
+# 入力:  --model（固定長キャッシュの decode の ONNX）、--model-id（トークナイザと窓なし fp32 の HF モデル）。
+# 出力:  画面の表（方式ごとの答えの順位と NLL）、--out に JSON。
+# 注意: docstring の「使い方」の行の途中にある長い空白は、元は行の継続（\ と改行）だったものと推定。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -39,6 +48,7 @@ import onnxruntime as ort
 
 from app.pipeline.sink_compare_host import rope_tables, rot_back_one
 
+# 先頭の事実・質問・答え・無関係な文（窓 256 を超えさせるために --filler-repeat 回くり返す）。
 FACT = "Remember this fact carefully: the secret access code is 8317. "
 QUESTION = " Question: what is the secret access code? Answer: the secret access code is"
 ANSWER = " 8317"
@@ -59,6 +69,11 @@ def score(model: str, seq: list[int], pin: int, answer_at: int,
     **絶対位置のまま置く方が自然**かもしれない。これなら**再回転が要らない**。
     """
     """teacher forcing で流し、位置 `answer_at` の次トークンの順位と NLL を返す。"""
+    # 【説明】上の 2 つ目の文字列は docstring にはならない（関数の先頭の 1 つ目だけが docstring）。中身の説明として読む。
+    #   引数: model = ONNX、seq = 全トークン列（答えまで含む）、pin = 先頭何トークンを固定するか（0 = 固定なし）、
+    #   answer_at = 答えを予測する位置。戻り値: {"ranks": [順位…], "nll": [NLL…]}（answer_at 以降の位置ぶん）。
+    #   方式: pin=0 は絶対位置・固定なし。pin>0 は absolute_prefix=True なら絶対位置のまま先頭を固定、
+    #   False なら cache 内位置＋再回転（sink_compare_host.run_mode と同じやり方）。
     so = ort.SessionOptions(); so.log_severity_level = 3
     s = ort.InferenceSession(model, so, providers=["CPUExecutionProvider"])
     ins = {i.name: i for i in s.get_inputs()}
@@ -72,6 +87,7 @@ def score(model: str, seq: list[int], pin: int, answer_at: int,
     pres = {o: outs.index(o) for o in outs if o.startswith("present_")}
     kn = [o for o in pres if o.startswith("present_k")]
     li = outs.index("logits")
+    # ① cache 内位置では、新しいトークンは常に位置 L−1 で入る（sink_compare_host.py の ★ の説明）。
     mode = "absolute" if (pin == 0 or absolute_prefix) else "cache_local"
     sink_kv: dict[str, np.ndarray] = {}
     n_valid = 0
@@ -115,6 +131,7 @@ def score(model: str, seq: list[int], pin: int, answer_at: int,
 
 
 def main() -> None:
+    """事実 + 無関係な文 + 質問 + 答え の系列を作り、窓なし fp32（上限）と、固定の方式ごとの答えの順位・NLL を表にする。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--model", required=True)
     ap.add_argument("--model-id", default="Qwen/Qwen2.5-0.5B-Instruct")
@@ -137,6 +154,7 @@ def main() -> None:
     print(f"  答えのトークン: {tk.convert_ids_to_tokens(ans)}")
 
     # 窓なし fp32（上限）
+    # ② 窓なし fp32（HF のモデルに全系列を一度に通す）の順位と NLL。これが上限（StudyMemo 一番大事なこと 9）。
     import torch
     from transformers import AutoModelForCausalLM
     m = AutoModelForCausalLM.from_pretrained(args.model_id, dtype=torch.float32).eval()
@@ -149,6 +167,7 @@ def main() -> None:
     print("-" * 50)
     print(f"{'窓なし fp32（上限）':>22} {fr[0]:12d} {fn[0]:12.3f}")
     res = {"full": {"ranks": fr, "nll": fn}}
+    # ③ pin ごとに、固定長キャッシュの ONNX で方式を変えて測る（pin=0 は固定なしだけ）。
     for pin in args.pins:
         for absol in ((False,) if pin == 0 else (True, False)):
             r = score(args.model, seq, pin, answer_at, absolute_prefix=absol)

@@ -44,6 +44,16 @@ sink スロットは動かさないので掛けない。
 top-1 一致だけでなく **NLL** と **順位** も出す。一致率は「情報が消えたから変わった」
 だけでも落ちるが、NLL が跳ねるなら**分布そのものが壊れている**ことを示す。
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: StudyMemo 10.5 節「attention sink は効かなかった」（Qwen2.5-0.5B、3 系列・fp32・teacher forcing）。
+#   結果: 3 系列とも sink を残しても同等か悪化（先頭 1 固定は NLL 差 0.0007）。結果ファイルは results/ には見当たらない。
+#   prefix_recall_test.py は rope_tables と rot_back_one をここから import して使う。
+# 入力:  --model（固定長キャッシュの decode の ONNX）、--ref-json（窓なし fp32 が作った系列。ids を使う。
+#        context_policy_host.reference が作る形）。
+# 出力:  画面に位置の帯ごとの top-1 率・順位の中央値・NLL の平均、--out に JSON。
+# 注意: docstring の「使い方」の行の途中にある長い空白は、元は行の継続（\ と改行）だったものと推定。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -56,6 +66,7 @@ import onnxruntime as ort
 
 
 def rope_tables(rows: int, head_dim: int = 64, theta: float = 1000000.0):
+    """RoPE の cos/sin 表 [rows, head_dim] を作る（theta 1e6 は Qwen2.5 の値。前半と後半に同じ角度を並べる）。"""
     inv = 1.0 / (theta ** (np.arange(0, head_dim, 2, dtype=np.float64) / head_dim))
     ang = np.arange(rows, dtype=np.float64)[:, None] * inv[None, :]
     return (np.concatenate([np.cos(ang), np.cos(ang)], -1).astype(np.float32),
@@ -72,6 +83,11 @@ def rot_back_one(k: np.ndarray, cos1: np.ndarray, sin1: np.ndarray) -> np.ndarra
 
 def run_mode(model: str, ref: list[int], sink: int, mode: str,
              mask_neg: float = -60.0) -> dict:
+    """基準の系列 ref を teacher forcing で 1 トークンずつ流し、各位置の次トークンの順位と NLL を返す。
+
+    引数: sink = 先頭何スロットを固定するか、mode = "absolute"（絶対位置・固定なし）か "cache_local"（cache 内位置＋再回転）。
+    戻り値: {"ranks": [...], "nll": [...], "cache_len": L}。
+    """
     so = ort.SessionOptions(); so.log_severity_level = 3
     s = ort.InferenceSession(model, so, providers=["CPUExecutionProvider"])
     ins = {i.name: i for i in s.get_inputs()}
@@ -139,6 +155,7 @@ def run_mode(model: str, ref: list[int], sink: int, mode: str,
 
 
 def summarize(name: str, r: dict, bands) -> None:
+    """位置の帯（[lo, hi)）ごとに top-1 率・順位の中央値・NLL の平均を表で出す。位置は予測する側の番号（t+1）。"""
     rk = np.array(r["ranks"]); nl = np.array(r["nll"])
     pos = np.arange(len(rk)) + 1
     print(f"\n=== {name} ===")
@@ -153,6 +170,7 @@ def summarize(name: str, r: dict, bands) -> None:
 
 
 def main() -> None:
+    """--sinks の数ごとに run_mode を回し、帯ごとの表を出す（0 は naive＝絶対位置・sink なし）。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--model", required=True)
     ap.add_argument("--ref-json", type=Path, required=True, help="基準の系列（窓なし fp32）")

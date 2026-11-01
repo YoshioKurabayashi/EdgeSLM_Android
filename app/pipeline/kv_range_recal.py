@@ -17,6 +17,21 @@ Host と HTP で同じように飽和するので Host↔HTP の差の原因で�
 
   baseline / baseline_kvwide / D1_fp32pos0_later / D1_fp32pos0_later_kvwide
   評価点の margin・KL・自由生成 ＋ 評価対話で新しい KV が（広げた）範囲からはみ出すかの再計数
+  ★2026-10-18 訂正: このコード（main）が実際に測るのは baseline_kvwide と D1_fp32pos0_later_kvwide の 2 つだけ。
+  baseline と D1 の値は同じ評価の P12k（fp32_prefix_eval.py）の結果を表に並べたもの（推定。results/P12l の表で一致する）。
+  「広げた範囲からはみ出すかの再計数」は、このファイルには無い
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節「範囲の付け替え」の (b) KV 系の範囲を広げる。11 章の枠は widen_plan）
+- 結果（results/P12l_20260916_kv_range_recal.md）: 252 グループ全部を広げると baseline は悪化（1位保持 85.7→78.6%、自由生成がおうむ返し）。
+  主因は uint8 の 28 グループ（C-8 で 8bit に落とした attention の右辺。255 段しかない）。
+  16bit の 224 グループだけ広げると 1位保持 87.5%（→ kv_range_recal16.py）。それでも点B は +3.35→−0.67 と悪化
+- 入力: work/ops/qwen3_dec28c256/ の prepped.onnx（FP32。外部データ .data 付き）、P12k の kv_family.json、
+  P12e の qparam_map.json（REP）、P12e の成果物（ART の baseline.onnx・focused_later.onnx）、P12d の較正用の対話
+- 出力: OUTDIR（results/P12l_20260916_kv_range_recal/）の widen_plan.json・report.json・progress.log と、
+  観測用のモデル fp32_kvprobe.onnx（＋ .data へのハードリンク）
+- 動かし方: python -m app.pipeline.kv_range_recal（引数なし）
 """
 from pathlib import Path
 import argparse
@@ -34,12 +49,19 @@ import numpy as np
 import onnx
 from onnx import helper, numpy_helper, TensorProto
 
+# 結果の置き場・較正に使う対話（評価には使わないもの）・観測した範囲に掛ける余裕の倍率
 OUTDIR = ROOT / "results/P12l_20260916_kv_range_recal"
 CALIB_CASES = ("long_ja", "long_code", "chat_long")
 MARGIN = 1.2
 
 
 def kv_groups():
+    """KV の値が流れる Q ノード（kv_family.json の 448 本）を、scale を共有するグループにまとめる。
+
+    戻り値: (グループのリスト（qparam_map.json の groups の要素。scale_name・zero_name・sources・q_nodes など）,
+             KV 以外の Q ノードと scale を共有しているグループの一覧（記録用）)
+    共有している scale は 1 つしか無いので、グループ単位でしか範囲を変えられない
+    """
     fam = load_json(ROOT / "results/P12k_20260916_fp32_prefix/kv_family.json")
     groups = load_json(REP / "qparam_map.json")["groups"]
     by_q = {}
@@ -58,11 +80,17 @@ def kv_groups():
 
 
 def fp32_name(src):
+    """QDQ のテンソル名から、FP32 のモデルでの名前を得る（末尾の _QuantizeLinear_Input を外す）。"""
     return src[: -len("_QuantizeLinear_Input")] if src.endswith("_QuantizeLinear_Input") else src
 
 
 def observe(groups):
     """FP32 で較正対話を流し、各グループの入力テンソルの min/max を取る。"""
+    # （2026-10-18 追記）戻り値: (lo, hi, 流したトークン数, 観測できなかった名前のリスト)。lo/hi は {テンソル名: 最小/最大}
+    # ① FP32 のモデルに、観測したい中間テンソルを出力として足した写し（fp32_kvprobe.onnx）を作る。
+    #    重みの .data は、写しと同じフォルダにハードリンクを張って共有する（コピーしない。数 GB あるため）。
+    #    （2026-10-18 注）このハードリンクが、後の add26_causal_probe.py で onnx の checker に咎められた
+    #    「既存のハードリンク」の元と推定される
     names = sorted({fp32_name(s) for g in groups for s in g["sources"]})
     m = onnx.load(str(OPS / "qwen3_dec28c256_prepped.onnx"), load_external_data=False)
     produced = {o for n in m.graph.node for o in n.output} | {o.name for o in m.graph.output}
@@ -82,6 +110,7 @@ def observe(groups):
     lo = collections.defaultdict(lambda: np.inf)
     hi = collections.defaultdict(lambda: -np.inf)
     n_tok = 0
+    # ② 較正の対話を 1 トークンずつ流し、past_*（入力の KV。埋まっている直近の位置だけ）と、足した出力の min/max を更新する
     for case in CALIB_CASES:
         rows = load_json(P12D / f"{case}.json")["rows"]
         r = Runner(s, cos, sin)
@@ -106,6 +135,11 @@ def observe(groups):
 
 
 def fit(lo, hi, qmax):
+    """[lo, hi] から非対称量子化の (scale, zero point) を作る（temporal_qdq_experiment.fit の余裕倍率なし版）。
+
+    0 を必ず範囲に含め、zero point を整数に丸めた後でも両端が表せるよう scale を広げ直し、float32 で 1 つ上に寄せる。
+    戻り値: (np.float32 の scale, int の zero point)
+    """
     lo, hi = min(0.0, lo), max(0.0, hi)
     scale = (hi - lo) / qmax
     zp = int(np.clip(round(-lo / scale), 0, qmax))
@@ -114,6 +148,12 @@ def fit(lo, hi, qmax):
 
 
 def widen_plan(groups, lo, hi, base_model):
+    """グループごとに「新しい範囲 = 既存の範囲 ∪ 観測 × MARGIN」を作る（狭めない）。
+
+    groups : kv_groups の戻り値。lo, hi : observe の戻り値。base_model : baseline の QDQ（重みは読まない）
+    戻り値 : グループごとの記録のリスト。広げたものは new_scale・new_zero・widen_factor（新 scale ÷ 旧 scale）を持ち、
+             観測が無いものは skipped、既存の範囲で足りるものは unchanged を持つ
+    """
     init = {t.name: t for t in base_model.graph.initializer}
     plan = []
     for g in groups:
@@ -121,6 +161,7 @@ def widen_plan(groups, lo, hi, base_model):
         z_arr = numpy_helper.to_array(init[g["zero_name"]])
         qmax = 65535 if z_arr.dtype == np.uint16 else 255
         z_old = float(z_arr.ravel()[0])
+        # 既存の範囲 = (0 − zp) × scale 〜 (qmax − zp) × scale（per-tensor。scale・zp は 1 つ目の値だけ見る）
         old = ((0 - z_old) * s_old, (qmax - z_old) * s_old)
         srcs = [fp32_name(s) for s in g["sources"]]
         obs_lo = min(lo.get(s, np.inf) for s in srcs)
@@ -141,6 +182,10 @@ def widen_plan(groups, lo, hi, base_model):
 
 
 def apply(model_path, plan):
+    """plan の new_scale・new_zero を model_path の QDQ に当て、メモリ上でセッションを開いて返す（ファイルは書かない）。
+
+    型と形は元の初期化子に合わせる。他の道具（kv_range_recal16.py・d0_prime_fp32pos0_kvwide.py）も、これを import して使う
+    """
     m = onnx.load(str(model_path))
     init = {t.name: t for t in m.graph.initializer}
     for p in plan:
@@ -154,6 +199,7 @@ def apply(model_path, plan):
 
 
 def main():
+    """① グループを決める → ② FP32 で観測 → ③ 広げる計画を作って保存 → ④ 広げた 2 変種を P12k と同じ枠で評価する。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.parse_args()
     OUTDIR.mkdir(parents=True, exist_ok=True)
@@ -180,6 +226,7 @@ def main():
     (OUTDIR / "widen_plan.json").write_text(json.dumps({"mixed_scale_groups": mixed, "plan": plan}, ensure_ascii=False, indent=1),
                                             encoding="utf-8")
 
+    # ④ 評価（評価点・指標・自由生成は P12k と同じ。fp32_prefix_eval の Pipeline・run_points・free_generation）
     tok = tokenizer()
     pts = eval_points(tok)
     fp32 = session(OPS / "qwen3_dec28c256_prepped.onnx")

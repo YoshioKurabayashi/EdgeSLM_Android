@@ -35,6 +35,16 @@
 | `ctx_*/` （生成器の出力ディレクトリ） | **EPContext ONNX の隣に同じバイナリを置いてある**ので2重に持たない。消す前に md5 の一致を確認する |
 
 Windows では `du` の挙動が揃わないので、サイズ計算は Python で行う。
+（2026-10-18 追記）学習用の補足:
+
+- 段: 本番の流れの外。2026-09-13 ごろ（P3〜P5 のあと）に work/ が大きくなったので作った片付けの道具
+- 入力: プロジェクトの work/ の中身（下の PATTERNS に合うもの）。出力: 画面の一覧と、--execute のときの実際の削除
+- 動かし方: python -m app.pipeline.cleanup_work（一覧だけ）→ 中身を見てから python -m app.pipeline.cleanup_work --execute
+- 注意（コードから読めること）:
+  - 残すものの守りは「KEEP と同じパスか」だけ。表の「残すもの」の *.npz・*.spec.json などは、PATTERNS に合わないから残る。
+    PATTERNS がフォルダに合うと、その中のファイルは KEEP にあっても丸ごと消える
+  - 「消す前に md5 の一致を確認する」はこのコードでは行わない（PATTERNS の理由の欄に「確認済み」と書いてあるだけ）
+  - 消したものは戻せない（ごみ箱を通らない）
 """
 
 from __future__ import annotations
@@ -43,6 +53,7 @@ import argparse
 import shutil
 from pathlib import Path
 
+# プロジェクトの直下（このファイルは app/pipeline/ にあるので 2 つ上）
 ROOT = Path(__file__).resolve().parents[2]
 
 # glob パターンと、なぜ消してよいかの理由
@@ -120,6 +131,8 @@ PATTERNS: list[tuple[str, str]] = [
     ("work/devacc_pm16", "端末出力（窓16との比較用）"),
 ]
 
+# 必ず残すもの（作り直しに 1 時間前後かかる context binary と、それを作り直すための入力・fp32 の参照）。
+# PATTERNS に合っても、このパスと同じなら消さない
 KEEP = [
     "work/ops/qwen_full/qwen24_ctx.SM8350.bin",
     "work/ops/qwen_full/qwen24ext_epctx.onnx",
@@ -142,16 +155,19 @@ KEEP = [
 
 
 def size_of(p: Path) -> int:
+    """ファイルならその大きさ、フォルダなら中のファイルの合計（バイト）。"""
     if p.is_file():
         return p.stat().st_size
     return sum(f.stat().st_size for f in p.rglob("*") if f.is_file())
 
 
 def main() -> None:
+    """① PATTERNS に合うものを集めて大きさを測る → ② 大きい順に一覧を出す → ③ --execute のときだけ消す。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--execute", action="store_true", help="付けないと一覧だけ")
     args = ap.parse_args()
 
+    # ① 消す候補を集める（KEEP と同じパスは除く）
     keep = {(ROOT / k).resolve() for k in KEEP}
     rows, total = [], 0
     for pat, why in PATTERNS:
@@ -162,6 +178,7 @@ def main() -> None:
             total += sz
             rows.append((sz, p.relative_to(ROOT).as_posix(), why))
 
+    # ② 大きい順に上位 22 件を出し、残りはまとめて 1 行にする
     rows.sort(reverse=True)
     print(f"{'サイズ':>10s}  対象 / 理由")
     print("-" * 92)
@@ -184,6 +201,7 @@ def main() -> None:
         print("\n（実行するには --execute を付ける）")
         return
 
+    # ③ 消す。フォルダは中身ごと、ファイルは 1 つずつ。消せなかったものは理由を出して続ける
     freed = 0
     for sz, rel, _ in rows:
         p = ROOT / rel

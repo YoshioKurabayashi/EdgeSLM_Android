@@ -12,6 +12,11 @@
 #
 # 注意: NDK のバージョンは ZipDepth（P1）の要求に合わせて 21.4.7075529 に固定している。
 #       新しいNDKに上げてはいけない（要件定義書 3.3.3節）。
+#
+# 【補足（学習用、2026-10-18 追記）】
+# 結果: results/P0b_20260912_*.txt（4 本）。出力: build/p0b/hello_arm64（と .c）。
+# 注意: { … } | tee の中の exit 1 はその部分（パイプの中のサブシェル）だけを終わらせる。
+#       そのため失敗しても最後の「保存先」の表示までは進む（推定。bash の仕様から）。
 
 set -u
 
@@ -26,6 +31,7 @@ OUTDIR="$HERE/results"
 BUILD="$HERE/build/p0b"
 mkdir -p "$OUTDIR" "$BUILD"
 
+# NDK のクロスコンパイラ（Windows では .cmd のラッパ）。aarch64-linux-android26 = arm64・API 26。
 SDK="${ANDROID_SDK_ROOT:-D:/Android/sdk}"
 NDK_VER="21.4.7075529"
 TC="$SDK/ndk/$NDK_VER/toolchains/llvm/prebuilt/windows-x86_64/bin"
@@ -34,6 +40,7 @@ CC="$TC/aarch64-linux-android26-clang.cmd"
 ADB="${ADB:-adb}"
 DEVDIR="/data/local/tmp/edgeslm"
 
+# 結果ファイルの名前に使う日時。
 STAMP="$(date +%Y%m%d_%H%M%S)"
 OUT="$OUTDIR/P0b_${STAMP}.txt"
 

@@ -15,8 +15,19 @@ D0'はこの2つを組み合わせる: FP32位置0のKV + KV入力range修正(16
 新規ビルドは不要: P12l保存済みのwiden_plan.json(16bitサブセット)を、
 D:/AI/artifacts/.../baseline.onnx にメモリ上で適用してORTセッションを作る
 （kv_range_recal16.pyのapply()をそのまま再利用）。
+（★2026-10-18 訂正: 旧「kv_range_recal16.pyのapply()」。apply は kv_range_recal.py に定義があり、
+  kv_range_recal16.py もこのファイルも、そこから import している）
 
 判定は自由生成を最優先(teacher forcingの集計値は診断用)。
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節）
+- 結果（results/P12u_20260916_d0prime_fp32pos0_kvwide.md）: 仮説は否定された。KV 入力の範囲を直しても、
+  自由生成の turn1（「音楽をかけて」）は旧 D0 とほぼ同じ「エアコンの音楽をかけています。」という失敗文になった
+- 入力: P12l の widen_plan.json、P12e の baseline.onnx（ART）、work/ops/qwen3_dec28c256/ の prepped.onnx（FP32）
+- 出力: results/P12u_20260916_d0prime_fp32pos0_kvwide/report.json と画面の 1 行の要約・自由生成の文
+- 動かし方: python -m app.pipeline.d0_prime_fp32pos0_kvwide（引数なし）
 """
 from pathlib import Path
 import json
@@ -32,10 +43,12 @@ OUT = ROOT / "results/P12u_20260916_d0prime_fp32pos0_kvwide"
 
 
 def emit(o):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(o, ensure_ascii=False), flush=True)
 
 
 def summarize(sc):
+    """score の結果を 1 行の要約（1位保持・margin 保持・最小 margin・KL・点B・点A・BANANA・バナナ）にする。"""
     a = sc["ALL"]
     return (f"1位保持 {a['top1_keep']*100:5.1f}%  margin保持 {a['retention_mean']*100:6.1f}%  "
             f"最小margin {a['margin_min']:+6.2f}  KL {a['kl_mean']:.3f} | "
@@ -44,6 +57,7 @@ def summarize(sc):
 
 
 def main():
+    """① 評価点 → ② 16bit の計画 → ③ FP32 の基準 → ④ D0'（位置0 は FP32、以降は kvwide16 の baseline）を評価して保存。"""
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)

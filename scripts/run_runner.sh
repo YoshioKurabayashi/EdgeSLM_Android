@@ -11,6 +11,12 @@
 #   モデルとジョブ仕様は APK の外（外部ファイルディレクトリ）に置く。
 #   これにより **モデルやパラメータを変えても APK を作り直さずに済む**。
 #   ビルドは JVM 制約によりユーザー実行になるため、その回数を減らすことが最優先。
+#
+# 【補足（学習用、2026-10-18 追記）】
+# 受け入れの記録: results/v01_20260912_runner_acceptance.md。run の結果は results/<日時>_last_result.json など
+#   （results/ に 2026-09-12〜13 の last_result / last_describe が残っている）。
+# 端末側の置き場（DEV_BASE）: jobs/（ジョブ仕様）・models/（モデル）・out/（結果）。アプリ（RunnerService）が job を読み、
+#   C++ の job.cpp が task（probe・bench・op_check・infer）を実行する（StudyMemo 13.4 節）。
 
 set -u
 export MSYS2_ARG_CONV_EXCL='/data/local/tmp;/sys;/vendor;/dev;/system;/proc;/sdcard'
@@ -25,12 +31,14 @@ PKG="org.edgeslm.runner"
 DEV_BASE="/sdcard/Android/data/$PKG/files"
 APK="$RUNNER/app/build/outputs/apk/debug/app-debug.apk"
 
+# die: エラーを出して終わる。ensure_device: 端末がつながっていなければ止める。
 die() { echo "ERROR: $*" >&2; exit 1; }
 
 ensure_device() {
   "$ADB" get-state >/dev/null 2>&1 || die "端末が接続されていない"
 }
 
+# install: APK を入れ、通知の権限を付け、アプリを一度起動して置き場のフォルダをアプリ自身に作らせる。
 cmd_install() {
   ensure_device
   [ -f "$APK" ] || die "APK が無い: $APK
@@ -63,6 +71,7 @@ cmd_install() {
   "$ADB" shell "p=\$(pm path $PKG | head -1 | cut -d: -f2); ls -l \$(dirname \$p)/lib/arm64 2>/dev/null | grep -iE 'QnnHtp|onnxruntime|edgeslm' " | sed 's/^/  /'
 }
 
+# push-model: 1 つのモデルを models/ に送る（APK を作り直さずにモデルを替えられる）。
 cmd_push_model() {
   ensure_device
   local src="${1:-}"
@@ -93,6 +102,7 @@ cmd_push_ops() {
   echo "=== $n 本を $DEV_BASE/models/ops/ へ送った ==="
 }
 
+# run: ジョブ仕様を送り、前回の結果を消してから Activity 経由で起動し、結果の JSON ができるまで 2 秒ごとに待って回収する。
 cmd_run() {
   ensure_device
   local job_src="${1:-}"
@@ -140,6 +150,7 @@ cmd_run() {
   echo "保存先: $OUTDIR/${stamp}_*.json"
 }
 
+# 第 1 引数で動作を選ぶ。
 case "${1:-}" in
   install)    cmd_install ;;
   push-model) shift; cmd_push_model "$@" ;;

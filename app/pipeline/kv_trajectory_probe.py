@@ -11,6 +11,17 @@ hidden→K/V生成→attention→次hiddenと伝播・蓄積する」ことが�
 固定しない）、各position・各layer・K/VについてFP32比のL2相対誤差を記録する。
 どのposition・どのlayerから差が急成長するかを特定するのが目的。
 
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節）。P12w（add26_causal_probe.py）の続き、後は P12y（local_swap_pos45_L14V.py）
+- 結果（results/P12x_20260916_kv_trajectory_probe.md）: 誤差は 79 歩かけて育つのではなく、位置1〜2 で既に大きい
+  （baseline の位置1・層27 の V で 93.9%）。V は K より一貫して大きい。位置45・層14 の V で oracle だけが突出（71.7%、他は約 5%）
+- 「4x」は位置0 だけ baseline で流す（下の capture）。最初はこれを入れ忘れて V の誤差が最大 4285% になった、と md の 1 節に記録がある
+- ★2026-10-18 訂正: 上の「点Bの79トークン」「79token」。実際は点B の 80 トークン（位置 0〜79）すべてを流して記録する（md の 1 節も 80）
+- 入力: FP32・baseline・4x（add26_causal_probe.FOURX_FULL）・oracle（linear20_oracle.ORACLE_FULL）の 4 モデル、点B の入力
+- 出力: work/p12x_kv_trajectory/kv_trajectory.npz（モデル × K/V ごとに [位置, 層, 1024]）と
+  results/P12x_20260916_kv_trajectory_probe/kv_error_growth.json（抜粋の位置 × 層の表、%）
+- プロジェクトの直下からなら python -m app.pipeline.kv_trajectory_probe --phase capture のようにも動く
 ## 使い方
 
   python kv_trajectory_probe.py --phase capture   # 4モデル×79token×28層×K/Vを採取
@@ -30,6 +41,7 @@ from temporal_qdq_experiment import SOURCE, OPS  # noqa: E402
 
 import numpy as np  # noqa: E402
 
+# 結果・作業の置き場と層の数。VARIANTS は比べる 4 モデル（名前 → ONNX のパス）
 OUT = ROOT / "results/P12x_20260916_kv_trajectory_probe"
 WORK = ROOT / "work/p12x_kv_trajectory"
 N_LAYERS = 28
@@ -43,10 +55,16 @@ VARIANTS = {
 
 
 def emit(o):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(o, ensure_ascii=False), flush=True)
 
 
 def capture():
+    """点B の入力を 4 モデルで最初から流し（各自の KV で teacher forcing）、位置ごとに「新しく書いた K・V」を記録する。
+
+    記録するのは present_k_L / present_v_L の最後のスロット（その位置で新しく作った KV）を 1024 次元に並べたもの
+    （8 ヘッド × 128。形は推定: Qwen3-0.6B の KV ヘッドは 8）
+    """
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
@@ -83,6 +101,7 @@ def capture():
 
 
 def compare():
+    """保存した軌跡から、抜粋した位置 × 層について、FP32 比の相対L2（%）の表を 3 モデル × K/V で作って表示・保存する。"""
     OUT.mkdir(parents=True, exist_ok=True)
     d = dict(np.load(WORK / "kv_trajectory.npz"))
     n = d["fp32_k"].shape[0]
@@ -120,6 +139,7 @@ def compare():
 
 
 def main():
+    """コマンドの入口。--phase capture か compare のどちらか 1 段を流す。"""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["capture", "compare"], required=True)
     a = ap.parse_args()

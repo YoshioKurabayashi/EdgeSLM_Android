@@ -20,6 +20,17 @@ C-7 / C-10 / I/O 型の3回学んでいる。**精度も実機で確かめる。
     3. 端末から pull して numpy で読み戻し、fp32 参照と比較
 
 出力の形と型は `describe` が返すものを使う（端末側が書いた JSON に含まれる）。
+
+## 入力と出力・動かし方（2026-10-18 追記）
+
+- 入力: 端末に置いた EPContext モデル（--model。端末の models/ からの相対）・評価セットの npz・
+  基準の fp32 ONNX（PC で走らせる）。端末は adb でつながり、runner アプリ（org.edgeslm.runner）が入っていること
+- 出力: --work の下に、入力の .bin（inputs/）・job の JSON・端末の結果 last_result.json・
+  端末の出力 .bin（<job_id>_<番号>_<出力名>.bin。ab_host_device.py がこれを読む）。
+  --out を付けると要約の JSON（例: results/P3_device_accuracy.json。記録は results/P3_20260913_device_accuracy.md）
+- 動かし方（StudyMemo 14.1）:
+    python -m app.pipeline.device_accuracy --model models/ops/<名前>_epctx.onnx --eval-npz <評価.npz> --fp32 <fp32.onnx>
+- 使った節: StudyMemo 6.3・4 章（罠 2: パディングで指標が薄まる）・14.1（PC から端末へ job を渡す道）
 """
 
 from __future__ import annotations
@@ -37,6 +48,11 @@ DTYPE = {"float32": np.float32, "float16": np.float16, "int64": np.int64,
 
 
 def _adb(args: list[str], **kw) -> subprocess.CompletedProcess:
+    """adb を呼んで結果（標準出力・標準エラー・終了コード）を返す。失敗しても例外にしない（呼ぶ側が見る）。
+
+    ★MSYS2_ARG_CONV_EXCL: Git Bash（MSYS2）の環境から呼ぶと、"/data/local/tmp" のような引数が
+    Windows のパスに書き換えられて端末に届かない。書き換えない接頭辞をここで指定している。
+    """
     env = {"MSYS2_ARG_CONV_EXCL": "/data/local/tmp;/sys;/vendor;/dev;/system;/proc;/sdcard;/storage"}
     import os
     e = dict(os.environ)
@@ -51,7 +67,14 @@ META_KEYS = ("n_valid",)
 
 
 def export_inputs(npz: Path, out_dir: Path, limit: int | None = None) -> list[dict]:
-    """npz を1サンプルずつ生バイト列に展開する。"""
+    """npz を1サンプルずつ生バイト列に展開する。
+
+    引数: npz = 評価セット（入力名ごとに [N, …]）、out_dir = .bin を書くフォルダ、limit = 先頭何件まで。
+    戻り値: job の "batches" に入れる dict の list。
+      [{"id": "000", "inputs": {"input_ids": "inputs/input_ids_000.bin", ...}}, ...]
+    1 件ずつ [1, …] の形で、型はそのまま（tobytes なのでヘッダの無い生の並び）。端末側は
+    モデルの入力の形と型（describe）を知っているので、生の並びだけで読める。
+    """
     z = np.load(npz)
     names = [n for n in z.files if n not in META_KEYS]
     n = z[names[0]].shape[0]
@@ -71,6 +94,11 @@ def export_inputs(npz: Path, out_dir: Path, limit: int | None = None) -> list[di
 
 
 def main() -> None:
+    """実機で推論し、出力を持ち帰って fp32 と比べる本体（冒頭の手順 1〜3 をそのまま 5 段で行う）。
+
+    段: ① 入力を .bin へ → ② 端末へ push → ③ job を送り、アプリを起動して結果を待つ
+        → ④ 端末の出力 .bin を pull → ⑤ 同じ入力で fp32 を PC で走らせ、相対 L2・cos・top-1 を出す
+    """
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--model", required=True, help="端末上の EPContext モデル（models/... 相対）")
     ap.add_argument("--eval-npz", type=Path, required=True)
@@ -86,13 +114,16 @@ def main() -> None:
                          "★パディングのあるモデルでは all は薄まる（指標の罠）")
     args = ap.parse_args()
 
+    # runner アプリの外部ファイル置き場。jobs/・inputs/・out/ はここからの相対で job に書く
     dev_base = "/sdcard/Android/data/org.edgeslm.runner/files"
     args.work.mkdir(parents=True, exist_ok=True)
 
+    # ① 入力を 1 件ずつの .bin に展開する
     print("=== 1. 入力を生バイト列へ展開 ===")
     batches = export_inputs(args.eval_npz, args.work / "inputs", args.limit)
     print(f"  {len(batches)} サンプル")
 
+    # ② 入力の .bin を 1 本ずつ端末へ送る（失敗したら止める）
     print("=== 2. 端末へ push ===")
     for p in sorted((args.work / "inputs").glob("*.bin")):
         r = _adb(["push", str(p.resolve()), f"{dev_base}/inputs/{p.name}"])
@@ -100,6 +131,9 @@ def main() -> None:
             raise SystemExit(f"push 失敗: {p.name}\n{r.stderr}")
     print(f"  {len(batches) * len([n for n in np.load(args.eval_npz).files if n not in META_KEYS])} ファイル")
 
+    # job の JSON（端末の RunnerService → job.cpp が読む）。task=infer で batches を 1 件ずつ推論し、出力を out/ に書く。
+    #   ep: QNN の HTP で動かす。offload_graph_io_quantization=0 は入出力の量子化を CPU に出さない指定。
+    #   intra_op_num_threads=1: CPU 側の並列は使わない（HTP で動かすので不要）
     job = {
         "job_id": args.job_id,
         "task": "infer",
@@ -114,6 +148,7 @@ def main() -> None:
     job_path = args.work / f"{args.job_id}.json"
     job_path.write_text(json.dumps(job, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    # ③ job を送り、前の結果を消してからアプリを起動し、last_result.json ができるまで 2 秒ごとに待つ（最大 90 回＝180 秒）
     print("=== 3. 端末で推論 ===")
     # ★run_runner.sh を subprocess で呼ぶのはやめた。
     #   Python(Windows exe) から `bash` が解決できず**黙って何も起きない**まま
@@ -147,6 +182,7 @@ def main() -> None:
     if bad:
         print(f"  {len(bad)} 件が失敗: {bad[0].get('error','')[:160]}")
 
+    # ④ 結果の records の各出力（path・name・type・shape）を pull する。got は（番号, 出力の情報, 手元のパス）
     print("=== 4. 結果を回収 ===")
     got = []
     for rec in res["records"]:
@@ -160,6 +196,7 @@ def main() -> None:
             got.append((rec["id"], o, local))
     print(f"  {len(got)} ファイル")
 
+    # ⑤ 同じ入力で fp32 を PC の CPU で走らせ、端末の出力と比べる
     print("=== 5. fp32 参照と比較 ===")
     import onnxruntime as ort
     z = np.load(args.eval_npz)
@@ -193,6 +230,7 @@ def main() -> None:
     primary = out_names[0]
     per_output: dict[str, list[float]] = {}
 
+    # ref_cache: 同じサンプルの fp32 は出力が何本あっても 1 回だけ走らせる
     rel, cos, top1 = [], [], []
     ref_cache: dict[int, list] = {}
     for sid, o, local in got:
@@ -203,6 +241,7 @@ def main() -> None:
         if oname not in out_names:
             raise SystemExit(f"端末の出力名 '{oname}' が fp32 モデルに無い（{out_names}）")
         ref = ref_cache[i][out_names.index(oname)]
+        # 端末の出力は、端末が返した型と形で読み戻す（DTYPE は型名 → numpy の型の表）
         dev = np.frombuffer(local.read_bytes(), dtype=DTYPE[o["type"]]).reshape(o["shape"])
         # 主出力以外は相対L2だけ記録して、要約の top-1 などには混ぜない
         if oname != primary:
@@ -232,6 +271,8 @@ def main() -> None:
     else:
         summary_extra = {}
 
+    # 要約: 相対 L2・cos の平均と最悪、端末の OrtRun の時間（ms）の平均。logits のときだけ top-1 一致。
+    #   ★rel_l2 はここでは基準 a（fp32）で割る（ab_host_device.metrics と同じ向き）
     summary = {"samples": len(rel), "positions": args.positions,
                "primary_output": primary, "other_outputs": summary_extra,
                "rel_l2_mean": float(np.mean(rel)), "rel_l2_max": float(np.max(rel)),

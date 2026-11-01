@@ -28,6 +28,18 @@ QDQ 形式は「float のグラフに Q/DQ を挟んだもの」なので、
         --case none --case "rmsnorm:Pow,ReduceMean,Sqrt,Reciprocal" \
         --case "residual:Add" --case "softmax:Softmax"
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足・訂正はこのコメントに書く。
+# ★2026-10-18 訂正: docstring の「何を外せるか」の旧「--ops … / --graph-inputs past_ / --graph-outputs present_」という
+#   引数は無い。実際の指定はすべて --case "名前:中身" で、中身は op 名のカンマ区切り・@in=接頭辞・@out=接頭辞・
+#   @layer=12|22（層は | で区切る）・@t=テンソル名・@weights（parse_case() と --case の help の通り）。
+#   「使い方」の例は今の引数の形で正しい。
+# どの段か: StudyMemo 4.2 節（QDQ の上で直接やる Oracle）・7.1 節（重みと活性化に分ける）・8.5 節（@weights の落とし穴）。
+# 結果: results/P8_20260913_oracle_*.json（例: oracle_weights.json では none 68.8%・重みだけ float 68.8%・
+#   活性化だけ float 64.6%。ただし @weights は丸め済みの値を畳むだけで重みの量子化は外れていない ― 下の ①-d の注意）。
+# 入力:  --qdq（量子化済みのモデル）・--fp32（基準）・--eval-npz（評価の入力。キーはモデルの入力名）。
+# 出力:  --workdir/strip_<名前>.onnx（＋ .data）と、--out に case ごとの指標の JSON。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -80,6 +92,7 @@ def assign_layers(g) -> dict[str, int]:
 
 
 def _maps(g):
+    """テンソル名 → それを作るノード（prod）と、テンソル名 → それを使うノードの一覧（cons）を作る。"""
     prod = {o: n for n in g.node for o in n.output}
     cons: dict[str, list] = {}
     for n in g.node:
@@ -94,6 +107,11 @@ def strip(model, ops: list[str], in_prefix: str | None, out_prefix: str | None,
     """指定した箇所の `QuantizeLinear → DequantizeLinear` ペアを外す。
 
     戻り値は (model, 外したペア数)。
+
+    【説明（2026-10-18 追記）】引数: ops = 出力の Q/DQ を外す op の種類、in_prefix/out_prefix = グラフ入力・出力の接頭辞、
+    layers = 層番号（層単位の Oracle）、tensors = テンソル名、weights = 重みの DQ を定数に畳むか。
+    外し方: Q と DQ のノードを消し、DQ の出力を使っていたノードの入力を Q の前の float のテンソルに付け替える。
+    ホストの CPU は float で計算するので、外した所だけ丸めが無くなる（v68 では C-1 違反になる、診断専用）。
     """
     g = model.graph
     prod, cons = _maps(g)
@@ -157,6 +175,11 @@ def strip(model, ops: list[str], in_prefix: str | None, out_prefix: str | None,
     #   活性化は「float → Q → DQ → 計算」だが、重みは
     #   「量子化済み初期化子 → DQ → 計算」で前段に Q が無いため、
     #   `unwrap_after` では外れない。A16W8 の W8 を評価するにはここを見る。
+    #
+    # ★注意（2026-10-18 追記）: ここで作る float の定数は「量子化済みの値 q を DQ した値」
+    #   (q - zp) * scale なので、**重みの丸め誤差はそのまま残る**（元の fp32 の重みには戻らない）。
+    #   外れるのは計算グラフの中の重みの DequantizeLinear だけで、精度への効果は測れない。
+    #   重みの量子化の影響を測るには、元の fp32 の重みを入れ直す必要がある（StudyMemo 7.1 節）。
     if weights:
         from onnx import numpy_helper as _nh
         init_map = {t.name: t for t in g.initializer}
@@ -190,12 +213,14 @@ def strip(model, ops: list[str], in_prefix: str | None, out_prefix: str | None,
         print(f"      重みの DequantizeLinear {len(added)} 個を定数へ畳んだ")
 
     # ② グラフ入力
+    # （past_* のような入力は、入力の直後に Q→DQ が付いている。それを外して float のまま使わせる）
     if in_prefix:
         for vi in g.input:
             if vi.name.startswith(in_prefix) and unwrap_after(vi.name):
                 pairs += 1
 
     # ③ グラフ出力（Q→DQ の前にある float を出力名にする）
+    # （present_* のような出力は、出力の手前に Q→DQ がある。出力の名前を Q の前の float に付け替える）
     if out_prefix:
         for vo in g.output:
             if not vo.name.startswith(out_prefix):
@@ -237,6 +262,11 @@ def strip(model, ops: list[str], in_prefix: str | None, out_prefix: str | None,
 
 
 def run_model(path: Path, npz: Path, out_name: str = "logits") -> np.ndarray:
+    """モデルを CPU で 1 サンプルずつ動かし、out_name の出力をまとめて返す。
+
+    npz はモデルの入力名をキーに持ち、最初の軸がサンプル数（1 サンプルずつ [i:i+1] で切って与える）。
+    戻り値は axis=1 でつないだ配列（logits [1, T, 語彙] を T の向きに並べる形。推定: decode では T=1 なので [1, サンプル数, 語彙]）。
+    """
     z = np.load(npz)
     so = ort.SessionOptions()
     so.log_severity_level = 3
@@ -257,6 +287,11 @@ def parse_case(spec: str):
         "名前:@out=present_"  … 同・グラフ出力
         "名前:@layer=12,22"   … その層に属する計算ノードの出力（層単位 Oracle）
         "名前:@t=present_v_12" … 名前を指定したテンソル
+
+    ★2026-10-18 訂正: 旧「"名前:@layer=12,22"」は誤り。中身はカンマで区切って読むので、層は「|」で区切る
+    （"名前:@layer=12|22"。--case の help と同じ）。カンマで書くと「22」が op 名として扱われる。
+    書かれていなかった指定: "名前:@weights" … 重みの DequantizeLinear を定数に畳む（丸め誤差は残る）。
+    "none"（コロン無し）… 何も外さない基準。戻り値: (名前, ops, in 接頭辞, out 接頭辞, layers, tensors, weights)。
     """
     if ":" not in spec:
         return spec, [], None, None, None, None, False
@@ -280,6 +315,7 @@ def parse_case(spec: str):
 
 
 def main() -> None:
+    """fp32 の基準を 1 回計算し、--case ごとに Q/DQ を外したモデルを作って比べ、表を出す。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--qdq", type=Path, required=True)
     ap.add_argument("--fp32", type=Path, required=True)
@@ -294,6 +330,7 @@ def main() -> None:
     args.workdir.mkdir(parents=True, exist_ok=True)
 
     import sys
+    # app/ を import の探し先に足して pipeline.accuracy_logits の指標を使う（python -m でもスクリプト直でも動くように）。
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from pipeline.accuracy_logits import metrics
 
@@ -309,6 +346,7 @@ def main() -> None:
             m = onnx.load(str(args.qdq))
             m, pairs = strip(m, ops, ip, op_, layers, tensors, weights)
             path = args.workdir / f"strip_{name}.onnx"
+            # 2GB を超えうるので重みは外部データ（.data）で保存する。
             onnx.save(m, str(path), save_as_external_data=True,
                       location=path.name + ".data", all_tensors_to_one_file=True)
         test = run_model(path, args.eval_npz, args.out_name)

@@ -29,6 +29,17 @@ decode はキャッシュを `present_* → past_*` と毎ステップ往復さ�
     python -m app.pipeline.fix_cache_qparams \
         --src work/ops/qwen_dec24/qwen_dec24_final_qdq.onnx \
         --out work/ops/qwen_dec24/qwen_dec24_unified_qdq.onnx
+## 学習用の補足（2026-10-18 追記）
+
+- 段: P7（decode の KV キャッシュの入出口の検証。results/P7_20260913_decode_cache_io.md・StudyMemo 8.3 節）
+- 結果: **効果は確認できなかった**（app/pipeline/README.md の「使えないと分かった道具」）。適用すると範囲のはみ出しは
+  42/48 本 → 0 本になるが、ループの一致数は 3 プロンプトでホスト 28→30・実機 17→19（各 72 中）で、
+  最初に見えた 9/24 → 19/24 は 1 プロンプトの偶然だった
+- 上の「1往復の試算で…clip 率 15.5%」は、範囲の中に一様に散らした点での当時の見積もり。
+  実データの clip 率は 0.0094% で、ほぼ起きていなかった（同じ md の 3 節）
+- 入力: decode の QDQ（--src）。出力: 入口と出口の Q/DQ を共通の初期化子に付け替えた QDQ（--out と隣の .data）
+- 注意（コードから読めること）: 整数の幅は uint16 に決め打ち（QMAX）。zero point も UINT16 で作るので、
+  uint8 の Q/DQ（C-8 で落としたものなど）に当てると型が合わない。scale・zero point は 1 つの値（per-tensor）と見なす
 """
 
 from __future__ import annotations
@@ -40,10 +51,12 @@ import numpy as np
 import onnx
 from onnx import TensorProto, helper, numpy_helper
 
+# uint16 の最大値（A16W8 の活性化の幅）
 QMAX = 65535
 
 
 def _maps(g):
+    """グラフ g から (出力名 → それを作るノード, 入力名 → それを使うノードのリスト) の 2 つの表を作る。"""
     prod = {o: n for n in g.node for o in n.output}
     cons: dict[str, list] = {}
     for n in g.node:
@@ -54,16 +67,23 @@ def _maps(g):
 
 def run(src: Path, out: Path, in_prefix: str = "past_",
         out_prefix: str = "present_") -> dict:
+    """past_X（入口）と present_X（出口）の組ごとに、共通の scale・zero point を作って付け替え、out に保存する。
+
+    src, out : 元の QDQ と書き出し先。in_prefix, out_prefix : 入口・出口の名前の頭
+    戻り値   : {"changed": 揃えた組の数, "detail": 組ごとの入口・出口・統一後の範囲, "out": 書き出し先}
+    """
     model = onnx.load(str(src))
     g = model.graph
     prod, cons = _maps(g)
     inits = {i.name: i for i in g.initializer}
 
     def val(name):
+        # 初期化子の値を 1 つの数として返す（初期化子でなければ None）
         t = inits.get(name)
         return None if t is None else numpy_helper.to_array(t).item()
 
     def q_after(tensor):
+        # 入口側: tensor（past_X）を受ける Q と、その後ろの DQ
         q = next((c for c in cons.get(tensor, []) if c.op_type == "QuantizeLinear"), None)
         if q is None:
             return None, None
@@ -71,6 +91,7 @@ def run(src: Path, out: Path, in_prefix: str = "past_",
         return q, dq
 
     def dq_before(tensor):
+        # 出口側: tensor（present_X）を作る DQ と、その前の Q
         dq = prod.get(tensor)
         if dq is None or dq.op_type != "DequantizeLinear":
             return None, None
@@ -93,6 +114,7 @@ def run(src: Path, out: Path, in_prefix: str = "past_",
         if None in (s_i, z_i, s_o, z_o):
             continue
 
+        # 入口と出口の表現範囲の和（両方を含む範囲）
         lo = min((0 - z_i) * s_i, (0 - z_o) * s_o)
         hi = max((QMAX - z_i) * s_i, (QMAX - z_o) * s_o)
         # uint16 asymmetric。0 が格子に乗るよう zero point は丸める
@@ -104,6 +126,7 @@ def run(src: Path, out: Path, in_prefix: str = "past_",
         if z < QMAX:
             s = max(s, hi / (QMAX - z))
 
+        # 新しい初期化子を作って 4 つのノード（入口の Q・DQ、出口の Q・DQ）の scale・zp をそれに向ける（既存は上書きしない）
         base = pin + "_unified"
         sn, zn = base + "_scale", base + "_zp"
         new_inits.append(numpy_helper.from_array(np.array(s, dtype=np.float32), sn))
@@ -124,6 +147,7 @@ def run(src: Path, out: Path, in_prefix: str = "past_",
 
 
 def main() -> None:
+    """コマンドの入口。run を呼んで、揃えた本数と最初の 5 組の範囲を出す。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--src", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)

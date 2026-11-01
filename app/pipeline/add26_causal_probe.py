@@ -10,6 +10,7 @@ FP32・baseline QDQ・4x（linear_20だけ4x range）・oracle（linear_20のQDQ
   - FP32比のL2相対誤差・コサイン類似度・最大誤差（幾何的な近さ）
   - 「decision方向への射影」: 各状態のadd_26を、層3-27+lm_headの**FP32継続モデル**に注入し、
     元のFP32 add_26を注入した場合と比べてmarginがどれだけ動くか（P32継続なので量子化ノイズを
+    （★2026-10-18 訂正: 旧「P32継続」。FP32 継続の書き損じ）
     経由しない、純粋にadd_26の値そのものの効果を見る）
 
 これにより2パターンに分岐する:
@@ -21,12 +22,34 @@ FP32・baseline QDQ・4x（linear_20だけ4x range）・oracle（linear_20のQDQ
   python add26_causal_probe.py --phase prepare   # 4つのprefixモデル(add_26出力付き)とl3plus_fp32を作る
   python add26_causal_probe.py --phase capture    # 点Bの入力を4モデルに流し、add_26を採取
   python add26_causal_probe.py --phase compare    # L2/cosine/max + FP32継続への射影
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B（28 層・KV256）を NPU に載せる検証の後半、P12 系の原因探し（StudyMemo 11.5 節）。
+  前は P12v（linear20_oracle.py。linear_20 の量子化を外しても点B が直らなかった）、
+  後は P12x（kv_trajectory_probe.py。KV キャッシュのずれの追跡）
+- 結果（results/P12w_20260916_add26_causal_probe.md）: add_26 の FP32 比の相対L2 は baseline 31.06% → 4x・oracle 29.83% で、
+  ずれの大部分は linear_20 より上流。FP32 の文脈に add_26 だけ差し込むと、どの条件も margin は +4.69〜+4.70 で判定は壊れない
+  → 原因は「その 1 位置の値」ではなく、それまでの約 79 トークンで積もった KV キャッシュの差だろう、と次へ進んだ
+- 入力: work/ops/qwen3_dec28c256/ の prepped.onnx（FP32）・final_qdq.onnx（baseline）、
+  P12e の較正の記録（block_revert_ab.REP の build_audit.json・calibration_ranges.json・qparam_map.json）、
+  P12v の oracle モデル（linear20_oracle.ORACLE_FULL）、Qwen3 のトークナイザと RoPE 表
+- 出力: work/p12w_add26_probe/ の各モデル・add26_states.npz・l3plus_context.npz、
+  results/P12w_20260916_add26_causal_probe/compare.json
+- 「margin」= FP32 の 1 位の語の logit − それ以外の語の最大の logit。正なら FP32 と同じ語を選ぶ
+- 動かし方（上の 3 段を順に、別々に流す）: python -m app.pipeline.add26_causal_probe --phase prepare など
+  （上の例のように app/pipeline の中で python add26_causal_probe.py … としても動く。sys.path に自分のフォルダを足すため）
 """
 from pathlib import Path
 import argparse
 import json
 import sys
 
+# 同じフォルダの P12 系の道具から、部品を借りる（ここに書き写さず import する）:
+#   temporal_qdq_experiment … Runner（KV キャッシュを持ち回して 1 トークンずつ流す）・RoPE 表・トークナイザ・
+#                             ORT のセッション・パス（ROOT・OPS・SOURCE = baseline の QDQ）・fit（範囲 → scale/zero point）
+#   block_revert_ab         … 評価点（点A/点B の入力トークンと判定位置）・P12e の記録の置き場 REP
+#   linear20_oracle         … linear_20 の Q/DQ を外した 28 層モデル（ORACLE_FULL）
 sys.path.insert(0, str(Path(__file__).parent))
 from temporal_qdq_experiment import Runner, tables, tokenizer, session, ROOT, OPS, SOURCE, fit  # noqa: E402
 from block_revert_ab import eval_points, REP  # noqa: E402
@@ -36,6 +59,7 @@ import numpy as np  # noqa: E402
 import onnx  # noqa: E402
 from onnx import helper, numpy_helper, TensorProto  # noqa: E402
 
+# 結果の置き場（results/）と、作ったモデルの置き場（work/）
 OUT = ROOT / "results/P12w_20260916_add26_causal_probe"
 WORK = ROOT / "work/p12w_add26_probe"
 
@@ -43,15 +67,19 @@ FOURX_FULL = WORK / "fourx_full28_qdq.onnx"  # linear_20だけ4x range、mul_41�
 L3PLUS_FP32 = WORK / "fp32src" / "l3plus_fp32.onnx"  # prepped.onnx.dataと同じディレクトリに置く必要がある
 L3PLUS_BASELINE = WORK / "l3plus_baseline_qdq.onnx"
 
+# 継続モデル（層3〜27 と lm_head）の入力: 層2 の出口 add_26 と、層3〜27 の KV キャッシュ、RoPE の cos/sin、マスク。
+# 層0〜2 の KV は要らない（その層はもう通り過ぎている）
 L3PLUS_INPUTS = ["add_26"] + [f"past_k_{i}" for i in range(3, 28)] + [f"past_v_{i}" for i in range(3, 28)] + \
     ["cos", "sin", "attn_mask"]
 
 
 def emit(o):
+    """途中経過を 1 行の JSON で出す（日本語はそのまま）。"""
     print(json.dumps(o, ensure_ascii=False), flush=True)
 
 
 def sess(p):
+    """ONNX を CPU EP で開く（ログは警告以上を抑える）。"""
     import onnxruntime as ort
     so = ort.SessionOptions()
     so.log_severity_level = 3
@@ -59,6 +87,12 @@ def sess(p):
 
 
 def add_output(model_path, out_path, tensor_name, elem_type=TensorProto.FLOAT):
+    """モデルの中間テンソル tensor_name をグラフの出力に足し、別名で保存する。
+
+    重み（外部データ）は読み込まず、グラフの定義だけを書き換える。形は None（実行時に決まる）。
+    保存先は out_path。外部データは元の .data を相対パスで指したままなので、元と同じフォルダに置く必要がある
+    （FP32 の写しを fp32src/ にまとめているのはこのため。下の prepare の説明）
+    """
     m = onnx.load(str(model_path), load_external_data=False)
     existing = {v.name for v in m.graph.output}
     if tensor_name not in existing:
@@ -68,6 +102,9 @@ def add_output(model_path, out_path, tensor_name, elem_type=TensorProto.FLOAT):
 
 def build_fourx_full():
     """linear_20だけP12rの4x(margin=6.0)にした28層フルモデル(mul_41はbaseline)。"""
+    # （2026-10-18 追記）margin 6.0 は既定の 1.5 の 4 倍 = 「4x」。P12r（linear20_range_sweep.py）の 4x と同じ値を作る。
+    # 戻り値: 新しい scale と zero point（記録用）
+    # ① P12e の較正で記録した linear_20 の「位置1以降」の範囲と、その Q/DQ の初期化子の名前・型を引く
     audit = json.loads((REP / "build_audit.json").read_text(encoding="utf-8"))
     later = {c["scale_name"]: c for c in audit["later"]["changes"] if len(c["sources"]) == 1}
     calib = json.loads((REP / "calibration_ranges.json").read_text(encoding="utf-8"))
@@ -78,6 +115,7 @@ def build_fourx_full():
     qmax = np.iinfo(dt).max
     s, z = fit(lo, hi, qmax, 6.0)
 
+    # ② baseline の QDQ の、その scale・zero point の初期化子だけを、形を保ったまま置き換えて保存する
     m = onnx.load(str(SOURCE), load_external_data=False)
     init = {t.name: t for t in m.graph.initializer}
     s_shape = numpy_helper.to_array(init[g["scale_name"]]).shape
@@ -90,6 +128,7 @@ def build_fourx_full():
 
 
 def prepare():
+    """4 つの「add_26 も出すモデル」と、FP32 の継続モデル（層3〜27 + lm_head）を作る。"""
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
 
@@ -135,6 +174,7 @@ def capture():
     層3-27の文脈(past_k/v・cos/sin/attn_mask)はFP32軌跡のものを固定して使う
     （「同じ入力条件で」add_26だけを差し替えて比較するため）。
     """
+    # （2026-10-18 追記）① 点B（「音楽をかけて」の判定。block_revert_ab.eval_points の point_B_music）の入力と判定位置を取る
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)
@@ -142,6 +182,8 @@ def capture():
     ids, pos_want = p["ids"], p["eval_positions"][0]
     emit({"phase": "capture", "tokens": len(ids), "decision_position": pos_want})
 
+    # ② 4 つのモデルそれぞれに、同じ入力トークン列を最初から 1 つずつ流す（teacher forcing）。
+    #    KV キャッシュは各モデルが自分で作ったもの。判定位置で add_26 を取り出す
     cos, sin = tables()
     variants = {
         "fp32": WORK / "fp32src" / "fp32_prefix_add26.onnx",
@@ -157,6 +199,7 @@ def capture():
         add26 = None
         for pos, tid in enumerate(ids):
             if pos == pos_want and name == "fp32":
+                # マスク [1,1,1,256]: 右詰めで直近 pos+1 個だけ 0、残りは −60（temporal_qdq_experiment.Runner.feed と同じ作り方）
                 # 層3-27用の文脈(このpositionをfeedする直前のcache + cos/sin/mask)をFP32軌跡から保存
                 mask = np.full((1, 1, 1, 256), -60, np.float32)
                 mask[..., 256 - min(pos + 1, 256):] = 0
@@ -165,6 +208,9 @@ def capture():
                     "cos": cos[pos].reshape(1, 1, 1, 128), "sin": sin[pos].reshape(1, 1, 1, 128),
                     "attn_mask": mask,
                 }
+            # （2026-10-18 注）「4x」もここでは位置0 から 4x のモデルで流している。P12x（kv_trajectory_probe.py）では、
+            #   4x を位置0 にも使うのは落とし穴（位置0 の巨大値が 4x の範囲で切られる）として、位置0 だけ baseline で流し直した。
+            #   P12w の 4x の数字がこの影響を受けたかどうかは記録に無い（推定。コードは直していない）
             got, _ = r.feed(tid, s)
             if pos == pos_want:
                 add26 = got["add_26"].astype(np.float32).copy()
@@ -172,6 +218,7 @@ def capture():
             raise RuntimeError("decision position not reached")
         npz[f"add26_{name}"] = add26
         del s, r
+    # ③ 4 つの add_26 と、FP32 の文脈（層3〜27 の KV・cos/sin・マスク）を npz に保存する
     assert l3plus_context is not None
     np.savez(WORK / "add26_states.npz", **npz)
     np.savez(WORK / "l3plus_context.npz", **l3plus_context)
@@ -180,11 +227,17 @@ def capture():
 
 
 def compare():
+    """① 幾何（相対L2・cos・最大誤差）と ② FP32 継続に差し込んだときの margin を、4 状態で比べる。
+
+    出力: compare.json（decision_top1_token・geometry_vs_fp32・margin_via_fp32_continuation・margin_delta_vs_fp32）
+    （2026-10-18 注）prepare で作る l3plus_baseline_qdq.onnx（量子化した継続モデル）は、ここでは使っていない
+    """
     OUT.mkdir(parents=True, exist_ok=True)
     states = dict(np.load(WORK / "add26_states.npz"))
     context = dict(np.load(WORK / "l3plus_context.npz"))
     fp32_add26 = states["add26_fp32"].astype(np.float64).ravel()
 
+    # ① FP32 の add_26 を基準にした近さ（分母はいつも FP32 側。StudyMemo 4.5 節の「分母を揃える」）
     geo = {}
     for name in ("fp32", "baseline", "4x", "oracle"):
         v = states[f"add26_{name}"].astype(np.float64).ravel()
@@ -193,6 +246,7 @@ def compare():
         geo[name] = {"l2_rel": float(np.linalg.norm(diff) / (np.linalg.norm(fp32_add26) or 1.0)),
                      "cosine": cos_sim, "max_abs_diff": float(np.abs(diff).max())}
 
+    # ② 文脈は FP32 のまま固定し、add_26 だけを差し替えて logits を出す → FP32 の 1 位の語の margin
     s = sess(L3PLUS_FP32)
     logits = {}
     for name in ("fp32", "baseline", "4x", "oracle"):
@@ -220,6 +274,7 @@ def compare():
 
 
 def main():
+    """コマンドの入口。--phase で prepare / capture / compare のどれか 1 段だけを流す。"""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["prepare", "capture", "compare"], required=True)
     a = ap.parse_args()

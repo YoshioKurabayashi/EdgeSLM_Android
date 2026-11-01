@@ -11,6 +11,12 @@
 #       上流が版を上げても追従できる。
 #
 # 使い方: bash scripts/p1_verify_zipdepth.sh
+#
+# 【補足（学習用、2026-10-18 追記）】
+# どの段か: P1（参考実装 ZipDepth を端末で動かす。DoC/参考実装_ZipDepth解説.md・results/P1_20260912_zipdepth_run.md）。
+# 結果: results/P1verify_20260912_155505.txt・155532.txt。
+# 注意: このファイルは改行が CRLF。Git Bash の設定によっては行末の CR が残ってエラーになりうる（推定。実行記録は残っている）。
+#       また 2 節の printf の書式（OK の行）は文字列の途中で改行していて、出力にもその改行（CRLF なら CR も）が入る。
 
 set -u
 export MSYS2_ARG_CONV_EXCL='/data/local/tmp;/sys;/vendor;/dev;/system;/proc'
@@ -45,6 +51,7 @@ echo "=== 2. LFS 実体の SHA-256 照合（DEPENDENCIES.md を期待値とす�
 DEP="$REPO/DEPENDENCIES.md"
 if [ ! -f "$DEP" ]; then echo "ERROR: DEPENDENCIES.md が無い"; exit 1; fi
 
+# 2 節: DEPENDENCIES.md の表の各行を読み、ファイルが無い／LFS のポインタのまま／hash が違う／OK を数える。
 PASS=0; FAIL=0; PTR=0
 # 表形式: | `path` | size | purpose | `SHA256` |
 #   バッククォートを外し、1列目がパスらしく 4列目が64桁hexの行だけを対象にする
@@ -91,6 +98,7 @@ CSDK="$(grep -oE 'compileSdk [0-9]+' "$REPO/app/build.gradle" 2>/dev/null | grep
 CMAKEV="$(grep -oE "version '[0-9.]+'" "$REPO/app/build.gradle" 2>/dev/null | grep -oE '[0-9.]+' | head -1)"
 printf "  リポジトリの要求: AGP=%s / %s / NDK=%s / compileSdk=%s / CMake=%s\n" "$AGP" "$GRADLE" "$NDKV" "$CSDK" "$CMAKEV"
 
+# chk: 名前とパスを受け取り、そのパスがあるかを OK / MISSING で出す。
 chk() { if [ -e "$2" ]; then printf "  OK      %-26s %s\n" "$1" "$2"; else printf "  MISSING %-26s %s\n" "$1" "$2"; fi; }
 chk "NDK $NDKV"            "$SDK/ndk/$NDKV"
 chk "platforms android-$CSDK" "$SDK/platforms/android-$CSDK"

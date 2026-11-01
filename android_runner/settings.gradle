@@ -1,3 +1,8 @@
+// ── このファイルの役目（2026-10-18 学習用に追記）────────────────────────────
+// Gradle が最初に読む設定。①プラグインと②ライブラリをどこから取ってくるか、③どのモジュールを作るか、を決める。
+// 入力: なし。出力: なし（取り決めだけ）。ビルドの動かし方は build.gradle（ルート）の冒頭を参照。
+// ─────────────────────────────────────────────────────────────────────────
+// ① プラグイン（AGP・Kotlin）の取り先。--offline で作るので、実際には手元のキャッシュ（~/.gradle）から読む。
 pluginManagement {
     repositories {
         google()
@@ -6,6 +11,8 @@ pluginManagement {
     }
 }
 
+// ② ライブラリの取り先。FAIL_ON_PROJECT_REPOS: app/build.gradle の側で取り先を足すことを禁じ、ここに一本化する。
+//   ONNX Runtime は取り先からではなく app/libs/ の .aar ファイルを直接読む（app/build.gradle の dependencies）。
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -14,5 +21,7 @@ dependencyResolutionManagement {
     }
 }
 
+// ③ プロジェクトの名前（Android Studio の表示などに使う。アプリの ID は app/build.gradle の applicationId）と、
+//   作るモジュール（:app だけ。画面・サービス・C++ の推論はすべて app の中）。
 rootProject.name = "EdgeSLMRunner"
 include ':app'

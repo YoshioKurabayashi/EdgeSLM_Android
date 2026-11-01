@@ -17,6 +17,20 @@ P12i: 残差の巨大値を作っているのは層2 MLP の down_proj 出力 `l
   出力を増やすと HTP の融合が変わり数値が変わりうるので、**版A と版B で add_26 が一致するか**を先に確かめる
 - 比較はグラフ順に: 整数の完全一致率 / |コード差| の RMS・最大 / scale / 逆量子化後の相対誤差
 
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.2 節「発生源を 1 点に絞る」。11 章の枠は compare の対照〜比較の部分）
+- 結果（results/P12j_20260916_layer2_htp_probe.md）: HTP の計算が大きく違うのではない。層2 MLP の mul_41・linear_20 が、
+  先頭トークンの巨大値に合わせた scale（約 0.11）のせいで後続トークンを 3〜4 段でしか表せず、Host と HTP の ±1〜2 段の食い違いが
+  そのまま信号の数十%になる（実数誤差 mul_41 16.83%・linear_20 55.11%・add_26 22.09%）→ P12m（layer2_kv_narrow.py）へ
+- 入力: work/ops/qwen3_dec28c256/ の final_qdq.onnx（SRC）、層0〜5 の部分モデル work/q3_hid/hid_qdq.onnx（add_17 を作る）、
+  P12b の step41 の入力（STEP41）、実機（adb と android_runner）
+- 出力: work/q3_l2/ の l2obs_qdq.onnx・l2ctl_qdq.onnx・l2_inputs.npz・dev_<tag>/、
+  results/P12j_20260916_layer2_htp_probe/ の q_tensors.json・compare.json
+- l2ctl_qdq.onnx・l2_inputs.npz は P12m・P12s（layer2_kv_narrow.py・layer2_linear20_4x_device.py）も使う
+- 注意: STEP41 は当時の Claude の一時フォルダ（scratchpad）のパスで、いまは残っていない可能性が高い（推定）。
+  prepare を作り直すには step41.npz を用意し直す必要がある
+- 下のコマンドは app/pipeline の中で動かす形（プロジェクトの直下からなら python -m app.pipeline.layer2_probe --phase prepare）
 ## 使い方
 
   python layer2_probe.py --phase prepare   # 部分モデル2つと入力 npz を作る
@@ -36,6 +50,7 @@ import onnx
 import onnxruntime as ort
 from onnx import helper, numpy_helper, TensorProto
 
+# パスは Windows の絶対パスで固定（この PC 用）。INPUTS は部分モデルの入力（層2 の入口の hidden と、層2 の KV・RoPE・マスク）
 ROOT = Path("D:/AI/source/n_chap5/EdgeSLM_Android")
 SRC = ROOT / "work/ops/qwen3_dec28c256/qwen3_dec28c256_final_qdq.onnx"
 HID = ROOT / "work/q3_hid/hid_qdq.onnx"          # 層0-5 の部分モデル（add_17 を取り出すのに使う）
@@ -48,6 +63,7 @@ INPUTS = ["add_17", "past_k_2", "past_v_2", "cos", "sin", "attn_mask"]
 
 
 def sess(p):
+    """ONNX を CPU EP で開く。"""
     so = ort.SessionOptions()
     so.log_severity_level = 3
     return ort.InferenceSession(str(p), so, providers=["CPUExecutionProvider"])
@@ -55,6 +71,8 @@ def sess(p):
 
 def layer2_q_outputs():
     """add_17 → add_26 の間にある QuantizeLinear の出力名（グラフ順）と、その scale/zero point。"""
+    # （2026-10-18 追記）add_26 から遡れるテンソル（祖先）と、add_17 から下れるテンソル（子孫）の共通部分 = 層2 の中。
+    #   その中を入力にする QuantizeLinear をグラフ順に集め、scale・zero point（最初の値）と、元の演算の種類を付けて返す
     m = onnx.load(str(SRC), load_external_data=False)
     g = m.graph
     prod = {o: n for n in g.node for o in n.output}
@@ -93,6 +111,7 @@ def layer2_q_outputs():
 
 
 def prepare():
+    """① 層2 の観測点を決める → ② 版A（観測）・版B（対照）の部分モデルを切り出す → ③ 入力 npz を作る → ④ ホストでの等価チェック。"""
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     info = layer2_q_outputs()
@@ -103,6 +122,7 @@ def prepare():
     # 「Squash not possible for op add_17_QuantizeLinear」で止まる（入力への量子化の畳み込みができない）。
     # 入力側の Q は観測しない。出力側も同じで、present_k_2/v_2（グラフ出力の DQ）の直前の Q を出力にすると
     # 「Squash not possible for op present_v_2_DequantizeLinear」で止まる。
+    # ② 版A の出力: 観測点から、グラフ入力の直後の Q と present の直前の Q を除いたもの（上のエラーを避ける）＋ present
     m0 = onnx.load(str(SRC), load_external_data=False)
     feeds_present = {n.input[0] for n in m0.graph.node
                      if n.op_type == "DequantizeLinear" and n.output[0] in ("present_k_2", "present_v_2")}
@@ -146,12 +166,17 @@ def prepare():
 
 
 def adb(*a):
+    """adb を呼ぶ（Git Bash から動かしても /sdcard を Windows のパスに書き換えさせない）。"""
     env = dict(os.environ)
     env["MSYS2_ARG_CONV_EXCL"] = "/sdcard"
     return subprocess.run([ADB, *a], capture_output=True, text=True, env=env, errors="replace")
 
 
 def run_device(tag, feeds):
+    """入力を端末へ送り、models/ops/<tag>_epctx.onnx を infer の job で 1 回実行して出力を持ち帰る（モデルは先に push 済みのこと）。
+
+    戻り値: ({出力名: 配列（uint16 などの整数コードのまま）}, strict_no_cpu_fallback, ort_run_ms)。待つのは最大 180 秒
+    """
     files = {}
     d = WORK / "in"
     d.mkdir(exist_ok=True)
@@ -193,6 +218,11 @@ def run_device(tag, feeds):
 
 
 def compare():
+    """ホストと実機で版A・版B を流し、① 対照（観測を増やしても add_26 が変わらないか）→ ② 観測点ごとの整数コードの比較 → ③ 表。
+
+    各観測点で: 完全一致率・コード差の RMS と最大・scale・ホストの値の RMS・実数誤差（コード差 × scale ÷ ホストの実数のノルム）。
+    コード差が 3 段以上の行に ★ を付ける
+    """
     feeds = dict(np.load(WORK / "l2_inputs.npz"))
     info = json.loads((OUT / "q_tensors.json").read_text(encoding="utf-8"))
     host = {}
@@ -223,6 +253,7 @@ def compare():
         rows.append({**x, "size": int(h.size), "exact": float((dc == 0).mean()),
                      "code_rms": float(np.sqrt((dc.astype(np.float64) ** 2).mean())), "code_max": int(np.abs(dc).max()),
                      "real_rel": rel, "host_real_rms": float(np.sqrt((hr ** 2).mean()))})
+    # present は新しく書いたスロット（最後の位置）だけを実数で比べる
     for nm in ("present_k_2", "present_v_2"):
         h = H[nm][:, :, -1:, :].astype(np.float64)
         dv = D[nm][:, :, -1:, :].astype(np.float64)
@@ -241,6 +272,7 @@ def compare():
     print(f"\n-> {OUT / 'compare.json'}")
 
 
+# コマンドの入口。--phase prepare か compare のどちらかを流す
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--phase", choices=["prepare", "compare"], required=True)

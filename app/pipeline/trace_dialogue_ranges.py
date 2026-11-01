@@ -3,6 +3,26 @@
 No quantized model modification or device inference. Narrow-range estimates
 are local rounding diagnostics, not measured end-to-end accuracy.
 """
+# ---------------------------------------------------------------------------
+# 【日本語の説明（学習用、2026-10-18 追記）】
+# 何のための道具か:
+#   P12d「対話・生成・KV256 入替後の残差の分布」の観測。量子化モデルも実機も使わず、FP32（PyTorch・CPU）で
+#   端末と同じ固定長 256 の KV キャッシュ（左シフト＋マスク −60）の decoder を動かし、層3・層6 に入る残差
+#   （ONNX の add_26・add_53 に当たる）の値をトークンごとに記録する。
+#   ※上の英語の docstring は argparse の --help にそのまま出るので、説明はこのコメントに書いた。
+# なぜ: P12c は較正の 5 文 × 6 歩しか見ていなかった。長い対話・生成中・キャッシュから古いトークンを
+#   捨てた後にも巨大値（1000 超）が出るかを確かめ、「先頭用と後続用で量子化範囲を分ける」案の根拠にする。
+# 結果（results/P12d_20260915_dialogue_activation_ranges.md）: 評価 2,119 トークンで、絶対値 1000 超は
+#   各入力列の先頭（位置0・チャンネル35）だけ。チャット開始トークン <|im_start|> の最大は約 8,140 で、
+#   既存の量子化の上限（約 7,257）を超えていた。StudyMemo 11.4 節の表（9 通りのプロンプト）の続き。
+# 入力:  app/pipeline/export_qwen_decode.py（QwenDecodeStep をそのまま読み込んで使う）、
+#        Qwen3-0.6B の公式スナップショット（HF のキャッシュ、オフライン）、
+#        work/qwen3_dec28c256/calib_q3d28.npz（P12c と同じ較正のトークン）、work/q3chat.json（元の対話の入力）。
+# 出力:  --out の下にケースごとの <名前>.json（トークンごとの値域・フェーズ）と <名前>.npz（[トークン数, 1024] × 2 層）、
+#        manifest.json。保存先は results/P12d_20260915_dialogue_activation_ranges/。
+# 動かし方: & $py -B -u app/pipeline/trace_dialogue_ranges.py --out <出力先>
+#   続けて summarize_dialogue_ranges.py --out <同じ出力先> で集計する。
+# ---------------------------------------------------------------------------
 from pathlib import Path
 import argparse
 import hashlib
@@ -21,23 +41,34 @@ import numpy as np
 import torch
 from transformers import AutoModelForCausalLM,AutoTokenizer
 
+# 観測する層（0 始まり）。層3 の入口 = add_26、層6 の入口 = add_53。
+# STOP_IDS は <|im_end|>（151645）と <|endoftext|>（151643）。EMPTY_THINK は Qwen3 の思考を空にする決まり文句。
 LAYERS=(3,6)
 STOP_IDS={151645,151643}
 EMPTY_THINK='<think>\n\n</think>\n\n'
 
+# 途中経過を 1 行の JSON で出す。
 def emit(value):
     print(json.dumps(value,ensure_ascii=False),flush=True)
 
+# 相対 L2: ||a−b|| / ||a||。分母は第 1 引数（基準＝公式 HF 側）。
 def rel(a,b):
     a=np.asarray(a,dtype=np.float64)
     b=np.asarray(b,dtype=np.float64)
     return float(np.linalg.norm(a-b)/max(np.linalg.norm(a),1e-30))
 
+# ファイルの sha256（使ったソース・このスクリプトを記録に残すため）。
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
+# FP32 の固定長 decoder を 1 トークンずつ動かし、層3・層6 に入る残差を記録する観測器。
 class Observer:
     def __init__(self,hf,module,window,out):
+        """hf: 公式 HF のモデル、module: export_qwen_decode.py を読み込んだもの、window: キャッシュ長（256）、out: 出力先。
+
+        層の input_layernorm の直前に forward_pre_hook を付けて、その入力（＝層に入る残差の最後の位置、[1024]）を写す。
+        値は変えない。capture を False にすると写さない（公式 HF での照合の時に上書きしないため）。
+        """
         self.hf,self.window,self.out=hf,window,out
         self.step=module.QwenDecodeStep(hf,window).eval()
         self.capture=True
@@ -52,6 +83,7 @@ class Observer:
         self.reset()
 
     def reset(self):
+        """KV キャッシュ（層ごとに K と V、各 [1, KV ヘッド数, window, head_dim] のゼロ）と記録を空にする。"""
         self.caches=[torch.zeros(1,self.step.nkv,self.window,self.step.hd)
                      for _ in range(2*len(self.step.layers))]
         self.ids=[]
@@ -61,7 +93,15 @@ class Observer:
         self.checks=[]
 
     def feed(self,tid,phase,turn=0,check=False):
+        """トークン tid を 1 つ流し、残差の値域などを 1 行記録する。戻り値: その位置の logits（[語彙数]）。
+
+        phase は 'prompt'・'generated'・'calibration'・'teacher_forced_long' のどれか（集計で分けるため）。
+        check=True なら、キャッシュから捨てる前（256 以下）に限り、公式 HF に全 prefix を与えて logits と残差を照合する
+        （相対 L2 1e-4 未満でなければ止める。記録では最大 0.0013567%）。
+        """
         pos=len(self.ids)
+        # ① マスク: 右詰めで有効な所（直近 pos+1 個、最大 window）だけ 0、他は −60。端末と同じ形。
+        #    RoPE の位置 pos はキャッシュ長でリセットしない（cos/sin は 2048 位置ぶん用意してある）。
         mask=torch.full((1,1,1,self.window),-60.0)
         mask[...,self.window-min(pos+1,self.window):]=0
         self.current={}
@@ -71,6 +111,8 @@ class Observer:
         self.logits=output[0][0,-1].numpy().copy()
         self.caches=list(output[1:])
         self.ids.append(tid)
+        # ② 記録: evicted = キャッシュから押し出された古いトークンの数。層ごとに最小・最大・最大のチャンネル・
+        #    チャンネル35 の値・絶対値 1000 超の数。
         row={'position':pos,'token_id':tid,'phase':phase,'turn':turn,
              'valid_tokens':min(pos+1,self.window),'evicted':max(pos+1-self.window,0)}
         for layer in LAYERS:
@@ -100,6 +142,7 @@ class Observer:
         return self.logits
 
     def save(self,name,meta):
+        """このケースの値を <name>.npz（層ごとに [トークン数, 1024]）、記録を <name>.json に書き、記録の dict を返す。"""
         np.savez_compressed(self.out/(name+'.npz'),
                            **{'layer_'+str(k):np.stack(v) for k,v in self.values.items()})
         record={'name':name,'tokens':len(self.rows),'window':self.window,
@@ -111,6 +154,11 @@ class Observer:
         return record
 
 def make_dialogue(tok,system,users):
+    """チャットの入力をターンごとのトークン列に組み立てる。
+
+    1 ターン目は system から、2 ターン目以降は前の回答を閉じる <|im_end|> から始める。
+    各ターンの最後に assistant の見出しと空の思考ブロック（EMPTY_THINK）を付ける。戻り値: [ターンごとの ID のリスト]。
+    """
     chunks=[]
     for i,user in enumerate(users):
         text=('<|im_start|>system\n'+system+'<|im_end|>\n' if i==0 else '<|im_end|>\n')
@@ -119,6 +167,11 @@ def make_dialogue(tok,system,users):
     return chunks
 
 def run_dialogue(obs,tok,name,chunks,max_new):
+    """ターンごとに、入力を流してから greedy で最大 max_new トークン生成する（生成したトークンも流す）。
+
+    停止トークンはその場では流さず、次のターンの先頭（<|im_end|>）として 1 回だけ流す。
+    照合（check）は、位置 0・40・100・255 で行う。戻り値: obs.save() の記録。
+    """
     obs.reset()
     turns=[]
     for turn,ids in enumerate(chunks):
@@ -143,6 +196,7 @@ def run_dialogue(obs,tok,name,chunks,max_new):
         'note':'Each emitted non-stop token is consumed; stop token is consumed once as next turn prefix.'})
 
 def build_stress_texts():
+    """長文のストレス用の合成文を 2 つ作る（日本語の走行記録 50 区間・英語の説明と Python コード 50 区間）。"""
     ja=[]
     en=[]
     for i in range(1,51):
@@ -157,6 +211,7 @@ def build_stress_texts():
     return [('long_ja','\n'.join(ja)),('long_code','\n'.join(en))]
 
 def main():
+    """較正 → 元の日本語 3 ターン → 英語 3 ターン → 長文 2 本 → 長い対話入力 1 本、の順に観測し manifest.json を書く。"""
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--project-root',type=Path,default=Path('D:/AI/source/n_chap5/EdgeSLM_Android'))
     ap.add_argument('--out',type=Path,required=True)
@@ -168,6 +223,8 @@ def main():
     torch.set_num_threads(4)
     torch.manual_seed(0)
     root=args.project_root
+    # ① 既存の export_qwen_decode.py をファイルから直接読み込み、その QwenDecodeStep（端末と同じ配線）を使う。
+    #    書き写さないのは、実機に載せたモデルと同じ計算であることを保つため。sha256 も記録する。
     source=root/'app/pipeline/export_qwen_decode.py'
     spec=importlib.util.spec_from_file_location('existing_decode',source)
     module=importlib.util.module_from_spec(spec)
@@ -187,6 +244,8 @@ def main():
     with torch.inference_mode():
         # Freeze narrow ranges using only the old 30 calibration token IDs, not evaluation traces.
         with np.load(root/'work/qwen3_dec28c256/calib_q3d28.npz') as z:
+        # ② 後続用の範囲を、評価の値を使わずに先に固定する: 古い較正の 30 トークン（5 文 × 6 歩）を流し、
+        #    各文の最初を除いた 25 トークンの最小・最大を frozen_later_ranges に残す。
             ids=z['input_ids'].ravel().tolist()
         calibration={k:[] for k in LAYERS}
         for group in range(5):
@@ -202,6 +261,8 @@ def main():
         manifest['frozen_later_ranges']=ranges
         checkpoint()
         emit({'frozen_later_ranges':ranges})
+        # ③ 元の日本語の対話（エアコン 22 度 → 音楽 → さっき何度？）。保存してある入力と 1 ターン目の 41 トークンが
+        #    完全に一致すること、各ターンの入力が 41 / 18 / 22 トークンであることを確かめる。
         saved_turns=json.loads((root/'work/q3chat.json').read_text())['turns']
         saved_users=[tok.decode(t).split('<|im_start|>user\n',1)[1].split('<|im_end|>',1)[0]
                      for t in saved_turns]
@@ -216,6 +277,7 @@ def main():
                           'What temperature did I ask for?'])
         manifest['records'].append(run_dialogue(observer,tok,'chat_english',en,args.max_new))
         checkpoint()
+        # ④ 長文 2 本を 640 トークンずつ流す（生成はしない）。256 を超えるのでキャッシュの入替後も観測できる。
         for name,text in build_stress_texts():
             observer.reset()
             tids=tok.encode(text,add_special_tokens=False)[:args.long_tokens]
@@ -233,6 +295,7 @@ def main():
         long_ids=make_dialogue(tok,'あなたは車載アシスタントです。短く答えてください。',[long_user])[0]
         # Preserve assistant suffix after trimming the user body to a bounded test size.
         suffix=tok.encode('<|im_end|>\n<|im_start|>assistant\n'+EMPTY_THINK,add_special_tokens=False)
+        # 入力を 550 トークンで切り、assistant の見出し（suffix）を付け直す（記録では 559 トークンの入力＋64 生成）。
         long_ids=long_ids[:550]+suffix
         manifest['records'].append(run_dialogue(observer,tok,'chat_long',[long_ids],args.max_new))
         checkpoint()

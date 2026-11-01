@@ -34,6 +34,15 @@ Qwen のデコーダ層は
     attn 側: hidden_states -> add_4
     ffn  側: add_4         -> out
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help 用ではない（引数は無い）が、補足はコメントにまとめた。
+# どの段か: StudyMemo 9.2 節「二分探索」。記録: results/P9_20260914_perchannel_device.md 17 節。
+# 結果: デコーダ層 1 枚・同一入力・11 サンプルで、ホスト↔実機は FFN 側全体 14.37%、うち RMSNorm だけで 13.53%、
+#   MLP だけでは 0.21%。→ RMSNorm が実機で崩れていると絞り込み、真因 C-13（gamma が符号付き 16bit で頭打ち）へ進んだ。
+#   実機の数値は results/P9_20260914_ffn*_device.json など。
+# 入力:  work/qwen/qwen05b_layer1_S16.onnx（Qwen2.5 の層 1 枚、系列長 16）、work/qwen/calib_layer1.npz・eval_layer1.npz。
+# 出力:  work/ops/layer1_attn/・layer1_ffn/ に fp32 モデルと spec.json、work/qwen/{calib,eval}_layer1_ffn.npz。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -44,6 +53,7 @@ import numpy as np
 import onnx
 import onnxruntime as ort
 
+# ROOT はこのファイルから 2 つ上（プロジェクトの根）。SRC は切る元、CUT は割る場所（attn 側の残差 Add の出力）。
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "work/qwen/qwen05b_layer1_S16.onnx"
 CUT = "add_4"
@@ -51,6 +61,7 @@ OPS = ROOT / "work/ops"
 
 
 def extract(dst: Path, ins: list[str], outs: list[str]) -> None:
+    """SRC から、入力 ins から出力 outs までの部分を切り出して dst に保存し、ノード数と入出力の名前を出す。"""
     dst.parent.mkdir(parents=True, exist_ok=True)
     onnx.utils.extract_model(str(SRC), str(dst), ins, outs)
     m = onnx.load(str(dst), load_external_data=False)
@@ -59,6 +70,7 @@ def extract(dst: Path, ins: list[str], outs: list[str]) -> None:
 
 
 def main() -> None:
+    """層を 2 つに割り、FFN 側の較正・評価データを本物の activation で作り、2 つの spec を書く。"""
     import os
     os.chdir(ROOT)
     A = OPS / "layer1_attn/layer1_attn_fp32.onnx"
@@ -80,6 +92,7 @@ def main() -> None:
         print(f"  {out.name}: {h.shape}  |値| p99.9 = {np.percentile(np.abs(h), 99.9):.2f}")
 
     # QK^T（Softmax へ届く MatMul）の名前を拾って swap 対象にする
+    # Softmax から最大 5 段さかのぼって最初の MatMul を QK^T とみなし、左右入替（C-8 の swap）の対象にする。
     m = onnx.load(str(A), load_external_data=False)
     prod = {o: n for n in m.graph.node for o in n.output}
     qk = None
@@ -97,6 +110,7 @@ def main() -> None:
             cur = p.input[0]
     print(f"  QK^T の MatMul: {qk}")
 
+    # p2b_ops prepare が読む spec を書く（形は Qwen2.5 の [1, 16, 896]）。
     specs = {
         "layer1_attn": {"name": "layer1_attn", "note": "本物のデコーダ層の Attention 側（残差まで）",
                         "priority": "Gate", "standard_opset": True, "checker_passed": True,

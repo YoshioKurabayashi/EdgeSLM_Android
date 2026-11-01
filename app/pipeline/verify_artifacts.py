@@ -6,6 +6,25 @@
 
 人間のレビューに委ねない。件数だけでなく**どのノードが違反しているか**を列挙する
 （「どこが float のままか」が分からないと直せないため）。
+
+（2026-10-18 追記: 学習用の説明）
+■ 何のための道具か
+  要件定義書 3.4 節の禁止事項（C-1〜C-5 は最初に ZipDepth の CNN で実証された 5 つ）のうち、ファイルとコマンドから
+  機械的に判定できるものを調べる。どれも違反すると端末でのロードが err 1002 / 3110 で落ちる。
+    C-1 float の区間が残っていない（QDQ を見る）      C-5 BatchNormalization が残っていない（QDQ を見る）
+    C-2 context binary の socModel が 0（メタ JSON を見る）
+    C-3 生成コマンドに backend_extensions の config が無い（コマンド文字列を見る）
+    C-4 --preserve_io_datatype を付けるのは C-1 を満たすモデルだけ（コマンドと C-1 の結果）
+■ どの段で使うか
+  p2b_ops.prepare() の最後（S4 の出口）で C-1・C-5、p2b_ops.finalize()（S8 の後）で C-2〜C-4。
+  C-1 を割ったら prepare は fail_C1_float_segment で止まり、約 1 時間の context 生成へ進ませない。
+  解説は StudyMemo 2.8 節（QDQ と C-1）。
+■ 入力と出力
+  入力: QDQ の ONNX、context 生成のメタ JSON（*_meta.json）、生成に使ったコマンド（*_commands.txt の各行）。
+  出力: CheckResult（dict。"pass"・"violations"・"detail" を持ち、.ok で合否）。
+■ 動かし方（単体）
+  python -m app.pipeline.verify_artifacts --qdq <qdq.onnx> [--meta <meta.json>] [--command "<コマンド>" ...]
+  全部 PASS なら終了コード 0、どれか FAIL なら 1。
 """
 
 from __future__ import annotations
@@ -22,13 +41,21 @@ QDQ_OPS = {"QuantizeLinear", "DequantizeLinear"}
 
 
 class CheckResult(dict):
+    """検査 1 件の結果。中身は dict（"check" 名・"pass"・"violations"・"detail" など）で、
+    そのまま JSON に書ける。合否は .ok（"pass" を bool にしたもの）で読む。"""
     @property
     def ok(self) -> bool:
+        """合格なら True（"pass" が無ければ False）。"""
         return bool(self.get("pass"))
 
 
 def _tensor_types(model: onnx.ModelProto) -> dict[str, int]:
-    """全テンソルの elem_type を集める（shape inference 済みモデル前提）。"""
+    """全テンソルの elem_type を集める（shape inference 済みモデル前提）。
+
+    戻り値: {テンソル名: onnx の型番号}。グラフの入出力・value_info（形状推論で中間テンソルの
+    型が入る所）・初期化子から集める。形状推論に失敗しても止めず、分かる分だけで判定する
+    （その場合、型の分からない中間テンソルは検査から漏れる）。
+    """
     try:
         model = onnx.shape_inference.infer_shapes(model)
     except Exception:
@@ -62,6 +89,7 @@ def check_c1_no_float_segments(qdq_path: Path) -> CheckResult:
         "QNN_DATATYPE_FLOAT_32_converted_k_QNN_DATATYPE_FLOAT_16" generated: could not create op
       P2 のモデルは先頭が Conv（必ず量子化される）だったため穴が見えていなかった。
     """
+    # ① 型の表・初期化子・グラフの入出力・「誰が出して誰が使うか」の表を作る
     model = onnx.load(str(qdq_path))
     g = model.graph
     types = _tensor_types(model)
@@ -108,6 +136,8 @@ def check_c1_no_float_segments(qdq_path: Path) -> CheckResult:
                 "note": "float のグラフ出力が DequantizeLinear 以外から出ている",
             })
 
+    # ② 中間テンソルの検査: float のテンソルで、出したのが Q/DQ 以外の計算ノード（＝ float の計算結果）
+    #   なのに、使う側にも Q/DQ 以外の計算ノードがある → 「計算ノード → 計算ノード」を float が流れている
     for tensor, t_elem in types.items():
         if t_elem not in FLOAT_TYPES:
             continue
@@ -125,6 +155,7 @@ def check_c1_no_float_segments(qdq_path: Path) -> CheckResult:
                 "consumer": f"{c.op_type}({c.name or '-'})",
             })
 
+    # ③ 違反を 1 件ずつ（テンソル名・出したノード・使うノード）並べて返す。直す場所が分かるように
     return CheckResult({
         "check": "C-1 float セグメント残存ゼロ",
         "pass": not violations,
@@ -136,6 +167,12 @@ def check_c1_no_float_segments(qdq_path: Path) -> CheckResult:
 
 
 def check_c5_no_batchnorm(model_path: Path) -> CheckResult:
+    """C-5: BatchNormalization が残っていないこと。
+
+    HTP は signed per-channel の Conv QDQ と BatchNorm の併存を拒否する（error 3110）。
+    preprocess.run() が量子化の前に Mul + Add へ畳むので、ここでは残っていないことを確かめる。
+    LLM には BatchNorm が無いので、主に P1・P2 の CNN 向けの検査。
+    """
     model = onnx.load(str(model_path))
     bad = [n.name or "(no name)" for n in model.graph.node if n.op_type == "BatchNormalization"]
     return CheckResult({
@@ -169,6 +206,8 @@ def check_c2_socmodel_zero(meta_json: Path) -> CheckResult:
             for v in o:
                 walk(v)
 
+    # メタ JSON のどの階層にあっても拾えるように、キー名 socModel / soc_model を再帰的に探す。
+    # 1 つも見つからない場合も不合格にする（「確かめられなかった」を合格にしない）
     walk(meta)
     bad = [v for v in found if str(v) not in ("0",)]
     return CheckResult({
@@ -187,6 +226,8 @@ def check_c3_no_backend_config(commands: list[str]) -> CheckResult:
     devices/cores セクション（perf_profile: burst など）を埋め込むと
     unsigned PD は power config を適用できずロードが失敗する。
     """
+    # 文字列の部分一致で見る。"--config" を含む引数（--config_file など）があれば違反とみなす
+    # （本プロジェクトの生成コマンドは --htp_socs sm8350 だけを付ける。scripts/build_context.sh）
     bad = [c for c in commands
            if "--config" in c or "backend_extensions" in c or "--backend_extension" in c]
     return CheckResult({
@@ -198,7 +239,12 @@ def check_c3_no_backend_config(commands: list[str]) -> CheckResult:
 
 
 def check_c4_preserve_io(commands: list[str], c1: CheckResult) -> CheckResult:
-    """C-4: --preserve_io_datatype は完全QDQに対してのみ付ける。"""
+    """C-4: --preserve_io_datatype は完全QDQに対してのみ付ける。
+
+    引数: commands（変換・生成に使ったコマンドの行）、c1（同じモデルの C-1 の結果）。
+    フラグを使っていなければ合格。使っているなら C-1 に合格していることが条件。
+    float が残ったモデルにこのフラグを付けると、変換器が準備できない fp32 op を出して err 1002 になる。
+    """
     used = any("--preserve_io_datatype" in c for c in commands)
     ok = (not used) or c1.ok
     return CheckResult({
@@ -213,6 +259,8 @@ def check_c4_preserve_io(commands: list[str], c1: CheckResult) -> CheckResult:
 
 def verify_all(qdq_path: Path, meta_json: Path | None = None,
                commands: list[str] | None = None) -> dict:
+    """C-1・C-5（と meta があれば C-2）・C-3・C-4 をまとめて流す。
+    戻り値: {"all_pass": 全部合格か, "checks": [CheckResult, ...]}。main() から使う。"""
     commands = commands or []
     c1 = check_c1_no_float_segments(qdq_path)
     checks = [c1, check_c5_no_batchnorm(qdq_path)]
@@ -224,6 +272,7 @@ def verify_all(qdq_path: Path, meta_json: Path | None = None,
 
 
 def main() -> None:
+    """コマンドの入口。verify_all() の結果を 1 行ずつ（違反は先頭 10 件まで）表示し、合否を終了コードで返す。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--qdq", type=Path, required=True)
     ap.add_argument("--meta", type=Path)

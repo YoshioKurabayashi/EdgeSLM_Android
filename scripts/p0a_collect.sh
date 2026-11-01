@@ -12,6 +12,11 @@
 #
 # 注意: 1つの探査が失敗しても全体は止めない（|| true）。端末・firmware により
 #       読めない sysfs があるのは想定内で、「読めない」こと自体が設計上の情報である。
+#
+# 【補足（学習用、2026-10-18 追記）】
+# どの段か: P0（環境と端末の確認）。StudyMemo 12 章「新しいモデルを載せるかの判断」で、端末の確認に使う道具として挙がる。
+# 結果: results/P0a_20260912_150041.txt（ro.board.platform=lahaina・thermal zone 93 個など）。基本設計①の入力になった。
+# 書き方の注意: 各節の adb shell '…' は端末側で動く 1 つのシェルスクリプト（単一引用符の中は端末の sh が解釈する）。
 
 set -u
 
@@ -21,6 +26,7 @@ set -u
 # (/d/AI/... → D:/AI/...) の変換も止まり clang がソースを見つけられなくなる。
 # そこで「端末側のプレフィックスだけ」を変換対象から除外する。
 export MSYS2_ARG_CONV_EXCL='/data/local/tmp;/sys;/vendor;/dev;/system;/proc'
+# HERE = プロジェクトの根（scripts/ の 1 つ上）。結果は results/ に日時付きで残す。
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 OUTDIR="$HERE/results"
 mkdir -p "$OUTDIR"
@@ -30,8 +36,10 @@ OUT="$OUTDIR/P0a_${STAMP}.txt"
 # adb が PATH にない場合はここを書き換える
 ADB="${ADB:-adb}"
 
+# sec: 節の見出しを出す小さな関数。
 sec() { echo ""; echo "############################################################"; echo "# $*"; echo "############################################################"; }
 
+# ここから最後の } までの出力を、画面とファイルの両方に流す（末尾の tee）。
 {
 echo "EdgeSLM_Android P0-a 端末素性取得"
 echo "取得時刻: $(date '+%Y-%m-%d %H:%M:%S')"
@@ -73,6 +81,7 @@ sec "5. cooling device（スロットリングの観測対象）"
   echo "$(basename $d)  type=${t:-UNREADABLE}  cur=${c:-NA}/max=${m:-NA}"
 done' || true
 
+# 6: FastRPC（CPU から DSP/HTP を呼ぶ仕組み）のライブラリとデバイスノードがあるか。
 sec "6. ★QNN / FastRPC ランタイムの在否（P1 の成否見通しに直結）"
 "$ADB" shell 'for f in /vendor/lib64/libcdsprpc.so /vendor/lib/libcdsprpc.so \
   /vendor/lib64/libadsprpc.so /vendor/lib64/libsdsprpc.so; do
@@ -89,6 +98,7 @@ sec "7. GPU（Adreno 660 / OpenCL の在否）"
 "$ADB" shell 'ls /vendor/lib64 2>/dev/null | grep -iE "OpenCL|libgsl|adreno" || echo "(none matched)"
 cat /sys/class/kgsl/kgsl-3d0/gpu_model 2>/dev/null || echo "gpu_model UNREADABLE"' || true
 
+# 8: 小さなスクリプトを置いて sh 経由・直接の 2 通りで実行できるかを試し、最後に消す。
 sec "8. /data/local/tmp の実行可否（P0-b のネイティブCLI配置先）"
 "$ADB" shell 'd=/data/local/tmp/edgeslm_probe; mkdir -p $d 2>/dev/null
 printf "#!/system/bin/sh\necho EXEC_OK\n" > $d/t.sh 2>/dev/null
@@ -102,6 +112,7 @@ sec "9. 測定条件として記録すべき項目（電池・充電・SELinux�
 "$ADB" shell 'dumpsys battery 2>/dev/null | grep -E "level|temperature|status|powered|present" ' || true
 "$ADB" shell 'echo "SELinux: $(getenforce 2>/dev/null)"; echo "uptime: $(uptime)"' || true
 
+# 10: 前提（SM8350 = lahaina、arm64、minSdk 26 以上）と合っているかを 1 行ずつ判定する。
 sec "10. まとめ（期待値との突き合わせ）"
 PLAT="$("$ADB" shell getprop ro.board.platform 2>/dev/null | tr -d '\r')"
 ABI="$("$ADB" shell getprop ro.product.cpu.abi 2>/dev/null | tr -d '\r')"

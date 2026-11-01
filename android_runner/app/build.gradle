@@ -1,16 +1,32 @@
+// ── このファイルの役目（2026-10-18 学習用に追記）────────────────────────────
+// 端末アプリ（app モジュール）の Gradle 設定。検証用の実行アプリ（org.edgeslm.runner。EdgeSLM_Android）。画面は持たず、PC から job を渡して動かす。
+// 決めていること: Android の版（compileSdk・minSdk・targetSdk）、アプリの ID、C++ の推論部（runner）のビルド、
+//   .so の詰め方（C-6）、ONNX Runtime（QNN EP 入り）の取り込み。
+// 入力: src/main/（Kotlin・C++・マニフェスト）、src/main/jniLibs/arm64-v8a/（QNN の .so）、libs/（ORT の .aar）。
+// 出力: app/build/outputs/apk/debug/app-debug.apk（検証は debug の APK だけを使う）。
+// 動かし方（このファイルの 1 つ上のフォルダで。ルートの build.gradle の冒頭も参照）:
+//   $env:JAVA_HOME="D:\Android\jdk17"; .\gradlew.bat --offline assembleDebug
+//   adb install -r app\build\outputs\apk\debug\app-debug.apk
+// ─────────────────────────────────────────────────────────────────────────
+// 版はルートの build.gradle で決めてあり、ここでは「使う」とだけ書く。
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
 
 android {
+    // namespace: Kotlin のパッケージ名・R クラスの置き場。C++ の JNI 関数名（Java_org_edgeslm_…）もこれに縛られるので、
+    //   アプリを複製しても変えない（変えるのは下の applicationId だけ）。
     namespace 'org.edgeslm.runner'
+    // compileSdk 34: Android 14 の API でコンパイルする。
     compileSdk 34
     // NDK は gradle.properties で固定（ZipDepth と同一）。新しい版に上げない。
     ndkVersion project.property('ndk.version')
 
     defaultConfig {
         applicationId 'org.edgeslm.runner'
+        // minSdk 26（Android 8.0）以上の端末に入る。targetSdk 34 は「Android 14 の決まりで動く」の宣言
+        //   （Foreground Service の種類の宣言などがマニフェストに要るのはこのため）。
         minSdk 26
         targetSdk 34
         versionCode 1
@@ -30,6 +46,8 @@ android {
 
     externalNativeBuild {
         cmake {
+            // C++ の推論部（JNI・ORT のセッション・生成のループ）を CMake で作る。CMakeLists.txt が libedgeslm_runner.so を作り、
+            //   Kotlin の NativeBridge が System.loadLibrary("edgeslm_runner") で読む。
             path 'src/main/cpp/CMakeLists.txt'
             version '3.22.1'
         }
@@ -47,6 +65,7 @@ android {
         }
     }
 
+    // debug の APK は adb で中のファイルを見られる（debuggable）。release は作っていない（検証では使わない）。
     buildTypes {
         debug {
             debuggable true
@@ -56,6 +75,7 @@ android {
         }
     }
 
+    // Java 17 で作る（JDK 17 でビルドするため。README の JAVA_HOME）。
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17

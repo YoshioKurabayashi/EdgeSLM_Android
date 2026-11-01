@@ -22,6 +22,18 @@ P12o: 位置0はbaseline(既存範囲)、位置1以降は56本(28層×mul/linear
   python mlp2_mul_linear_split.py --phase screen  # teacher forcingだけで高速比較
   python mlp2_mul_linear_split.py --phase generate --variant M   # 選んだ方だけ自由生成も見る
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: StudyMemo 11.5 節（P12o の「音楽をかけて」の崩れの主犯探し）。
+# 結果（results/P12p_20260916_mul_linear_split.md、teacher forcing のみ）:
+#   M（mul だけ後続範囲）1位保持 83.9%・点B −0.01、L（linear だけ）76.8%・点B −0.50。
+#   どちらでも「音楽をかけて」と BANANA の失敗は消えない。全体の悪化は linear（down_proj の出力）側が大きい。
+#   → linear_20 1 本に絞る範囲掃引（linear20_range_sweep.py、P12r）へ続く。
+# 入力:  baseline（SOURCE）、REP（results/P12e_20260915_temporal_qdq/）の build_audit.json の later の値、
+#        mlp2_all_layers_later.TARGET_PAIRS（28 層の (mul, linear) の名前の組）。
+# 出力:  work/p12p_mul_linear_split/{mulonly,linearonly}_later_qdq.onnx、
+#        results/P12p_20260916_mul_linear_split/build_audit_{M,L}.json・screen_report.json・generate_{M,L}.json。
+# ---------------------------------------------------------------------------
 from pathlib import Path
 import argparse
 import gc
@@ -47,11 +59,15 @@ MODELS = {"M": WORK / "mulonly_later_qdq.onnx", "L": WORK / "linearonly_later_qd
 
 
 def emit(obj):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(obj, ensure_ascii=False), flush=True)
 
 
 def build_one(tag, tensor_index):
     """tensor_index: 0=mul (TARGET_PAIRSの1個目), 1=linear (2個目) だけ後続範囲にする。"""
+    # 【説明】28 本の scale・zero point を P12e の後続用の値に差し替えたモデルを MODELS[tag] に保存し、
+    #   build_audit_<tag>.json に変えた組を残す。重み・ノードが変わっていないことを sha256 で確かめる
+    #   （mlp2_all_layers_later.build と同じ手順で、対象だけを半分にしたもの）。
     audit = json.loads((REP / "build_audit.json").read_text(encoding="utf-8"))
     later = {c["scale_name"]: c for c in audit["later"]["changes"] if len(c["sources"]) == 1}
     selected = [pair[tensor_index] + "_scale" for pair in TARGET_PAIRS]
@@ -93,6 +109,7 @@ def build_one(tag, tensor_index):
 
 
 def build():
+    """M（mul だけ）と L（linear だけ）の 2 つのモデルを作る。"""
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     build_one("M", 0)  # mul_X だけ後続範囲
@@ -100,6 +117,7 @@ def build():
 
 
 def summarize(sc):
+    """score の結果を 1 行の文字列にする（1位保持・margin 保持・最小 margin・KL・点ごとの margin）。"""
     a = sc["ALL"]
     return (f"1位保持 {a['top1_keep']*100:5.1f}%  margin保持 {a['retention_mean']*100:6.1f}%  "
             f"最小margin {a['margin_min']:+6.2f}  KL {a['kl_mean']:.3f} | "
@@ -108,6 +126,10 @@ def summarize(sc):
 
 
 def screen():
+    """自由生成をせず、teacher forcing の採点だけで M と L を比べる（速く判別するため）。
+
+    どちらも位置0 は baseline、位置1以降が変種（P12o と同じ 2 モデル構成）。出力: screen_report.json。
+    """
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)
@@ -136,6 +158,7 @@ def screen():
 
 
 def generate(variant):
+    """選んだ変種（M か L）だけ、元の日本語 3 ターンで自由生成する。出力: generate_<variant>.json。"""
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     base = session(SOURCE)
@@ -149,6 +172,7 @@ def generate(variant):
     emit({"phase": "generate", "variant": variant, "wrote": str(out)})
 
 
+# 引数: --phase build / screen / generate（generate の時は --variant M か L が要る）。
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["build", "screen", "generate"], required=True)

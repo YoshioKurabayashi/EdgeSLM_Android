@@ -32,6 +32,17 @@ r"""decode ループの誤差が「いつ・どこで」増えるかを測る（
         --qdq  work/ops/qwen_dec24/qwen_dec24_final_qdq.onnx \
         --layers 24 --cache-len 64 --steps 24 \
         --out results/P8_decode_profile.json
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: P8（Qwen2.5-0.5B の decode・24 層・KV 64 の誤差の出どころ探し）。StudyMemo 8.2 節「軌道を揃える」の実物。
+  結果は results/P8_20260913_decode_profile.json、読み方は results/P8_20260913_weight_quantization.md の 7 節
+  （ステップが進んでも誤差は暴れず、重みの量子化が主と分かった）
+- 入力: decode の fp32 ONNX と QDQ ONNX（export_qwen_decode.py の形: input_ids [1,1]・cos/sin [1,1,1,64]・
+  attn_mask [1,1,1,L]・past_k_i/past_v_i）、HF のモデル（RoPE の表とトークナイザに使う。torch・transformers が要る）
+- 出力: 画面の 3 つの表（時間方向・層方向の V・層方向の K）と、--out を付ければ JSON
+  （k_cache_rel_l2・v_cache_rel_l2 は [プロンプト][ステップ][層]、logits は [プロンプト][ステップ] の指標）
+- 上の使い方の --out の名前は例。実際の記録は results/P8_20260913_decode_profile.json
 """
 
 from __future__ import annotations
@@ -45,9 +56,11 @@ import numpy as np
 import onnxruntime as ort
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+# app/ を検索パスに足して、export_qwen_decode（同じ pipeline の中）から、マスクの定数・HF のモデルの読み込み・RoPE の表を借りる
 
 from pipeline.export_qwen_decode import MASK_NEG, load, rope_cos_sin  # noqa: E402
 
+# 評価に使う英語の書き出し 4 本（続きを fp32 に greedy で書かせ、その語を両方に入れる）
 PROMPTS = [
     "The capital city of Japan is Tokyo. The capital city of France is",
     "The largest planet in our solar system is",
@@ -64,6 +77,11 @@ def rel_l2(a: np.ndarray, b: np.ndarray) -> float:
 
 
 def logit_metrics(q: np.ndarray, r: np.ndarray) -> dict:
+    """1 ステップぶんの logits を比べる。q = QDQ 側、r = fp32 側（基準）。どちらも語彙数の 1 次元。
+
+    戻り値: rel_l2・kl（KL(fp32‖QDQ)）・cos・rank_of_fp32_top1（fp32 の 1 位が QDQ で何位か）・
+            top1_same（1 位が同じか）・fp32_margin（fp32 の 1 位と 2 位の差）
+    """
     q = q.astype(np.float64).ravel()
     r = r.astype(np.float64).ravel()
 
@@ -87,8 +105,11 @@ def logit_metrics(q: np.ndarray, r: np.ndarray) -> dict:
     }
 
 
+# （2026-10-18 追記）decode の ONNX を 1 本開き、固定長の KV キャッシュを持ち回して 1 トークンずつ流す。
+# fp32 用と QDQ 用に 1 つずつ作り、同じトークン・同じ cos/sin を与えて比べる
 class Runner:
     def __init__(self, path: Path, layers: int, cache_len: int):
+        """path: ONNX、layers: 層の数（KV の組の数）、cache_len: キャッシュの長さ L（マスクの長さ）。"""
         so = ort.SessionOptions()
         so.log_severity_level = 3
         self.s = ort.InferenceSession(str(path), so, providers=["CPUExecutionProvider"])
@@ -100,6 +121,7 @@ class Runner:
         self.reset()
 
     def reset(self):
+        """KV を全部 0 にし、有効な長さを 0 に戻す。形はモデルの past_ の入力の形（例 [1, 2, 64, 64]）。"""
         shp = None
         for i in self.s.get_inputs():
             if i.name.startswith("past_"):
@@ -110,6 +132,11 @@ class Runner:
         self.n_valid = 0
 
     def step(self, tid: int, cos: np.ndarray, sin: np.ndarray):
+        """トークン tid を 1 つ流す。cos/sin はその位置の表 [1, 1, 1, head_dim]。
+
+        戻り値: (最後の位置の logits（語彙数の 1 次元）, {present_k_i/present_v_i: 次の KV})。
+        マスクは右詰めで直近 n_valid 個だけ 0、ほかは MASK_NEG。出した present をそのまま次の past にする（左シフトはモデルの中）
+        """
         self.n_valid = min(self.n_valid + 1, self.L)
         m = np.full((1, 1, 1, self.L), MASK_NEG, np.float32)
         m[0, 0, 0, self.L - self.n_valid:] = 0.0
@@ -126,6 +153,7 @@ class Runner:
 
 
 def main() -> None:
+    """① RoPE の表を作る → ② プロンプトごとに fp32 と QDQ を teacher forcing で並べて流す → ③ 時間方向・層方向の表 → ④ JSON。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--fp32", type=Path, required=True)
     ap.add_argument("--qdq", type=Path, required=True)
@@ -140,6 +168,7 @@ def main() -> None:
     from transformers import AutoTokenizer
     tok = AutoTokenizer.from_pretrained(args.model_id)
     hf = load(args.model_id)
+    # ① 位置 0〜L−1 の cos/sin を前もって切り出しておく（位置 p の 1 行 [1, 1, 1, head_dim]）
     ca, sa = rope_cos_sin(hf, list(range(args.cache_len)))
     cs = [(ca[:, :, p:p + 1, :].copy(), sa[:, :, p:p + 1, :].copy())
           for p in range(args.cache_len)]
@@ -150,6 +179,7 @@ def main() -> None:
     acc_v = np.zeros((args.prompts, S, NL))
     lg_rows: list[list[dict]] = []
 
+    # ② プロンプトごとに、新しい Runner（空のキャッシュ）で始める
     for pi, prompt in enumerate(PROMPTS[:args.prompts]):
         ids = tok(prompt, add_special_tokens=False)["input_ids"]
         ref = Runner(args.fp32, NL, args.cache_len)
@@ -162,10 +192,13 @@ def main() -> None:
         for t in range(len(ids) + S):
             # ★入力トークンは常に fp32 側が選んだもの（teacher forcing）
             tid = ids[t] if t < len(ids) else forced[t - len(ids)]
+            # 位置は L−1 で頭打ちにする（L を超えた後は、新しい語がいつも最後の位置 L−1 に入る形。
+            # 推定: 当時の端末の窓ずらしのループに合わせた扱い）
             cos, sin = cs[min(t, args.cache_len - 1)]
             r_log, r_pres = ref.step(tid, cos, sin)
             q_log, q_pres = test.step(tid, cos, sin)
             if t >= len(ids) - 1:
+                # プロンプトの最後の語を流した時点から数え始める（その出力が「最初に生成する語」の予測）
                 forced.append(int(r_log.argmax()))
                 if si < S:
                     for i in range(NL):
@@ -180,6 +213,7 @@ def main() -> None:
         lg_rows.append(rows)
         print(f"      fp32 の続き: {tok.decode(forced[:S])!r}")
 
+    # ③ プロンプトの平均を取って [ステップ][層] にし、時間方向（ステップごと）と層方向（2 層おき）の表を出す
     mk = acc_k.mean(axis=0)      # [step][layer]
     mv = acc_v.mean(axis=0)
 

@@ -11,6 +11,15 @@ prefix の最後の1トークンの手前まで各モデルで KV を積み、
 
 focused の最終ステップは位置0でないので focused_later.onnx を使う（P12e の実行方式と同じ）。
 判定は L2 ではなく **FP32 1位（「音」）の順位 / 「音」−「エ」の差 / KL** を主にする（P12f の学び）。
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節）。P12f（divergence_probe.py）の続き、層ごとの切り分けは kv_layer_attrib.py
+- 結果（results/P12g_20260915_kv_step_swap.md）: 逆転の主因は focused が積んだ KV。最終ステップを FP32 にしても、
+  focused の KV だけで「音−エ」が +5.07 → +1.64（−3.43）に削られる。最終ステップだけの影響は約 −1
+- 入力: work/ops/qwen3_dec28c256/ の prepped.onnx（FP32）、P12e の成果物（ART）と記録（REP）、P12d の対話
+- 出力: --out（既定 results/P12g_20260915_kv_step_swap/）の report.json と画面の 3×3 の表
+- 動かし方: python -m app.pipeline.kv_step_swap [--out …]
 """
 from pathlib import Path
 import argparse
@@ -22,20 +31,24 @@ from temporal_qdq_experiment import Runner, tables, tokenizer, session, ROOT, OP
 
 import numpy as np
 
+# P12e の成果物（プロジェクトの外の artifacts）と記録の置き場
 ART = Path("D:/AI/artifacts/EdgeSLM_Android/P12e_20260915_temporal_qdq")
 REP = ROOT / "results/P12e_20260915_temporal_qdq"
 
 
 def load_json(p):
+    """UTF-8 の JSON ファイルを読む。"""
     return json.loads(Path(p).read_text(encoding="utf-8"))
 
 
 def softmax(x):
+    """1 次元の softmax（最大値を引いてから exp）。"""
     e = np.exp(x - x.max())
     return e / e.sum()
 
 
 def main():
+    """① 点B の入力 → ② 3 モデルで KV を積む → ③ 9 通り（KV の出どころ × 最終ステップ）で最後の 1 歩 → ④ 表と保存。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", type=Path, default=ROOT / "results/P12g_20260915_kv_step_swap")
     args = ap.parse_args()
@@ -67,12 +80,14 @@ def main():
         del r, s_first, s_later
 
     # 2) 最後の1ステップだけを、各モデルで計算する
+    # 「音」と「エ」の語の ID（トークナイザで引く。ほかの道具では 78685・75639 と決め打ちしている）
     ONG, E = tok.encode("音")[0], tok.encode("エ")[0]
     results, ref = {}, None
     for step_name, (_, p_later) in paths.items():
         s = session(p_later)  # 最終ステップは位置0ではない
         for kv_name, (cache, position) in caches.items():
             r = Runner(s, cos, sin)
+            # 積んだ KV と位置をそのまま与える（写しを渡して、元のキャッシュは次の組み合わせに使い回す）
             r.cache = {k: v.copy() for k, v in cache.items()}
             r.position = position
             got, _ = r.feed(last, s)

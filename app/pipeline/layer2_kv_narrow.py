@@ -16,6 +16,18 @@ P12e で全体（先頭/後続 分離）を試すと自由生成が崩れたが�
 最小構成）に適用し、実機 HTP で add_26 の Host 比誤差が下がるかを見る。
 Host の指標はいじらず、実機の差だけを見る一発勝負の実験（ビルド15分程度）。
 
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節「範囲の付け替え」）。P12j（layer2_probe.py）の続き
+- 結果（results/P12m_20260916_layer2_kv_narrow.md）: add_26 の Host↔HTP 実数誤差が 21.95%（baseline）→ 8.61%（narrow）に下がった。
+  ただし 28 層に入れたときの自由生成は別の問題（→ P12n 以降・linear20_range_sweep.py）
+- 名前に kv とあるが、変えるのは KV ではなく層2 の MLP の 2 本（mul_41・linear_20）の範囲
+- 入力: P12j の層2 の部分モデル work/q3_l2/l2ctl_qdq.onnx（と同じフォルダの l2_inputs.npz・l2ctl_epctx.onnx）、
+  P12e の build_audit.json（新しい scale/zero point の照合用）、実機（adb でつないだ端末と android_runner）
+- 出力: work/q3_l2/ の l2ctl_narrow_qdq.onnx・l2ctl_narrow_epctx.onnx・dev_<tag>/、
+  results/P12m_20260916_layer2_kv_narrow/ の build_audit.json・epctx_meta.json・compare.json
+- 下のコマンドは app/pipeline の中で動かす形（wrap の段は同じフォルダの layer2_probe・wrap_epctx を import するので、
+  python -m では動かない）。build_context.sh はプロジェクトの直下で動かす
 ## 使い方
 
   python layer2_kv_narrow.py --phase build     # 較正済みscale/zeroを2本だけ適用したQDQを作る
@@ -39,6 +51,7 @@ import onnx
 import onnxruntime as ort
 from onnx import numpy_helper
 
+# パスは Windows の絶対パスで固定（この PC 用）。DEV は端末のアプリの置き場、ADB は adb.exe の場所
 ROOT = Path("D:/AI/source/n_chap5/EdgeSLM_Android")
 WORK = ROOT / "work/q3_l2"
 BASELINE = WORK / "l2ctl_qdq.onnx"
@@ -50,6 +63,8 @@ OUT = ROOT / "results/P12m_20260916_layer2_kv_narrow"
 DEV = "/sdcard/Android/data/org.edgeslm.runner/files"
 ADB = "D:/Android/Sdk/platform-tools/adb.exe"
 
+# 新しい値（後続トークンだけの範囲。P12e の較正の margin 1.5）。旧の表現範囲は mul_41 −3085.8〜3794.3・linear_20 −168.8〜7258.5、
+# 新は mul_41 −14.92〜9.65・linear_20 −3.92〜7.84（results/P12m の表）
 # P12e later-phase build (margin=1.5) の該当2本。build_audit.json['later']['changes'] より。
 NEW_QPARAMS = {
     "mul_41": {"scale_name": "mul_41_scale", "zero_name": "mul_41_zero_point",
@@ -60,16 +75,23 @@ NEW_QPARAMS = {
 
 
 def emit(obj):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(obj, ensure_ascii=False), flush=True)
 
 
 def sess(p):
+    """ONNX を CPU EP で開く。"""
     so = ort.SessionOptions()
     so.log_severity_level = 3
     return ort.InferenceSession(str(p), so, providers=["CPUExecutionProvider"])
 
 
 def build():
+    """2 本の scale・zero point だけを置き換えた QDQ（NARROW）を作り、ホストで add_26 の整数コードの差を確かめる。
+
+    ① P12e の記録と NEW_QPARAMS が一致することを確かめる（写し間違いの防止）→ ② 初期化子を形を保って置き換えて保存
+    → ③ 監査の記録 → ④ ホストで baseline と narrow の add_26 のコードの最大差（差が出るのは当然。本題は実機）
+    """
     OUT.mkdir(parents=True, exist_ok=True)
     audit = json.loads((P12E / "build_audit.json").read_text(encoding="utf-8"))
     for src, expect in NEW_QPARAMS.items():
@@ -116,6 +138,7 @@ def build():
 
 
 def wrap():
+    """build_context.sh が作った context binary を EPContext の ONNX で包む（wrap_epctx.run。embed の既定 = 埋め込み）。"""
     OUT.mkdir(parents=True, exist_ok=True)
     assert NARROW.exists(), "先に --phase build"
     bins = list(CTXDIR.glob("*.bin"))
@@ -130,12 +153,19 @@ def wrap():
 
 
 def adb(*a):
+    """adb を呼ぶ（Git Bash から動かしても /sdcard を Windows のパスに書き換えさせない）。"""
     env = dict(os.environ)
     env["MSYS2_ARG_CONV_EXCL"] = "/sdcard"
     return subprocess.run([ADB, *a], capture_output=True, text=True, env=env, errors="replace")
 
 
 def run_device(tag, epctx_path, feeds):
+    """入力と EPContext の ONNX を端末へ送り、infer の job で 1 回実行して出力を持ち帰る。
+
+    tag: job の名前（モデル名にも使う）。feeds: {入力名: 配列}（l2_inputs.npz の中身）。
+    戻り値: ({出力名: 配列（型は job の結果の type）}, strict_no_cpu_fallback（全ノード NPU か）, ort_run_ms）
+    待つのは最大 180 秒（2 秒 × 90 回）。前の結果を消し、アプリを止めてから起こす（古い結果を読まないため）
+    """
     d = WORK / "in"
     d.mkdir(exist_ok=True)
     files = {}
@@ -178,6 +208,7 @@ def run_device(tag, epctx_path, feeds):
 
 
 def compare():
+    """baseline と narrow を、同じ入力でホストと実機の両方で走らせ、add_26 の Host↔HTP の差を比べる。"""
     feeds = dict(np.load(WORK / "l2_inputs.npz"))
     k = "add_26_QuantizeLinear_Output"
 
@@ -200,6 +231,7 @@ def compare():
     dev_base, strict_b, ms_b = run_device("l2ctl", ROOT / "work/q3_l2/l2ctl_epctx.onnx", feeds)
     dev_narrow, strict_n, ms_n = run_device("l2ctl_narrow", NARROW_EPCTX, feeds)
 
+    # 整数コードを同じ scale・zero point で実数に戻し、ホスト比の相対L2 と、コードの差の最大（段の数）を返す
     def real_rel(host_code, dev_code, s, z):
         h = (host_code.astype(np.float64) - z) * s
         d = (dev_code.astype(np.float64) - z) * s
@@ -226,6 +258,7 @@ def compare():
     print(f"\n-> {OUT / 'compare.json'}")
 
 
+# コマンドの入口。--phase で build / wrap / compare のどれか 1 段を流す
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["build", "wrap", "compare"], required=True)

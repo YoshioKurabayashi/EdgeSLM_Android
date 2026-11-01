@@ -18,6 +18,17 @@ P12g で、focused の KV は全層で baseline より FP32 に近い（L2 が�
 q は公式 HF の FP32 から計算する。その前に2つの等価チェックを通す:
   - HF の KV（位置0-78）と ONNX FP32 の KV が一致すること
   - 自前の attention 計算（FP32 の q/K/V）が HF の self_attn 出力と一致すること
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節）。P12g（kv_step_swap.py。効いているのは層14〜20 の KV）の続き
+- 結果（results/P12h_20260915_kv_error_direction.md）: 層ごとの向きのそろい方・attention への効き方では、focused の悪化は見えない
+  （ほぼ全層で focused の方が良い）。判定への向きで見ると分かれる → kv_decision_projection.py
+- 入力: work/ops/qwen3_dec28c256/ の prepped.onnx（FP32）、P12e の成果物（ART の baseline.onnx・focused_*.onnx）と記録（REP）、
+  P12d の対話、公式 HF の Qwen3-0.6B（SNAP。HF のキャッシュの固定のスナップショット。torch・transformers が要る）
+- 出力: --out（既定 results/P12h_20260915_kv_error_direction/）の report.json と画面の層ごとの表
+- 動かし方: python -m app.pipeline.kv_error_direction [--out …]
+- onnx_caches・hf_state・attention・load_json・SNAP・REP・NL は kv_decision_projection.py も使う
 """
 from pathlib import Path
 import argparse
@@ -30,17 +41,25 @@ from temporal_qdq_experiment import Runner, tables, session, ROOT, OPS
 import numpy as np
 import torch
 
+# P12e の成果物・記録の置き場、公式 HF のモデルの置き場（オフラインで読む）
 ART = Path("D:/AI/artifacts/EdgeSLM_Android/P12e_20260915_temporal_qdq")
 REP = ROOT / "results/P12e_20260915_temporal_qdq"
 SNAP = Path.home() / ".cache/huggingface/hub/models--Qwen--Qwen3-0.6B/snapshots/c1899de289a04d12100db370d81485cdf75e47ca"
+# Qwen3-0.6B の形: 層 28・q のヘッド 16・KV のヘッド 8（GQA。1 つの KV を 2 つの q のヘッドで使う）・head_dim 128
 NL, NH, NKV, HD = 28, 16, 8, 128
 
 
 def load_json(p):
+    """UTF-8 の JSON ファイルを読む。"""
     return json.loads(Path(p).read_text(encoding="utf-8"))
 
 
 def onnx_caches(body):
+    """FP32・baseline・focused の 3 モデルに body（点B の位置 0〜78）を流し、各層の K・V を取り出す。
+
+    focused は位置0 を focused_shared、位置1 以降を focused_later で流す（P12e の focused_split と同じ）。
+    戻り値: {モデル名: {層: (K [8, n, 128], V [8, n, 128])}}（float64。n = len(body)。古い → 新しい順）
+    """
     cos, sin = tables()
     paths = {"fp32": (OPS / "qwen3_dec28c256_prepped.onnx",) * 2,
              "baseline": (ART / "baseline.onnx",) * 2,
@@ -63,6 +82,9 @@ def onnx_caches(body):
 
 def hf_state(ids):
     """FP32 の公式モデルで全 prefix を1回流し、各層の q（最終位置）・K/V・attention 出力を取る。"""
+    # （2026-10-18 追記）戻り値: q {層: [16, 128]（最終位置。q_norm と RoPE の後）}・K/V {層: [8, 80, 128]}・
+    #   attn_out {層: [1024]（self_attn の出力の最終位置）}・o_proj {層: 重み [1024, 2048]}
+    #   （o_proj の形は推定: 出力 hidden 1024 × 入力 16 ヘッド × 128）
     from transformers import AutoModelForCausalLM
     from transformers.models.qwen3.modeling_qwen3 import apply_rotary_pos_emb
     m = AutoModelForCausalLM.from_pretrained(str(SNAP), dtype=torch.float32, attn_implementation="eager",
@@ -86,6 +108,7 @@ def hf_state(ids):
             cos, sin = m.model.rotary_emb(x, pos)
             qq, _ = apply_rotary_pos_emb(qq, qq, cos, sin)
             q[L] = qq[0, :, 0, :].double().numpy()                      # [16,128]
+                # transformers の版でキャッシュの持ち方が違う（新しい版は layers[L].keys、古い版は key_cache[L]）
             if hasattr(pkv, "layers"):
                 k, v = pkv.layers[L].keys, pkv.layers[L].values
             else:
@@ -97,6 +120,7 @@ def hf_state(ids):
 
 def attention(q, K, V, o_proj):
     """q [16,128], K/V [8,T,128] → (o_proj 後の出力 [1024], 重み [16,T])。GQA は kv を2回ずつ使う。"""
+    # （2026-10-18 追記）softmax(q·K/√d) で重みを作り V を足し合わせ、ヘッドを並べて o_proj を掛ける。3 つ目の戻り値はスコア [16, T]
     Kr, Vr = np.repeat(K, NH // NKV, axis=0), np.repeat(V, NH // NKV, axis=0)
     s = np.einsum("hd,htd->ht", q, Kr) / np.sqrt(HD)
     s = s - s.max(axis=1, keepdims=True)
@@ -108,6 +132,8 @@ def attention(q, K, V, o_proj):
 
 def direction_stats(E):
     """E [8,T,128] の誤差 → スロットごとの1024次元ベクトルにして ①②③。"""
+    # （2026-10-18 追記）① bias ratio（平均の誤差の大きさ ÷ 誤差の二乗平均の平方根）、② スロット間の cos の平均（対角を除く）、
+    #   ③ 中心化した誤差の特異値の二乗の、1 番目の割合（PC1）。式は上の説明と同じ
     X = E.transpose(1, 0, 2).reshape(E.shape[1], -1)                  # [T,1024]
     T = X.shape[0]
     bias = float(np.linalg.norm(X.mean(0)) / np.sqrt((np.linalg.norm(X, axis=1) ** 2).mean()))
@@ -120,6 +146,7 @@ def direction_stats(E):
 
 
 def main():
+    """① 点B の入力 → ② ONNX と HF の KV・q を取る → ③ 等価チェック 2 つ → ④ 層ごと・K と V 別の指標 → ⑤ 保存と表示。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", type=Path, default=ROOT / "results/P12h_20260915_kv_error_direction")
     args = ap.parse_args()
@@ -148,6 +175,7 @@ def main():
     # KV は 0.5% までを許す。attention の自前計算は同じ HF 同士なので厳しく見る。
     assert kmax < 5e-3 and vmax < 5e-3 and amax < 1e-4, "等価チェック失敗"
 
+    # ④ 層ごと・モデルごとに、誤差の向き（①〜③）と attention への効き方（上の説明の ④）を出す
     rows = []
     for L in range(NL):
         Kf, Vf = Khf[L], Vhf[L]                                          # FP32 の全80（最新スロット含む）

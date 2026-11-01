@@ -30,6 +30,13 @@ CPU backend は HTP と別実装なので**完全な対照実験ではない**�
         --fp32 work/qwen_dec24/qwen05b_decode_L24_C64.onnx \
         --eval-npz work/qwen_dec24/eval_dec24_big.npz --limit 8
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# 位置づけ: app/pipeline/README.md の「使えないと分かった道具」。StudyMemo 9 章（実機に合わせる）の途中で試した。
+#   記録は results/P9_20260914_perchannel_device.md（CPU backend に Gather・RmsNorm が無くて組めなかった）。
+# 入力:  --dlc（S5 で作った DLC）・--fp32（基準の ONNX）・--eval-npz（評価の入力）。QAIRT の場所は環境変数 QAIRT_ROOT か既定値。
+# 出力:  --work（既定 work/qnncpu）に raw の入力・input_list.txt・qnn-net-run の出力、--out に出力ごとの相対 L2。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -43,6 +50,7 @@ from pathlib import Path
 
 import numpy as np
 
+# ROOT はプロジェクトの根。QAIRT の SDK の bin（qnn-net-run.exe）と lib（QnnCpu.dll など）の場所。
 ROOT = Path(__file__).resolve().parents[2]
 QAIRT = Path(os.environ.get("QAIRT_ROOT", r"D:\QAIRT\v2.48.0.260626\qairt\2.48.0.260626"))
 BIN = QAIRT / "bin/x86_64-windows-msvc"
@@ -50,6 +58,7 @@ LIB = QAIRT / "lib/x86_64-windows-msvc"
 
 
 def main() -> None:
+    """fp32 の出力を基準に計算し、同じ入力を QNN の CPU backend（qnn-net-run）で DLC に通して、出力ごとの相対 L2 を出す。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dlc", type=Path, required=True)
     ap.add_argument("--fp32", type=Path, required=True)
@@ -86,6 +95,8 @@ def main() -> None:
         parts = []
         for k in in_names:
             p = raw / f"{k}_{i}.raw"
+            # 入力は全部 float32 の raw にしている（input_ids のような int64 の入力も float32 に変わる。
+            # この道具は Gather が組めずに止まったので、その先が正しいかは確かめられていない）。
             d[k][i:i+1].astype(np.float32).tofile(p)
             # qnn-net-run は `名前:=パス` 形式（相対パスは入力リストからの相対）
             parts.append(f"{k}:={p.resolve()}")
@@ -96,6 +107,7 @@ def main() -> None:
 
     # ---- 実行 ----
     outdir = args.work / "out"
+    # SDK の lib と bin を PATH の先頭に足して qnn-net-run を呼ぶ（Windows なので区切りは ;）。
     env = dict(os.environ)
     env["PATH"] = f"{LIB};{BIN};" + env.get("PATH", "")
     cmd = [str(BIN / "qnn-net-run.exe"),
@@ -115,6 +127,7 @@ def main() -> None:
     for o in out_names:
         got, exp = [], []
         for i in range(n):
+            # qnn-net-run は入力の行ごとに Result_<行番号>/<出力名>.raw を書く。見つからなければ中身を出して諦める。
             f = outdir / f"Result_{i}" / f"{o}.raw"
             if not f.is_file():
                 cand = list((outdir / f"Result_{i}").glob("*.raw"))

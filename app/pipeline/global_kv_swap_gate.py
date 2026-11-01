@@ -23,9 +23,18 @@ K/V**全体**（全position・全28層）を丸ごと入れ替えて、KV state�
      hidden trajectory/residual/MLP/final-step処理側、あるいはKVと現在hiddenの
      組み合わせへ方向転換する
 
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節「KV の差し替え」）。前は P12y（local_swap_pos45_L14V.py）、後は P13a（layer_block_kv_swap.py）
+- 結果（results/P12z_20260916_global_kv_swap_gate.md）: K だけでも V だけでも判定が負→正に反転した（ゲート A）。
+  margin: oracle/oracle −1.0210、K を baseline +0.8388、V を baseline +1.1808、両方 +3.1374
+- 入力: P12v の oracle モデル（linear20_oracle.ORACLE_FULL）・baseline の QDQ（SOURCE）・トークナイザ・RoPE 表
+- 出力: results/P12z_20260916_global_kv_swap_gate/result.json と画面の表
+- 「oracle」= linear_20 の Q/DQ を外したモデル（P12v）。自由生成で点B に失敗する側。「baseline」= 既存の QDQ（点B に成功する側）
 ## 使い方
 
   python global_kv_swap_gate.py
+  （2026-10-18 補足）app/pipeline の中で上のように動かす。プロジェクトの直下からなら python -m app.pipeline.global_kv_swap_gate
 """
 from pathlib import Path
 import json
@@ -40,16 +49,20 @@ from temporal_qdq_experiment import SOURCE  # noqa: E402
 
 import numpy as np  # noqa: E402
 
+# 結果の置き場と、Qwen3-0.6B の層の数
 OUT = ROOT / "results/P12z_20260916_global_kv_swap_gate"
 N_LAYERS = 28
 
 
 def emit(o):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(o, ensure_ascii=False), flush=True)
 
 
 def build_cache(model_sess, cos, sin, ids):
     """ids(先頭からlen(ids)個)をteacher forcingし、そのあとのpast_k/v(全28層)を返す。"""
+    # （2026-10-18 追記）戻り値: {past_k_0〜27・past_v_0〜27: [1, KV ヘッド数, 256, 128]}（最後の feed の後のキャッシュ。
+    #   形は推定: Qwen3-0.6B の KV ヘッドは 8、head_dim は 128）
     r = Runner(model_sess, cos, sin)
     for tid in ids:
         r.feed(tid, model_sess)
@@ -58,6 +71,8 @@ def build_cache(model_sess, cos, sin, ids):
 
 def feed_final(model_sess, cos, sin, cache, last_tid, pos):
     """cache(過去分)を与えて、最後の1トークンだけをmodel_sessでfeedしてlogitsを返す。"""
+    # （2026-10-18 追記）pos: このトークンの位置（RoPE の行とマスクの長さを決める）。マスクは右詰めで直近 pos+1 個だけ 0、
+    #   ほかは −60（Runner.feed と同じ作り方）。戻り値: logits（語彙数の 1 次元、float64）
     mask = np.full((1, 1, 1, 256), -60, np.float32)
     mask[..., 256 - min(pos + 1, 256):] = 0
     inputs = {"input_ids": np.array([[last_tid]], np.int64),
@@ -69,6 +84,9 @@ def feed_final(model_sess, cos, sin, cache, last_tid, pos):
 
 
 def main():
+    """① 点B の入力を取る → ② oracle と baseline でそれぞれ位置 0〜78 のキャッシュを作る
+    → ③ K・V の出どころを 4 通りに組み合わせ、最後の 1 歩だけ oracle のモデルで流す → ④ FP32 の 1 位の語の margin。
+    """
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)
@@ -88,6 +106,8 @@ def main():
 
     # FP32の1位トークン(これまでの実験と同じ基準)を得るため、既存のP12x/P12yと同じ
     # decision_top1_tokenを使う(78685)。念のためoracle自身のfeedでも整合を取る。
+    # ★2026-10-18 訂正: 旧「念のためoracle自身のfeedでも整合を取る」。このコードには整合を確かめる処理は無い
+    #   （78685 を下で決め打ちするだけ）。数は P12w の compare.json の decision_top1_token と同じ、と記録にある
     conditions = {
         "oracle_oracle": {"K": oracle_cache, "V": oracle_cache},
         "baseline_oracle": {"K": baseline_cache, "V": oracle_cache},
@@ -95,6 +115,7 @@ def main():
         "baseline_baseline": {"K": baseline_cache, "V": baseline_cache},
     }
     logits_by_cond = {}
+    # ③ 層ごとに、K は条件の K 側のキャッシュから、V は V 側のキャッシュから取って混ぜる
     for name, kv in conditions.items():
         mixed = {}
         for L in range(N_LAYERS):

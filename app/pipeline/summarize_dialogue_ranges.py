@@ -1,4 +1,20 @@
 """Summarize P12d traces with range choices frozen on old calibration data."""
+# ---------------------------------------------------------------------------
+# 【日本語の説明（学習用、2026-10-18 追記）】
+# 何のための道具か:
+#   trace_dialogue_ranges.py の観測（P12d）を集計する。推論はしない（.json と .npz を読むだけ）。
+#   巨大値（絶対値 1000 超）がどの位置に出たか、位置ごとの値域、そして「後続用の範囲」をいくつかの倍率で
+#   決めたときに範囲の外に出る要素の数と、1 回だけ丸めたときの誤差を計算する。
+#   ※上の英語の docstring は argparse の --help にそのまま出るので、説明はこのコメントに書いた。
+# 結果（results/P12d_20260915_dialogue_activation_ranges.md 3〜6 節）:
+#   範囲の倍率 1 倍は範囲外が 42・40 要素、1.5 倍で 0。1.5 倍の 1 段は層3 で約 272 倍、層6 で約 200 倍細かい。
+#   ただし丸めの誤差（層3 8.218% → 0.03019%）は保存した FP32 の値を丸め直しただけの計算で、
+#   実機の精度が良くなったという意味ではない（その後の P12e で、モデルに入れると改善しなかった）。
+# 入力:  --out の下の 10 ケースの <名前>.json / .npz と manifest.json（無ければ作り直す）、
+#        results/P12c_20260915_activation_outliers/code_histogram.json（既存の scale・zero point）。
+# 出力:  --out/range_summary.json（保存先は results/P12d_20260915_dialogue_activation_ranges/）。
+# 動かし方: & $py -B -u app/pipeline/summarize_dialogue_ranges.py --out <trace_dialogue_ranges.py と同じ出力先>
+# ---------------------------------------------------------------------------
 from pathlib import Path
 import argparse
 import json
@@ -6,6 +22,12 @@ import hashlib
 import numpy as np
 
 def quant_stats(a,scale,zp):
+    """FP32 の値 a（[トークン数, 1024]）を uint16 の (scale, zp) で 1 回だけ量子化・逆量子化したときの数を返す。
+
+    戻り値: 表せる範囲 [lo, hi]・範囲外の要素数とトークン数・平均二乗誤差・全体の相対 L2・
+    トークンごとの相対 L2 の中央値・95 パーセンタイル・最大。
+    重みや他の中間値の量子化、HTP の整数演算の差、KV を通じた誤差の伝わり方は含まない。
+    """
     a=a.astype(np.float64)
     lo=-zp*scale
     hi=(65535-zp)*scale
@@ -22,10 +44,13 @@ def quant_stats(a,scale,zp):
         'per_token_rel_l2_max':float(per_rel.max())}
 
 def main():
+    """10 ケースを照合して集計し、range_summary.json に書く。"""
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--out',type=Path,required=True)
     ap.add_argument('--project-root',type=Path,default=Path('D:/AI/source/n_chap5/EdgeSLM_Android'))
     args=ap.parse_args()
+    # ① manifest.json が無い場合（観測の実行が manifest を書く前に終わった時）は、残っている 10 ケースの
+    #    JSON/NPZ を照合して作り直す。記録では実際にこの復元をした（その旨を note に残す）。
     if not (args.out/'manifest.json').exists():
         names=['calib_'+str(i) for i in range(5)]+['chat_original','chat_english','long_ja','long_code','chat_long']
         records=[]
@@ -55,6 +80,7 @@ def main():
               'chat_original','chat_english','long_ja','long_code','chat_long'}
     assert len(manifest['records'])==len(expected)
     assert {r['name'] for r in manifest['records']}==expected,'Incomplete scenario manifest'
+    # ② 既存のモデルの scale・zero point（P12c で記録した add_26・add_53 の値）を比べる元にする。
     baseline=json.loads((args.project_root/'results/P12c_20260915_activation_outliers/code_histogram.json').read_text())
     results=[]
     arrays={3:[],6:[]}
@@ -63,6 +89,7 @@ def main():
     for record in manifest['records']:
         name=record['name']
         hfchecks.extend(record['checks'])
+        # ③ 公式 HF との照合がすべて 1e-4 未満だったかを確かめる（較正のケースも含む）。
         for check in record['checks']:
             assert check['logits_rel_l2']<1e-4
             assert all(check['layer_'+str(k)+'_rel_l2']<1e-4 for k in [3,6])
@@ -82,6 +109,7 @@ def main():
             for index,channel in zip(*np.where(np.abs(a)>1000)):
                 events.append({'position':int(index),'channel':int(channel),'value':float(a[index,channel]),
                                'phase':rows[index]['phase'],'turn':rows[index]['turn']})
+            # 位置0 を除いた（後続の）絶対値の最大と、その位置・チャンネル。
             after=a[1:]
             maxpos,maxch=np.unravel_index(np.abs(after).argmax(),after.shape)
             item['layers'][str(layer)]={'min':float(a.min()),'max':float(a.max()),
@@ -94,6 +122,7 @@ def main():
         'hf_control_max_logits_rel_l2':max(r['logits_rel_l2'] for r in hfchecks),
         'hf_control_max_hidden_rel_l2':max(r['layer_'+str(k)+'_rel_l2'] for r in hfchecks for k in [3,6]),
         'frozen_later_ranges':manifest['frozen_later_ranges'],'layers':{}}
+    # ④ 位置で分ける: 先頭・入替前の後続・キャッシュ入替後（位置 256 以上）・生成中・後続すべて。
     groups={'first':np.array([r['position']==0 for r in globalrows]),
             'later_before_eviction':np.array([0<r['position']<manifest['args']['window'] for r in globalrows]),
             'after_eviction':np.array([r['position']>=manifest['args']['window'] for r in globalrows]),
@@ -103,6 +132,8 @@ def main():
         a=np.concatenate(arrays[layer])
         old=next(r for r in baseline['rows'] if r['tensor']==('add_26' if layer==3 else 'add_53'))
         frozen=manifest['frozen_later_ranges'][str(layer)]
+        # ⑤ 比べる範囲の決め方: 既存の格子と、後続 25 トークンの範囲を 1・1.5・2・4 倍に広げたもの
+        #    （0 を必ず含める。uint16 の 65,535 段に割る）。
         policies={'existing':(old['scale'],old['zero_point'])}
         for factor in [1,1.5,2,4]:
             lo=min(0,frozen['min']*factor)

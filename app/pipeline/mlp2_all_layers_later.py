@@ -17,6 +17,16 @@ P12m: 層2部分モデルで `mul_41`/`linear_20`（SiLU(gate)×up 出力・down
   python mlp2_all_layers_later.py --phase build     # 56テンソルだけ後続範囲にしたQDQを作る
   python mlp2_all_layers_later.py --phase evaluate  # 対話評価点・自由生成をHostで比較する
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: StudyMemo 11.5 節の表「同じ調整を28層へ拡張 → Host が完全崩壊」の行。
+# 結果（results/P12n_20260916_mlp2_all_layers_later.md）: 1位保持 85.7% → 0.0%、KL 0.195 → 16.811、
+#   自由生成は単語にもならないトークン列。位置0 の巨大値（8142）が後続用の狭い範囲で飽和したのが原因と記録されている。
+#   → 位置0 だけ元の範囲に戻す mlp2_pos0_split_eval.py（P12o）へ続く。
+# 入力:  SOURCE（work/ops/qwen3_dec28c256/qwen3_dec28c256_final_qdq.onnx）、
+#        REP（results/P12e_20260915_temporal_qdq/）の build_audit.json の later の値。
+# 出力:  work/p12n_mlp2later/mlp2later_qdq.onnx、results/P12n_20260916_mlp2_all_layers_later/build_audit.json・report.json。
+# ---------------------------------------------------------------------------
 from pathlib import Path
 import argparse
 import gc
@@ -51,10 +61,16 @@ TARGET_PAIRS = [
 
 
 def emit(obj):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(obj, ensure_ascii=False), flush=True)
 
 
 def build():
+    """56 本（28 層 × (SiLU×up の出力, down_proj の出力)）の scale・zero point だけを P12e の後続用の値に差し替えたモデルを作る。
+
+    差し替える値は新しく較正せず、P12e の build_audit.json の later の値をそのまま使う
+    （その組の元テンソルが 1 つだけのもの）。重み・ノードが変わっていないことを sha256 で確かめてから保存する。
+    """
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     audit = json.loads((REP / "build_audit.json").read_text(encoding="utf-8"))
@@ -66,6 +82,7 @@ def build():
     assert not missing, missing
     assert len(selected) == 56
 
+    # ① 元のモデルの初期化子とノードの sha256 を控える（後で「変えたのは許した組だけ」を確かめるため）。
     m = onnx.load(str(SOURCE), load_external_data=False)
     assert not any(t.external_data for t in m.graph.initializer), "Expected self-contained QDQ"
     init = {t.name: t for t in m.graph.initializer}
@@ -74,6 +91,7 @@ def build():
 
     allowed = set()
     changes = []
+    # ② scale と zero point を、元の型・形のまま新しい値で置き換える。
     for name in selected:
         c = later[name]
         for nm, value in [(c["scale_name"], c["scale"]), (c["zero_name"], c["zero"])]:
@@ -83,6 +101,7 @@ def build():
             allowed.add(nm)
         changes.append(c)
 
+    # ③ 許した組以外の初期化子・ノードの並び・ノードの数が元と同じかを確かめる。
     unexpected = [t.name for t in m.graph.initializer if t.name not in allowed and
                   hashlib.sha256(t.SerializeToString()).hexdigest() != original[t.name]]
     assert not unexpected, unexpected
@@ -101,6 +120,11 @@ def build():
 
 
 def evaluate():
+    """FP32 の基準と比べて、baseline と mlp2later を同じ評価点で採点し、元の日本語 3 ターンで自由生成する。
+
+    全位置（位置0 を含む）で同じモデルを使う（Pipeline の first と later が同じ）。
+    評価点は block_revert_ab.eval_points（対話 2 本の回答位置・点B・点A・BANANA/バナナ）。
+    """
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)
@@ -135,6 +159,7 @@ def evaluate():
     emit({"phase": "evaluate", "wrote": str(OUT / "report.json")})
 
 
+# 引数: --phase build / evaluate。
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["build", "evaluate"], required=True)

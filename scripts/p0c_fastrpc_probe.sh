@@ -11,6 +11,12 @@
 #       → 本スクリプトはその判断材料を取るためのもの。
 #
 # 使い方: bash scripts/p0c_fastrpc_probe.sh
+#
+# 【補足（学習用、2026-10-18 追記）】
+# 結果: results/P0c_20260912_150417.txt。adb shell（uid 2000）からは /dev/adsprpc-smd を O_RDONLY でも O_RDWR でも
+#   開けなかった（errno=13 Permission denied）。続く results/P0c2_20260912_selinux_domain.md で run-as も駄目、
+#   アプリ本体のプロセス（untrusted_app）なら開けると分かり、「推論はアプリの中で動かす」（android_runner）に決まった。
+# 出力: build/p0c/fastrpc_probe（と .c）、results/P0c_<日時>.txt。
 
 set -u
 
@@ -32,6 +38,7 @@ DEVDIR="/data/local/tmp/edgeslm"
 STAMP="$(date +%Y%m%d_%H%M%S)"
 OUT="$OUTDIR/P0c_${STAMP}.txt"
 
+# 端末で動かす小さな C のプローブを書き出す（ヒアドキュメントの中は C のソースなので、説明は C の // で書いてある）。
 cat > "$BUILD/fastrpc_probe.c" <<'EOF'
 // FastRPC/CDSP へのアクセス可否を調べる最小プローブ。
 // 1) DSP のデバイスノードを O_RDONLY / O_RDWR で開けるか（errno を報告）
@@ -89,6 +96,7 @@ int main(void) {
 }
 EOF
 
+# ここから最後の } までの出力を、画面とファイルの両方に流す（末尾の tee）。
 {
 echo "EdgeSLM_Android P0-c FastRPC アクセス可否の実測"
 echo "取得時刻: $(date '+%Y-%m-%d %H:%M:%S')"

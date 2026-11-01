@@ -17,6 +17,16 @@ hidden_states** を集める。これが層1枚から見た「本物の入力」
 24層のうち0層目だけを見ている点は承知のうえである。深い層ほど値域が広がることが
 知られているので、**層ごとに較正が必要かどうか**は P4 で別途確認する。
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: 本番の流れの「データ」（app/pipeline/README.md の 1 節）。StudyMemo 2 章（実データ較正）・
+#   3.2 節（massive activation の実測）・12 章（新しいモデルが量子化に耐えるか）。記録: results/P3_20260913_full24.md。
+# 入力:  HF のモデル（--model-id、既定 Qwen2.5-0.5B-Instruct）とそのトークナイザ、このファイルの TEXTS / EVAL_TEXTS。
+# 出力:  --out の npz（キーは --input-name。--ids なら input_ids [N, seq] の int64、無ければ埋め込み後の
+#        hidden_states [N, seq, hidden] の float32）と、同じ名前の .meta.json。
+# 動かし方: & $PY2 -m app.pipeline.make_calib_data --out work/qwen/calib_layer1.npz
+#   （評価用は --eval、フルモデル用は --ids --input-name input_ids）
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -60,6 +70,8 @@ EVAL_TEXTS = [
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
+    # 【説明】文をトークンにして seq 個ずつの塊に切り、その塊を 1 サンプルにする（重ならない区切り）。
+    #   短い文は自分自身をつないで seq 個以上にしてから切る。最後の半端な塊は捨てる。
     ap.add_argument("--model-id", default="Qwen/Qwen2.5-0.5B-Instruct")
     ap.add_argument("--seq", type=int, default=16)
     ap.add_argument("--out", type=Path, default=Path("work/qwen/calib_layer1.npz"))
@@ -72,6 +84,7 @@ def main() -> None:
 
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
+    # transformers の版によって dtype= と torch_dtype= のどちらが通るかが違うので、両方を試す。
     tok = AutoTokenizer.from_pretrained(args.model_id)
     try:
         model = AutoModelForCausalLM.from_pretrained(
@@ -124,6 +137,7 @@ def main() -> None:
     # 乱数 ±1 との比較。ここが大きく違うなら乱数較正は的外れだったということ。
     print(f"  ※ P2b までの乱数較正は ±1.0 の一様分布だった")
 
+    # 値域などを .meta.json に残す（後で「どの分布で較正したか」を確かめられるように）。
     meta = {"model_id": args.model_id, "seq": args.seq,
             "input_name": args.input_name, "samples": int(arr.shape[0]),
             "shape": list(arr.shape[1:]),

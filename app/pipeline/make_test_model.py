@@ -11,6 +11,13 @@
   - MatMul（Gemm ではなく）     → HTP の MatMul 対応型（uint8/uint16 の組合せ）を踏む
   - 固定形状のみ                → QNN EP は動的形状を扱えない（要件定義書 3.3.2節#11）
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: P2「パイプラインを端から端まで通す」（results/P2_20260912_pipeline_e2e.md）。この testnet で
+#   実機 median 0.277 ms（DoC/中間まとめ_20260912.md）。
+# 出力:  --out（既定 work/testnet/testnet_fp32.onnx）。入力 [1, 3, size, size]、出力 [1, 4]、opset 17・IR 9。
+# 動かし方: & $PY2 -m app.pipeline.make_test_model --out work/testnet/testnet_fp32.onnx
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -23,10 +30,15 @@ from onnx import TensorProto, helper, numpy_helper
 
 
 def _init(name: str, arr: np.ndarray) -> onnx.TensorProto:
+    """配列を float32 の初期化子（重み）にする。"""
     return numpy_helper.from_array(arr.astype(np.float32), name)
 
 
 def build(out_path: Path, size: int = 32, in_ch: int = 3, hidden: int = 8, classes: int = 4) -> None:
+    """小さな CNN（Conv×2・BN×2・ReLU・MaxPool・GAP・MatMul・Add）を組み立て、検査して保存する。
+
+    重みは乱数（seed 0 で固定。毎回同じモデルになる）。精度ではなく「変換の経路が通るか」を見るためのもの。
+    """
     rng = np.random.default_rng(0)
 
     # Conv -> BN -> Relu -> MaxPool -> Conv -> BN -> Relu -> GlobalAvgPool -> MatMul -> Add
@@ -88,6 +100,7 @@ def build(out_path: Path, size: int = 32, in_ch: int = 3, hidden: int = 8, class
 
 
 def main() -> None:
+    """引数を読んで build を呼ぶ。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", type=Path, default=Path("work/testnet/testnet_fp32.onnx"))
     ap.add_argument("--size", type=int, default=32)

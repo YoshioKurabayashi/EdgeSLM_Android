@@ -22,6 +22,19 @@ V cacheの量子化は2段構成:
   python v_l11_17_intervention.py --phase build
   python v_l11_17_intervention.py --phase evaluate
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# 結果（results/P13c_20260917_v_l11_17_intervention.md）: 条件A・条件B とも Host の自由生成を壊さなかった
+#   （1位保持 baseline 85.7% → A 87.5%・B 89.3%。3 ターンとも「音楽をかけて」に正しく応答）。
+#   ただしこれは「Host が FP32 からずれる」軸（①）の改善。続く v_l11_17_device_probe.py（P13d）で、
+#   層11-17 の V は「実機が Host からずれる」軸（②）では最初からほとんどずれていなかったと分かった
+#   （StudyMemo 11.6 節「2つの軸を混同しない」）。条件B（read 側を uint16）は C-8 のため実機では
+#   context binary が作れない（11.7 節 (a)）。
+# 入力:  SOURCE（work/ops/qwen3_dec28c256/qwen3_dec28c256_final_qdq.onnx）、
+#        results/P12l_20260916_kv_range_recal/widen_plan.json（P12l で較正した範囲の計画）。
+# 出力:  work/p13c_v_l11_17/condA_widen_qdq.onnx・condB_precision_qdq.onnx、
+#        results/P13c_20260917_v_l11_17_intervention/build_audit_A.json・build_audit_B.json・report.json。
+# ---------------------------------------------------------------------------
 from pathlib import Path
 import argparse
 import gc
@@ -45,6 +58,8 @@ COND_B = WORK / "condB_precision_qdq.onnx"
 WIDEN_PLAN = ROOT / "results/P12l_20260916_kv_range_recal/widen_plan.json"
 
 # L11-17: (write側scale_name, read側scale_name)
+# 層ごとの V の Q/DQ の名前（ONNX のノード名から付いた番号）。write 側 = cat_N（キャッシュに書く present_v、uint16）、
+# read 側 = repeat_interleave_N（GQA で KV ヘッドを複製した後、act×act MatMul の右辺。C-8 で uint8 に落としてある）。
 LAYER_GROUPS = {
     11: ("cat_47_scale", "repeat_interleave_23_scale_u8"),
     12: ("cat_51_scale", "repeat_interleave_25_scale_u8"),
@@ -57,15 +72,22 @@ LAYER_GROUPS = {
 
 
 def emit(o):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(o, ensure_ascii=False), flush=True)
 
 
 def zero_name_of(scale_name):
+    """scale の初期化子の名前から、組になる zero point の名前を作る。
+
+    uint16 の組は <名前>_scale ↔ <名前>_zero_point、downgrade_actact_rhs.py が作った uint8 の組は
+    <名前>_scale_u8 ↔ <名前>_zp_u8 という命名の違いに合わせる。
+    """
     return scale_name.replace("_scale", "_zero_point") if scale_name.endswith("_scale") and "_u8" not in scale_name \
         else scale_name.replace("_scale_u8", "_zp_u8")
 
 
 def apply_scale_zero(init, scale_name, zero_name, scale, zero, dtype):
+    """初期化子の scale・zero point を新しい値で置き換える。形（スカラーか [1] か）は元のまま、zero の型は dtype にする。"""
     dt = np.dtype(dtype)
     s_shape = numpy_helper.to_array(init[scale_name]).shape
     z_shape = numpy_helper.to_array(init[zero_name]).shape
@@ -98,6 +120,8 @@ def build_cond_b():
     changes = []
     for L, (write_s, read_s) in LAYER_GROUPS.items():
         p = plan[read_s]
+        # read 側の観測範囲（P12l の較正）を、margin 1.2 のまま uint16 の 65535 段で fit し直す。
+        # zero point の型も uint16 に変わるので、後ろの MatMul は u16 × u16 になる（Host の ORT では動く）。
         lo, hi = p["observed"]
         s, z = fit(lo, hi, 65535, 1.2)  # 同じ観測range・margin、ただしuint16でfit
         zero_name = zero_name_of(read_s)
@@ -111,6 +135,7 @@ def build_cond_b():
 
 
 def build():
+    """条件A・条件B の 2 つのモデルを作り、変えた組を build_audit_A/B.json に残す。"""
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     changes_a = build_cond_a()
@@ -123,6 +148,11 @@ def build():
 
 
 def summarize(sc):
+    """score の結果を 1 行の文字列にする（1位保持・margin 保持・最小 margin・KL・点ごとの margin）。
+
+    点B = 「音楽をかけて」の判定位置、点A = 最初に分岐した位置、BANANA/バナナ = System Prompt を守るかの確認
+    （英語・日本語）。margin は FP32 の正解トークンへの logit の差（正なら正解が 1 位）。
+    """
     a = sc["ALL"]
     return (f"1位保持 {a['top1_keep']*100:5.1f}%  margin保持 {a['retention_mean']*100:6.1f}%  "
             f"最小margin {a['margin_min']:+6.2f}  KL {a['kl_mean']:.3f} | "
@@ -131,11 +161,13 @@ def summarize(sc):
 
 
 def evaluate():
+    """FP32 → baseline → 条件A → 条件B の順に、同じ評価点で指標を取り、元の日本語 3 ターンで自由生成する。"""
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)
     emit({"phase": "evaluate", "points": [{"name": p["name"], "positions": len(p["eval_positions"])} for p in pts]})
 
+    # ① FP32 の基準を先に 1 回だけ取る（各条件の score はこれと比べる）。
     fp32 = session(OPS / "qwen3_dec28c256_prepped.onnx")
     ref = run_points(Pipeline(fp32, fp32, fp32, "none"), pts)
     del fp32
@@ -143,6 +175,7 @@ def evaluate():
     emit({"phase": "evaluate", "step": "fp32_reference_done"})
 
     results, gens = {}, {}
+    # ② 条件を 1 つずつ開いて評価する（同時に開くとメモリが足りない）。合否は自由生成の文で決める（StudyMemo 11.8 (4)）。
     variants = [("baseline(対照)", SOURCE), ("条件A(range拡張)", COND_A), ("条件B(8bit->16bit)", COND_B)]
     for name, path in variants:
         s = session(path)
@@ -162,6 +195,7 @@ def evaluate():
 
 
 def main():
+    """--phase build / evaluate のどちらかを走らせる。"""
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["build", "evaluate"], required=True)
     a = ap.parse_args()

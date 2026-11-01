@@ -19,6 +19,18 @@ P12r の 4x（Host の自由生成が唯一きれいだった設定）は、実�
 
 判定は P12t で確立した順序: ①自由生成 → ②回答開始 token の margin → ③集計指標（診断用）。
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: StudyMemo 11.7b 節「『実機に載せられる形か』を先に確かめる」（P14 でクローズした後の追試）。
+# 結果（results/P16_20260917_single_model_4x.md）: 1 モデルにまとめると完全に崩れた。
+#   A1（層2 のみ 4x・1 モデル）1位保持 0.0%・KL 18.24、B1（全 28 層）0.0%・KL 16.25、どちらも文字化け。
+#   A2（同じ scale で位置0 だけ baseline・2 モデル）は 83.9% で正常。位置0 の 8142 が 4x の範囲（−15.7〜+31.4）で
+#   飽和し、KV の先頭スロットとして最後まで参照され続けるため。→ 4x は実機に載せられる形が無い。
+# 入力:  SOURCE（work/ops/qwen3_dec28c256/qwen3_dec28c256_final_qdq.onnx）、
+#        REP = results/P12e_20260915_temporal_qdq/ の calibration_ranges.json（後続の観測範囲）と qparam_map.json。
+# 出力:  work/p16_single_4x/<変種>_qdq.onnx、results/P16_20260917_single_model_4x/build_<変種>.json・evaluate.json。
+# 動かし方: & $py -B app/pipeline/single_model_4x.py --phase build  →  --phase evaluate
+# ---------------------------------------------------------------------------
 from pathlib import Path
 import argparse
 import gc
@@ -39,16 +51,26 @@ from onnx import numpy_helper
 OUT = ROOT / "results/P16_20260917_single_model_4x"
 WORK = ROOT / "work/p16_single_4x"
 OPS_DIR = ROOT / "work/ops/qwen3_dec28c256"
+# MARGIN: 後続トークンで観測した範囲を何倍に広げるか（6.0 が P12r の「4x」。1x が 1.5 に当たる）。
+# DOWN_PROJ: 層 L の down_proj の出力の名前。export のノード番号は 1 層に 7 つずつ進むので linear_{7L+6}。
+# VARIANTS: 変種の名前 → scale/zero を差し替えるテンソルの一覧。
 MARGIN = 6.0                                   # P12r の 4x
 DOWN_PROJ = {L: f"linear_{7 * L + 6}" for L in range(28)}   # 層2 → linear_20
 VARIANTS = {"A1_layer2_only": [DOWN_PROJ[2]], "B1_all_layers": [DOWN_PROJ[L] for L in range(28)]}
 
 
 def emit(o):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(o, ensure_ascii=False), flush=True)
 
 
 def build(tag, names):
+    """既存の QDQ から、names のテンソルの scale・zero point だけを「後続の観測範囲 × MARGIN」に差し替えたモデルを作る。
+
+    引数: tag = 変種の名前、names = 差し替えるテンソル名のリスト。戻り値: 作ったモデルのパス。
+    記録（build_<tag>.json）: テンソルごとの観測範囲・新旧の scale・表せる範囲・何倍細かくなったか（narrower_by）。
+    最後に、重みとノードが 1 バイトも変わっていないことを sha256 で確かめる（変える変数を scale/zero だけにする）。
+    """
     calib = json.loads((REP / "calibration_ranges.json").read_text(encoding="utf-8"))["ranges"]["later"]
     qmap = json.loads((REP / "qparam_map.json").read_text(encoding="utf-8"))["groups"]
     m = onnx.load(str(SOURCE), load_external_data=False)
@@ -91,6 +113,12 @@ def build(tag, names):
 
 
 def evaluate():
+    """FP32 の基準と比べて、baseline・A1・A2・B1 を同じ評価点で採点し、元の日本語 3 ターンで自由生成する。
+
+    Pipeline(fp32, first, later, mode) の first は位置0 を通すモデル、later は位置1以降のモデル。
+    A1・B1 は first も later も同じ（1 モデル）、A2 は first だけ baseline（2 モデル）。
+    判定の順序は ① 自由生成 → ② 回答の最初のトークンの margin → ③ 集計指標（診断用）（P12t・StudyMemo 11.8 (4)）。
+    """
     tok = tokenizer()
     pts = eval_points(tok)
     fp32 = session(OPS_DIR / "qwen3_dec28c256_prepped.onnx")
@@ -121,6 +149,7 @@ def evaluate():
         gc.collect()
 
 
+# 引数: --phase build（2 つの変種を作る）/ evaluate（採点と自由生成）。
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--phase", choices=["build", "evaluate"], required=True)

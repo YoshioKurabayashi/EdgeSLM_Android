@@ -45,6 +45,14 @@ ORT 1.30.0 の `qdq_quantizer.py` を読むと:
 
 `verify()` は**できあがった QDQ** を開いて per-channel 本数・scale の形・axis を数える。
 期待と違えば例外を投げて止める。**「per_channel=True を渡した」は根拠にならない。**
+
+## 入力と出力（2026-10-18 追記）
+
+  build_overrides() : 入力 prepped の ONNX → 出力 TensorQuantOverrides（{重み名: [{"axis": 1}]}）と対象の一覧
+  inspect_weights() : 入力 QDQ の ONNX → 出力 重みの DQ ごとの型・scale の数・axis と、その集計
+  verify()          : inspect_weights() の集計を期待の本数・axis と比べ、違えば止める
+  解説は StudyMemo 2.4 節（per-tensor と per-channel）・7.2〜7.4 節・7.6 節。
+  結果の記録は results/P8_20260913_weight_quantization.md（StudyMemo 13 章の表による）。
 """
 
 from __future__ import annotations
@@ -58,6 +66,8 @@ import numpy as np
 import onnx
 
 # per-channel にしても意味がない／対応していない op
+# （★2026-10-18 注: この定数はファイルの中で使われていない。Gather との共有を除く処理は
+#   matmul_weight_axes() の「MatMul の右辺としてのみ使われる」判定が担っている）
 SKIP_OPS = ("Gather",)
 
 
@@ -66,6 +76,10 @@ def matmul_weight_axes(model_path: str | Path, min_elems: int = 1024) -> dict[st
 
     2次元で、MatMul の**右辺**に入っている初期化子だけを対象にする。
     左辺に重みが来る形（左右入替の結果など）は対象外にして取りこぼしを明示する。
+
+    引数: model_path（prepped の ONNX。重みの中身は読まない）、min_elems（これより小さい重みは
+          対象外。既定 1024 要素。inspect_weights の「大きい重み」と同じ境目）。
+    戻り値: {初期化子名: 1}（axis はいつも 1。[K, N] の N 方向にチャンネルごとの scale を持たせる）。
     """
     m = onnx.load(str(model_path), load_external_data=False)
     g = m.graph
@@ -84,6 +98,7 @@ def matmul_weight_axes(model_path: str | Path, min_elems: int = 1024) -> dict[st
             return None
         return trace_init(n.input[0], depth + 1)
 
+    # ① 「このテンソルを使うノード」の表を作る（初期化子がどこで使われているかを下流へたどるため）
     # 初期化子ごとに「最終的に何に使われているか」を集める
     cons: dict[str, list] = {}
     for n in g.node:
@@ -92,6 +107,8 @@ def matmul_weight_axes(model_path: str | Path, min_elems: int = 1024) -> dict[st
     PASS = ("Transpose", "Reshape", "Identity", "Cast")
 
     def terminal_ops(name: str, depth: int = 0) -> set[str]:
+        """name を形だけ変える op（PASS）を越えて下流へたどり、最後に使う op の種類の集合を返す。
+        4 段より深ければ "?" を入れる（判断できないものとして除外させる）。"""
         if depth > 4:
             return {"?"}
         got: set[str] = set()
@@ -102,6 +119,8 @@ def matmul_weight_axes(model_path: str | Path, min_elems: int = 1024) -> dict[st
                 got.add(c.op_type)
         return got
 
+    # ② MatMul を 1 つずつ見て、右辺（input[1]）が初期化子（Transpose 等の先を含む）なら候補にする。
+    #   1 次元・小さい重み（min_elems 未満）は除く
     skipped: dict[str, set[str]] = {}
     for n in g.node:
         if n.op_type != "MatMul" or len(n.input) < 2:
@@ -131,7 +150,12 @@ def matmul_weight_axes(model_path: str | Path, min_elems: int = 1024) -> dict[st
 
 def build_overrides(model_path: str | Path, base: dict | None = None,
                     min_elems: int = 1024) -> tuple[dict, dict[str, int]]:
-    """`TensorQuantOverrides` に per-channel の指定を足して返す。"""
+    """`TensorQuantOverrides` に per-channel の指定を足して返す。
+
+    引数: model_path（prepped の ONNX）、base（既にある上書き。C-8 の uint8 指定など）、min_elems。
+    戻り値: (上書きの辞書, {重み名: axis})。base に同じ名前があればそちらを優先し、axis は足さない。
+    p2b_ops.prepare() が quantize_qdq.run(init_overrides=…) に渡す。
+    """
     axes = matmul_weight_axes(model_path, min_elems)
     ov = dict(base or {})
     for nm, ax in axes.items():
@@ -143,10 +167,17 @@ def build_overrides(model_path: str | Path, base: dict | None = None,
 
 
 def inspect_weights(qdq_path: str | Path) -> dict:
-    """できあがった QDQ の重み量子化を数える。**これが真実。**"""
+    """できあがった QDQ の重み量子化を数える。**これが真実。**
+
+    引数: qdq_path（QDQ の ONNX。重みの中身は読まず、形と属性だけ見る）。
+    戻り値: 集計の辞書（total / per_channel / per_tensor、1024 要素以上の big_*、型の内訳 by_dtype、
+            axis の内訳 axes、scale と zero point の数が食い違う重み mismatched_zp、本ごとの rows）。
+    「重み」は DequantizeLinear の入力 0 が初期化子のもの。scale の要素が 2 個以上なら per-channel とみなす。
+    """
     m = onnx.load(str(qdq_path), load_external_data=False)
     inits = {t.name: t for t in m.graph.initializer}
     TYPE = {2: "uint8", 3: "int8", 4: "uint16", 5: "int16", 6: "int32"}
+    # TYPE は onnx の型番号 → 名前（TensorProto.UINT8=2, INT8=3, UINT16=4, INT16=5, INT32=6 …）
     rows = []
     for nd in m.graph.node:
         if nd.op_type != "DequantizeLinear" or nd.input[0] not in inits:
@@ -162,6 +193,8 @@ def inspect_weights(qdq_path: str | Path) -> dict:
                      "n_zero_point": n_zp, "axis": ax,
                      "per_channel": n_sc > 1,
                      "elems": int(np.prod(w.dims)) if w.dims else 1})
+    # 1024 要素以上を「大きい重み」として別に数える。scale や bias のような小さなものを
+    # 期待の本数（例 168 本）に混ぜないため
     big = [r for r in rows if r["elems"] >= 1024]
     return {
         "total": len(rows),
@@ -182,6 +215,12 @@ def verify(qdq_path: str | Path, expect_per_channel: int,
     """期待どおり per-channel になっているかを確かめる。違えば例外。
 
     **context 生成（約1時間）へ進む前にここで止める。**
+
+    引数: expect_per_channel（per-channel になっているべき大きい重みの本数。p2b_ops は
+          build_overrides で指定した本数を渡す）、expect_axis（既定 1）、
+          strict（True なら問題があれば SystemExit で止める。False なら problems に書くだけ）。
+    戻り値: inspect_weights() の辞書に "problems"（見つかった問題の文のリスト）を足したもの。
+    調べるのは ① 本数 ② 想定外の axis（per-tensor の "None" は許す）③ scale と zero point の数の食い違い。
     """
     info = inspect_weights(qdq_path)
     problems = []
@@ -200,6 +239,8 @@ def verify(qdq_path: str | Path, expect_per_channel: int,
 
 
 def main() -> None:
+    """コマンドの入口。--prepped なら per-channel 指定の対象を数え、--qdq なら生成物を検査する
+    （--expect があれば verify() で期待と比べ、無ければ inspect_weights() で数えるだけ）。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--qdq", type=Path, help="できあがった QDQ を検査する")
     ap.add_argument("--prepped", type=Path, help="per-channel 指定の対象を数える")

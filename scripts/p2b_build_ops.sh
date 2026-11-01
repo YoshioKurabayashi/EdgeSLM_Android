@@ -16,6 +16,12 @@
 #
 # 落ちたモデルがあっても**止めない**。P2b の目的は「どこまで通るか」の一覧を
 # 作ることであって、最初の失敗で終わることではない。
+#
+# 【補足（学習用、2026-10-18 追記）】
+# 結果: results/P2b_<日時>/（各モデルのログと summary.tsv）。まとめは results/P2b_20260912_op_matrix_host.md。
+# 方式は環境変数 SCHEME（既定 a16w8）で変える。例: SCHEME=a16w8_mixed bash scripts/p2b_build_ops.sh matmul_act
+# 注意: 引数なしの「全部」（下の ALL）は最初の 13 本だけ。2026-09-12 に足した実形のモデル（gqa_repeat・block_real など）は
+#       名前を指定して流す。
 
 set -u
 export MSYS2_ARG_CONV_EXCL='/data/local/tmp;/sys;/vendor;/dev;/system;/proc;/sdcard'
@@ -24,6 +30,7 @@ export PYTHONIOENCODING=utf-8
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT" || exit 1
 
+# 本体の venv の Python（Windows の形）。作業場所と結果の置き場所。
 PY="./.venv/Scripts/python.exe"
 WORK="work/ops"
 SCHEME="${SCHEME:-a16w8}"
@@ -55,9 +62,11 @@ qnn_cause() {
   echo "$line" | sed 's/^ *//;s/  */ /g' | cut -c1-160
 }
 
+# 結果の表（TSV）。1 モデル 1 行で、どの段まで通ったかと判定・理由を書く。
 SUMMARY="$OUT/summary.tsv"
 printf 'name\tS2_S4\tS5_convert\tS6_context\tS8_epctx\tverdict\tdetail\n' > "$SUMMARY"
 
+# モデルごとに S2〜S4 → S5〜S7 → S8 の順に通し、落ちた段で表に 1 行書いて次のモデルへ進む。
 for NAME in $NAMES; do
   echo
   echo "================ $NAME ================"

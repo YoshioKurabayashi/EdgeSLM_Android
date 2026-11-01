@@ -24,7 +24,11 @@ QNN EP は動的形状を扱えない（要件定義書 3.3.2節#11）ので、
 
 形状を静的に保つため、長さ L を固定し**毎ステップ1つ左へずらして末尾に書く**:
 
-    present_k = Concat( past_k[:, :, 1:, :], new_k )      # [1, KV, L, D] のまま
+    present_k = Concat( past_k, new_k )[:, :, 1:, :]      # [1, KV, L, D] のまま
+
+（★2026-10-18 訂正: 旧「Concat( past_k[:, :, 1:, :], new_k )」。結果は同じだが、実装は
+「連結してから先頭を捨てる」順にしている。past_k を Slice に直接入れると ORT の量子化器が
+それを量子化せず C-1 違反になるため。理由の詳しい説明は QwenDecodeStep.forward の中のコメント）
 
 新しいトークンが常に**末尾**に来るので、有効範囲は「後ろ n 個」になる。
 空きスロットは `attn_mask`（ホストが毎ステップ作る [1,1,1,L]）で塞ぐ。
@@ -44,6 +48,20 @@ QNN EP は動的形状を扱えない（要件定義書 3.3.2節#11）ので、
            present_k_{i} / present_v_{i}       × 24
 
 入出力が 51 / 49 本になるので、**runner の多入力・多出力対応（v0.2 / v0.3）が効く**。
+（★2026-10-18 訂正: 入力は正しくは 52 本。input_ids・cos・sin・attn_mask の 4 本 ＋ past_k / past_v の 24×2＝48 本。
+出力は logits ＋ present 48 本 ＝ 49 本で合っている。main の in_names / out_names の作り方から数えた）
+
+## 動かし方・出力（2026-10-18 追記）
+
+    python -m app.pipeline.export_qwen_decode --cache-len 128              # decode（既定は Qwen2.5-0.5B・全層）
+    python -m app.pipeline.export_qwen_decode --mode prefill --seq 16 --last-only
+    python -m app.pipeline.export_qwen_decode --verify-only                # HF との検算だけ
+
+- 出力（--out、既定 work/qwen_decode/）: decode は `<名前>_decode_L<層数>_C<L>.onnx` と `decode_L<層数>_C<L>.meta.json`
+  （入出力の名前・ノード数・演算の種類・検算の結果）。prefill は `qwen05b_prefillmask_L<層数>_S<窓>[_last].onnx` と meta。
+- この後の流れ: make_decode_calib（較正データ）→ find_swap_matmuls → make_spec → p2b_ops prepare（量子化）→ 端末
+- 解説: StudyMemo（EdgeSLM_Android）1.6「decode が作れなかった本当の理由」・3 章・5 章（verify）・10 章（固定長キャッシュ）・
+  14.7。記録 results/P10_20260914_context_length.md
 """
 
 from __future__ import annotations
@@ -55,13 +73,24 @@ from pathlib import Path
 import numpy as np
 import torch
 
+# 空きスロット・未来の位置を塞ぐ値。exp(−60) ≒ 8.8e-27 で、softmax の後はほぼ 0（遮断として十分）。
+# HF の −3.4e38 のままだと 16bit の目盛りの幅をこの 1 値が食い、他の値の分解能が無くなる（StudyMemo 00 の C-9・5.5）
 MASK_NEG = -60.0   # C-9: -inf は量子化できない
 
 
 class QwenDecodeStep(torch.nn.Module):
-    """1トークン分の decode。**重みは本物、配線だけ自前。**"""
+    """1トークン分の decode。**重みは本物、配線だけ自前。**
+
+    HF のモデルから部品（埋め込み・各層・最後の正規化・lm_head）を借りて、KV キャッシュを
+    固定長のテンソル入出力 [1, KV, L, D] で持つ形に組み直したもの。これを torch.onnx.export する。
+    属性: L = キャッシュの長さ（スロット数）、nh = query のヘッド数、nkv = KV のヘッド数、
+          hd = 1 ヘッドの次元、rep = nh / nkv（GQA で KV を何回繰り返すか）、scale = 1/√hd
+    """
 
     def __init__(self, model, cache_len: int, layers: int | None = None):
+        """model = HF の CausalLM、cache_len = KV キャッシュのスロット数 L、layers = 先頭から何層使うか（None で全層。
+        切り分けで 1〜2 層だけ書き出すのに使う）。部品は model から借りる（コピーしない）。
+        """
         super().__init__()
         cfg = model.config
         self.cfg = cfg
@@ -83,6 +112,9 @@ class QwenDecodeStep(torch.nn.Module):
         self.lm_head = model.lm_head
 
     def _rope(self, x, cos, sin):
+        """RoPE（回転位置埋め込み）を掛ける。x は [1, ヘッド数, T, hd]、cos / sin は [1, 1, T, hd]。
+        x の前半と後半を組にして回す: x·cos ＋ rotate_half(x)·sin（rotate_half は [−後半, 前半]）。
+        """
         # HF と同じ rotate_half
         half = x.shape[-1] // 2
         x1, x2 = x[..., :half], x[..., half:]
@@ -96,11 +128,22 @@ class QwenDecodeStep(torch.nn.Module):
         これらは v68 で未検証の op である。RoPE の cos/sin は位置だけで決まる
         表引きなので、**端末で計算する理由がない**。ホストで作って渡す。
         （`rope_cos_sin()` が HF の rotary と同じ値を作る。）
+
+        引数（2026-10-18 追記）:
+          input_ids   [1,1] int64
+          cos / sin   [1,1,1,hd]（今の位置の値）
+          attn_mask   [1,1,1,L]（有効なスロットは 0、空きは MASK_NEG。ホストが毎ステップ作る）
+          *caches     past_k_0, past_v_0, past_k_1, … の順に 2×層数 本。各 [1, KV, L, hd]
+        戻り値: (logits [1,1,V], present_k_0, present_v_0, …)
+        段: ① 埋め込み → 層ごとに ② q/k/v と RoPE → ③ キャッシュを左へずらして書く → ④ 注意 → ⑤ MLP
+            → ⑥ 最後の正規化と lm_head
         """
         h = self.embed(input_ids)                        # [1,1,H]
 
+        # ① 埋め込み（上の行）。presents に層ごとの新しい K/V を集め、最後に出力へ並べる
         presents = []
         for i, layer in enumerate(self.layers):
+            # ② 層 i: 入力の past を取り出し、正規化 → q/k/v の射影（[1,1,ヘッド,hd] にしてから [1,ヘッド,1,hd] へ）
             past_k, past_v = caches[2 * i], caches[2 * i + 1]
             attn = layer.self_attn
             res = h
@@ -119,10 +162,11 @@ class QwenDecodeStep(torch.nn.Module):
             k = k.transpose(1, 2)
             v = attn.v_proj(x).view(1, 1, self.nkv, self.hd).transpose(1, 2)
 
+            # q と k にだけ RoPE を掛ける（v には掛けない）。キャッシュには RoPE 後の k が入る
             q = self._rope(q, cos, sin)
             k = self._rope(k, cos, sin)
 
-            # 左シフトして末尾に書く（長さ L のまま）。
+            # ③ 左シフトして末尾に書く（長さ L のまま）。
             #
             # ★「連結してから捨てる」順にしているのには理由がある（2026-09-13）。
             #
@@ -147,6 +191,7 @@ class QwenDecodeStep(torch.nn.Module):
             pv = torch.cat((past_v, v), dim=2)[:, :, 1:, :]
             presents += [pk, pv]
 
+            # ④ 注意: q·K^T / √hd ＋ マスク → softmax → V の重み付き和 → o_proj → 残差を足す
             # GQA: kv ヘッドを query ヘッド数へ
             kk = pk.repeat_interleave(self.rep, dim=1)
             vv = pv.repeat_interleave(self.rep, dim=1)
@@ -158,10 +203,12 @@ class QwenDecodeStep(torch.nn.Module):
             ctx = ctx.transpose(1, 2).reshape(1, 1, self.nh * self.hd)
             h = res + attn.o_proj(ctx)
 
+            # ⑤ MLP（正規化 → gate/up/down）→ 残差を足す。HF の Qwen2DecoderLayer と同じ順
             res = h
             x = layer.post_attention_layernorm(h)
             h = res + layer.mlp(x)
 
+        # ⑥ 最後の RMSNorm → lm_head で語彙ぶんの logits [1,1,V]
         h = self.norm(h)
         return (self.lm_head(h), *presents)
 
@@ -191,6 +238,9 @@ class QwenPrefill(torch.nn.Module):
 
     def __init__(self, model, seq: int, layers: int | None = None,
                  last_only: bool = False):
+        """model = HF の CausalLM、seq = 窓の長さ S（プロンプトをこの長さに左パディングして入れる）、layers = 先頭から何層使うか、
+        last_only = 最終位置だけに最後の正規化と lm_head を掛ける（下のコメント）。部品は QwenDecodeStep から借りる。
+        """
         super().__init__()
         self.step = QwenDecodeStep(model, seq, layers)   # 部品を共有する
         self.seq = seq
@@ -207,6 +257,11 @@ class QwenPrefill(torch.nn.Module):
         self.last_only = last_only
 
     def forward(self, input_ids, cos, sin, attn_mask):
+        """prefill の 1 回分。input_ids [1,S]、cos / sin [1,1,S,hd]、attn_mask [1,1,S,S]（build_mask が作る）。
+        戻り値は logits [1,S,V]（last_only なら [1,1,V]）。KV キャッシュは出さない（この作りの prefill は
+        会話の続きを持たない。decode のキャッシュの充填は 1 トークンずつ decode で行う）。
+        各層の計算は QwenDecodeStep.forward と同じで、違いは長さが S なことと、キャッシュの連結が無いこと。
+        """
         st = self.step
         h = st.embed(input_ids)                                  # [1,S,H]
         for layer in st.layers:
@@ -243,6 +298,9 @@ def build_mask(n_valid: int, seq: int, neg: float = MASK_NEG) -> np.ndarray:
 
     有効トークンは**後ろ n_valid 個**に置く約束。
     それより前（パディング）は全行で塞ぐ。
+
+    戻り値: [1,1,seq,seq] の float32。行 i が「位置 i の query がどの key を見てよいか」。見てよい所は 0、塞ぐ所は neg。
+    例 seq=4・n_valid=2: 行 2 は列 2 だけ、行 3 は列 2〜3 が 0。パディングの行 0・1 は自分だけ 0。
     """
     m = np.full((1, 1, seq, seq), neg, dtype=np.float32)
     off = seq - n_valid
@@ -256,7 +314,12 @@ def build_mask(n_valid: int, seq: int, neg: float = MASK_NEG) -> np.ndarray:
 
 def verify_prefill(pf: QwenPrefill, model, seq: int, n_check: int = 5) -> dict:
     # pf が last_only なら出力は [1,1,V]。どちらでも `[:, -1:, :]` で最終位置が取れる。
-    """**HF に attention_mask を渡した結果**と突き合わせる。"""
+    """**HF に attention_mask を渡した結果**と突き合わせる。
+
+    固定のトークン列（n_check+1 個）を左にパディングして窓 seq に入れ、最終位置の logits を比べる。
+    HF の層を一時的に pf と同じ層（部分の層数でも）に差し替えて比べ、最後に元に戻す。
+    戻り値: {"max_abs_diff": 最大絶対差, "top1_match": 1 位が一致したか}
+    """
     tok_ids = [785, 6722, 3283, 315, 9625, 374][:n_check + 1]
     saved = model.model.layers
     model.model.layers = pf.step.layers
@@ -284,6 +347,9 @@ def rope_cos_sin(model, positions) -> tuple[np.ndarray, np.ndarray]:
 
     自前で三角関数を書かず **HF のモジュールを呼ぶ**。
     式を写し間違えると静かにずれるため。
+
+    positions は位置の list。1 つなら [1,1,1,hd]、P 個なら [1,1,P,hd]（prefill で使う）。
+    dummy は rotary_emb が dtype と device を見るためだけの入れ物（値は使われない）。
     """
     with torch.no_grad():
         dummy = torch.zeros(1, len(positions), model.config.hidden_size)
@@ -293,6 +359,9 @@ def rope_cos_sin(model, positions) -> tuple[np.ndarray, np.ndarray]:
 
 
 def load(model_id: str):
+    """HF のモデルを float32・eager の注意（自前の配線と同じ素直な計算）で読み、eval にして返す。
+    transformers の版で引数名が dtype / torch_dtype と変わったので、両方を試す。
+    """
     from transformers import AutoModelForCausalLM
     try:
         m = AutoModelForCausalLM.from_pretrained(model_id, dtype=torch.float32,
@@ -309,6 +378,10 @@ def verify(step: QwenDecodeStep, model, cache_len: int, n_check: int = 6) -> dic
 
     HF に同じトークン列を1つずつ食わせ、各ステップの logits を比べる。
     ここが合わなければ、以降の精度議論はすべて無意味になる。
+
+    （2026-10-18 追記）HF 側は毎回「先頭から n 個」をキャッシュなしで流し、最後の位置の logits を取る。
+    自前側は 1 トークンずつ流し、出力の present を次の past に回す（端末での使い方と同じ）。
+    戻り値: max_abs_diff（全ステップの最大絶対差）・per_step・top1_match（全ステップで 1 位が一致したか）・steps
     """
     tok_ids = [9707, 11, 1879, 0, 3555, 374]          # 適当な実トークン列
     tok_ids = tok_ids[:n_check]
@@ -344,6 +417,11 @@ def verify(step: QwenDecodeStep, model, cache_len: int, n_check: int = 6) -> dic
 
 
 def main() -> None:
+    """引数を読み、HF のモデルを読んで自前の配線を作り、HF と検算してから ONNX に書き出す。
+
+    段: ① モデルを読み配線を作る → （prefill なら別の道）→ ② HF と検算（合わなければ止める）
+        → ③ 例の入力（形を決めるためのゼロ）を作る → ④ 入出力の名前を決めて書き出す → ⑤ meta.json に記録
+    """
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--model-id", default="Qwen/Qwen2.5-0.5B-Instruct")
     ap.add_argument("--cache-len", type=int, default=128)
@@ -358,6 +436,7 @@ def main() -> None:
                     help="最終段の norm と lm_head を最終位置だけに掛ける（窓を広げるとき必須級）")
     args = ap.parse_args()
 
+    # ① モデルを読み、自前の配線を作る（--layers 0 なら全層）
     print(f"=== load {args.model_id} ===")
     model = load(args.model_id)
     step = QwenDecodeStep(model, args.cache_len, args.layers or None)
@@ -365,6 +444,7 @@ def main() -> None:
     print(f"  layers {nl} / cache_len {args.cache_len} / "
           f"kv_heads {step.nkv} / head_dim {step.hd}")
 
+    # prefill の道: QwenPrefill を作り、verify_prefill で検算してから書き出す（入力 4 本・出力 logits 1 本）
     if args.mode == "prefill":
         pf = QwenPrefill(model, args.seq, args.layers or None,
                          last_only=args.last_only)
@@ -405,6 +485,7 @@ def main() -> None:
         print(f"  {len(m2.graph.node)} ノード / {len(c)} 種")
         return
 
+    # ② decode: HF と検算。1 位が 1 回でも違うか、最大絶対差が 1e-2 を超えたら書き出さない
     print("=== 自前の配線を HF と突き合わせる ===")
     v = verify(step, model, args.cache_len)
     print(f"  最大絶対差 {v['max_abs_diff']:.3e}  top-1 全一致 {v['top1_match']}")
@@ -414,6 +495,7 @@ def main() -> None:
     if args.verify_only:
         return
 
+    # ③ 例の入力。値は何でもよく、形と型だけが ONNX に焼き込まれる（形はすべて固定。dynamic_axes=None）
     args.out.mkdir(parents=True, exist_ok=True)
     ids = torch.zeros((1, 1), dtype=torch.long)
     c0, s0 = rope_cos_sin(model, [0])
@@ -421,6 +503,7 @@ def main() -> None:
     mask = torch.zeros((1, 1, 1, args.cache_len), dtype=torch.float32)
     caches = [torch.zeros(1, step.nkv, args.cache_len, step.hd) for _ in range(2 * nl)]
 
+    # ④ 入出力の名前: 入力は 4 本 ＋ past_k_0, past_v_0, …、出力は logits ＋ present_k_0, present_v_0, …（端末は名前で引く）
     in_names = (["input_ids", "cos", "sin", "attn_mask"]
                 + [f"past_{'kv'[j]}_{i}" for i in range(nl) for j in (0, 1)])
     out_names = (["logits"]
@@ -434,6 +517,7 @@ def main() -> None:
                           dynamic_axes=None, opset_version=args.opset,
                           do_constant_folding=True, dynamo=True)
 
+    # ⑤ 書き出した ONNX のノード数・演算の種類を数え、検算の結果と一緒に meta.json に残す
     import onnx
     m = onnx.load(str(path), load_external_data=False)
     import collections

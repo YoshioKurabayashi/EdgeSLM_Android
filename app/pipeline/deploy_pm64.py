@@ -24,6 +24,18 @@ context 生成に1時間以上かかるので、**出来た直後の手順でミ
 
 `--tag` は `work/ops/<tag>/` 以下の名前をまとめて切り替えるだけで、手順は同じである。
 **per-tensor 版のファイルは1つも触らない**ので、端末には両方が並んで残る。
+
+## 入力と出力（2026-10-18 追記）
+
+  入力 : work/ops/<tag>/<ctx-sub>/ctx_<short>/<short>_ctx.SM8350.bin（context 生成器の出力）、
+         work/ops/<tag>/<ctx-sub>/<short>.dlc（あれば検査）、work/ops/<tag>/<tag>_final_qdq.onnx（入出力の写し元）
+  出力 : work/ops/<tag>/<ctx-sub>/<tag>_epctx.onnx と、その隣の <short>_ctx.SM8350.bin（配る側）。
+         端末の /sdcard/Android/data/org.edgeslm.runner/files/models/ops/ へ push し、probe の結果を表示する。
+  ★注意（2026-10-18 追記）: 上の手順の 5（精度）と 6（生成）は、この道具では実行しない。
+    main() は 4（probe）まで行い、最後に 5 のコマンド（device_accuracy）を表示するだけである。
+  解説 : StudyMemo 6.1 節の例 6（成果物の同一性）・9.7 節（配備のゲート）、要件定義書 3.4 節の
+         エラーコード表「まず成果物の同一性を確かめる」、C-12（embed_mode=0）。
+  前提 : adb が PATH にあり、端末に org.edgeslm.runner（RunnerActivity）が入っていること。
 """
 
 from __future__ import annotations
@@ -38,6 +50,7 @@ import sys
 import time
 from pathlib import Path
 
+# ROOT はプロジェクトの根（このファイルは <ROOT>/app/pipeline/ にある）。DEV_RUNNER は端末側のアプリのファイル置き場
 ROOT = Path(__file__).resolve().parents[2]
 DEV_RUNNER = "/sdcard/Android/data/org.edgeslm.runner/files"
 
@@ -69,6 +82,9 @@ class Paths:
     """`--tag` から実際のファイル名を組み立てる。
 
     生成器は `qwen_pm64` → `qwenpm64` のようにアンダースコアを落とした名前を使う。
+
+    持つもの: ctx_dir（context のフォルダ）、gen_bin（生成器が書いた .bin）、side_bin（ctx_dir 直下の
+    配る側の .bin）、epctx（包んだ ONNX）、qdq（入出力の写し元）、model_rel（端末での相対パス）。
     """
 
     def __init__(self, tag: str, ctx_sub: str = "ctx", short: str | None = None) -> None:
@@ -83,15 +99,19 @@ class Paths:
         self.qdq = base / f"{tag}_final_qdq.onnx"
         self.model_rel = f"models/ops/{tag}_epctx.onnx"
 
+# Git Bash（MSYS）から動かすと、"/sdcard/…" のような引数が Windows のパスに書き換えられて
+# push 先がずれる（「成功」と出て端末に無い。要件定義書 改訂 2.6 の ⑤）。端末側のパスの頭を変換の対象外にする
 ENV = dict(os.environ)
 ENV["MSYS2_ARG_CONV_EXCL"] = "/data/local/tmp;/sys;/vendor;/dev;/system;/proc;/sdcard;/storage"
 
 
 def adb(*a: str) -> subprocess.CompletedProcess:
+    """adb を引数そのままで呼び、標準出力・標準エラーを文字列で受け取る（失敗しても例外にしない）。"""
     return subprocess.run(["adb", *a], capture_output=True, text=True, env=ENV)
 
 
 def md5(p: Path) -> str:
+    """ファイルの md5（16 進）。数百 MB の binary を 4MB ずつ読んで計算する。"""
     h = hashlib.md5()
     with p.open("rb") as f:
         for chunk in iter(lambda: f.read(1 << 22), b""):
@@ -100,6 +120,7 @@ def md5(p: Path) -> str:
 
 
 def step(title: str) -> None:
+    """手順の見出しを表示する。"""
     print(f"\n=== {title} ===")
 
 
@@ -107,6 +128,9 @@ def wait_stable(p: Path, checks: int = 2, gap: float = 10.0) -> None:
     """サイズと mtime が動かなくなるまで待つ。
 
     ★これを省くと「書き換え途中のファイル」を掴む（2026-09-13 に踏んだ）。
+
+    gap 秒おきに (サイズ, mtime) を見て、続けて 2 回同じなら「書き終わった」とみなす。
+    最大 checks × 6 回（既定 12 回 ≒ 2 分）見ても動き続けていれば止める。
     """
     last = None
     for i in range(checks * 6):
@@ -125,6 +149,10 @@ def wait_stable(p: Path, checks: int = 2, gap: float = 10.0) -> None:
 
 
 def main() -> None:
+    """配備の本体。手順 1〜4 をこの順で行い、どこかで不一致・失敗があれば SystemExit で止まる。
+    --skip-push なら 1〜3 を飛ばして 4（probe）だけ行う。"""
+    # ① 引数を読み、--tag からファイル名一式を組み立てる。作業フォルダをプロジェクトの根にし、
+    #   app/ を探索パスに足して pipeline.wrap_epctx などを読めるようにする
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--skip-push", action="store_true")
     ap.add_argument("--max-new", type=int, default=8)
@@ -149,6 +177,7 @@ def main() -> None:
     MODEL_REL = P.model_rel
     print(f"対象: {args.tag}  ->  {MODEL_REL}")
 
+    # ② 手順 1: 生成器の出力が書き終わるのを待ち、配る側（ctx/ 直下）へ写す
     if not args.skip_push:
         step("1. 生成器の出力が安定しているか")
         wait_stable(GEN_BIN)
@@ -159,6 +188,8 @@ def main() -> None:
             shutil.copyfile(GEN_BIN, SIDE_BIN)
             print(f"  コピー: {GEN_BIN.name} -> {SIDE_BIN}")
 
+        # ③ 手順 1.5〜2: push の前に DLC を検査し（C-13）、embed_mode=0 で包む（C-12）。
+        #   包むと binary は EPContext の ONNX と同じフォルダ（配る側）に置かれる
         step("1.5 DLC を検査する（C-13）")
         audit_dlc(P)
 
@@ -172,6 +203,8 @@ def main() -> None:
             print(f"    out {o['name']:10s} {o['shape']} {o['dtype']}")
 
         step("3. push して md5 を3点照合")
+        # ④ 手順 3: md5 を 3 点（生成器の出力・配る側・端末）で照合する。
+        #   2026-09-13 は生成が 2 回走り、書き直し中の binary を配って err 1002 になった。md5 なら 5 秒で分かる
         h_gen, h_side = md5(GEN_BIN), md5(SIDE_BIN)
         print(f"  生成器の出力 {h_gen}")
         print(f"  配る側       {h_side}")
@@ -187,6 +220,9 @@ def main() -> None:
         if not out or out[0] != h_gen:
             raise SystemExit("端末のバイナリが一致しない")
 
+    # ⑤ 手順 4: 端末のアプリに probe の job（JSON）を渡し、strict（CPU に回すのを禁じた状態）で
+    #   セッションを開けるかを見る。開けたら「全ノードが NPU（HTP）」。結果は out/last_result.json を
+    #   2 秒おきに最大 60 回（約 2 分）待って読む
     step("4. probe（全ノード HTP か）")
     job = {"job_id": f"{args.tag}_probe", "task": "probe", "model": MODEL_REL,
            "ep": {"provider": "QNN", "backend": "libQnnHtp.so",

@@ -12,6 +12,24 @@ channel-last レイアウトや 8/16bit I/O を吸収するためのラッパー
 
 ただし **float32 決め打ちにはできない**。埋め込み表引きの索引のような整数入力は
 量子化されず int64 のまま残るため、型は QDQ モデルから引き継ぐ（`_io_from` の注記）。
+
+（2026-10-18 追記: 学習用の説明）
+■ 何をするか
+  端末の ORT（QNN EP）は context binary（HTP 向けにホストで先にコンパイルしたもの）を直接は
+  読めないので、「EPContext」というノード 1 個だけの ONNX を作り、その属性に binary そのもの
+  （embed_mode=1）か binary のファイル名（embed_mode=0）を入れる。ORT はこの ONNX を開くと、
+  中のノードを QNN EP にそのまま渡す（StudyMemo 1.4 節 ⑧）。
+■ どの段で使うか
+  S8（パイプラインの最後）。context 生成（S6、scripts/build_context.sh）の後。
+  - 本番の配備: deploy_pm64.py が run(..., embed=False) で呼ぶ（embed_mode=0、C-12）。
+    deploy_pm64.py の無いプロジェクト（Gemma4・VLM など）では、組み立て用のスクリプト
+    （build_full.py・build_vit_ctx.py など）が呼ぶ
+  - 単体 op の検証: p2b_ops.finalize() が run() を既定の embed=True で呼ぶ
+■ 入力と出力
+  入力: context binary（.bin）と、入出力の名前・形・型を写すための QDQ の ONNX。
+  出力: EPContext の ONNX（embed_mode=0 なら同じフォルダに .bin も置く）と、その情報の辞書。
+■ 動かし方（単体。embed_mode=1 になる。main() の注意を参照）
+  python -m app.pipeline.wrap_epctx --ctx <ctx.bin> --qdq <qdq.onnx> --out <epctx.onnx> --tag <名前>
 """
 
 from __future__ import annotations
@@ -23,11 +41,19 @@ import onnx
 from onnx import TensorProto, helper
 
 # ZipDepth の出荷済み動作版と同じ属性構成（要件定義書 3.3.2節 / 基本設計② S8）
+# partition_name と source は、ORT が「この EPContext は QNN EP のもの」と判断するのに使う値
 PARTITION_NAME = "QNNExecutionProvider_QNN_0"
 SOURCE = "QNNExecutionProvider"
 
 
 def _io_from(model: onnx.ModelProto):
+    """QDQ モデルのグラフ入力（初期化子を除く）と出力から、(名前, 形, 型) のリストを 2 つ作る。
+
+    戻り値: ([(入力名, [次元…], onnx の型番号), …], [(出力名, …), …])。
+    EPContext の ONNX の入出力は、量子化前と同じ名前・形・型でなければ端末の呼び出し側
+    （job の入力ファイル）と合わない。--preserve_io_datatype で I/O は float32 のまま残るが、
+    整数の入力（埋め込みの索引など）は int64 のまま残るので、型も写す。
+    """
     g = model.graph
     inits = {i.name for i in g.initializer}
     ins = [v for v in g.input if v.name not in inits]
@@ -36,6 +62,7 @@ def _io_from(model: onnx.ModelProto):
         raise RuntimeError("QDQ モデルに入力または出力が無い")
 
     def spec(vi):
+        """1 本の入出力の (名前, 形, 型) を返す。次元が決まっていなければ 1 にする。"""
         shape = []
         for d in vi.type.tensor_type.shape.dim:
             # バッチは 1 に固定する（ZipDepth の既知正解と同じ）。
@@ -61,11 +88,20 @@ def run(ctx_bin: Path, qdq_src: Path, out_onnx: Path, tag: str,
       24層（binary 736MB / ONNX 772MB）では RSS が **1.47GB** まで伸び、
       Android に SIGKILL された。embed=False なら二重持ちを避けられる。
       `ep_cache_context` にはファイル名を入れ、**ONNX と同じディレクトリ**に置く。
+
+    引数: ctx_bin（context binary）、qdq_src（入出力を写す QDQ）、out_onnx（書き出し先）、
+          tag（ノード名・グラフ名に付ける名前）、sdk_version（記録用の QAIRT の版）、embed。
+    戻り値: 出力パス・バイト数・context のバイト数・embed_mode・入出力の名前と形と型などの辞書。
+    （C-12。要件定義書の表では、embed_mode=0 で ONNX が 772MB → 442 バイトになった）
     """
+    # ① context binary を読み、QDQ モデルから入出力の名前・形・型を写す（QDQ の重みも読み込まれる）
     ctx = ctx_bin.read_bytes()
     src = onnx.load(str(qdq_src))
     ins, outs = _io_from(src)
 
+    # ② EPContext ノードを 1 個作る（ドメインは com.microsoft）。
+    #   embed_mode=1 なら ep_cache_context に binary のバイト列そのもの、0 ならファイル名を入れる。
+    #   main_context=1 は「この binary を持つ主のノード」の印（ZipDepth の既知正解と同じ構成）
     node = helper.make_node(
         "EPContext",
         name=f"{tag}_QNN_ctx",
@@ -80,6 +116,7 @@ def run(ctx_bin: Path, qdq_src: Path, out_onnx: Path, tag: str,
         partition_name=PARTITION_NAME,
         source=SOURCE,
     )
+    # ③ そのノードだけのグラフとモデルを作る。opset は標準 17 と com.microsoft 1、IR は 9（既知正解と同じ）
     graph = helper.make_graph(
         [node],
         f"edgeslm_epctx_{tag}",
@@ -97,6 +134,7 @@ def run(ctx_bin: Path, qdq_src: Path, out_onnx: Path, tag: str,
         side = out_onnx.parent / ctx_bin.name
         if side.resolve() != ctx_bin.resolve():
             side.write_bytes(ctx)
+    # ④ 保存して、ONNX の検査器で形式が正しいかを確かめる（端末に持っていく前に壊れた ONNX を止める）
     onnx.save(model, str(out_onnx))
     onnx.checker.check_model(str(out_onnx))
 
@@ -117,6 +155,7 @@ def run(ctx_bin: Path, qdq_src: Path, out_onnx: Path, tag: str,
 
 
 def main() -> None:
+    """コマンドの入口。--ctx / --qdq / --out / --tag / --sdk-version を受けて run() を呼び、入出力を表示する。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--ctx", type=Path, required=True, help="qnn-context-binary-generator の .bin")
     ap.add_argument("--qdq", type=Path, required=True, help="I/O 名と形状の参照元（QDQ ONNX）")
@@ -125,6 +164,9 @@ def main() -> None:
     ap.add_argument("--sdk-version", default="2.48.0")
     args = ap.parse_args()
 
+    # ★注意（2026-10-18 追記）: このコマンドには embed の切り替えが無く、run() の既定の embed=True
+    # （embed_mode=1。ONNX が context binary を丸ごと抱える）で包む。大きいモデルは端末で二重持ちに
+    # なって SIGKILL される（C-12）。本番の embed_mode=0 は deploy_pm64 が run(..., embed=False) で呼んで作る。
     r = run(args.ctx, args.qdq, args.out, args.tag, args.sdk_version)
     print(f"WROTE {r['epctx_path']}  {r['bytes']/1e6:.2f} MB "
           f"(context {r['context_bytes']/1e6:.2f} MB)")

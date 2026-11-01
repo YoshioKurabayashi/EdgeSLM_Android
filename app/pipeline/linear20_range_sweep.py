@@ -19,6 +19,20 @@ margin(観測min/maxへの掛け率)を2/4/8倍することで、narrowの「観
 判定順序(ユーザー指定): ①自由生成 ②回答開始token(点B等) ③KV/履歴 ④System Prompt
 ⑤top1/margin/KL(診断用、合否には使わない)
 
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節・11.8 節「合否は自由生成で決める」。11 章の枠は build_one）
+- 結果（results/P12r_20260916_linear20_range_sweep.md）: 1x〜8x の 7 点で、teacher forcing と自由生成の両方で安定したのは 4x だけ。
+  2x・3x・3.5x・3.75x は別々の形で自由生成が崩れ、8x はバナナ/BANANA が急落。4x の実機の効果は小さかった（P12s）ので、
+  範囲の調整はここで打ち切り
+- ★2026-10-18 注: 上の表は計画の段階のもの。いまのコードの SWEEP_MARGINS は最後に足した 3.75x（margin 5.625）の 1 点だけで、
+  2x・3x・3.5x・4x・8x は流すたびに書き換えて回した（推定。build_audit_<tag>.json は 6 つ残っている）。
+  report.json は流すたびに上書きされるので、いま残っているのは最後の回の分だけと思われる。全点の数字は md の表にある
+- 入力: baseline の QDQ（SOURCE。重みを中に持つ形）、P12e の calibration_ranges.json・qparam_map.json（REP）、
+  P12q の report.json（1x の結果を再掲するため）、FP32（OPS_DIR の prepped.onnx）
+- 出力: work/p12r_linear20_sweep/l20_<tag>_qdq.onnx、results/P12r_20260916_linear20_range_sweep/ の build_audit_<tag>.json・report.json
+- 評価は位置0 をいつも baseline で流す（Pipeline の first = baseline、later = 変種）
+- プロジェクトの直下からなら python -m app.pipeline.linear20_range_sweep --phase build のようにも動く
 ## 使い方
 
   python linear20_range_sweep.py --phase build
@@ -41,20 +55,28 @@ import numpy as np  # noqa: E402
 import onnx  # noqa: E402
 from onnx import numpy_helper  # noqa: E402
 
+# 結果・作ったモデル・FP32 の置き場
 OUT = ROOT / "results/P12r_20260916_linear20_range_sweep"
 WORK = ROOT / "work/p12r_linear20_sweep"
 OPS_DIR = ROOT / "work/ops/qwen3_dec28c256"
 
 LINEAR20 = "linear_20"
+# 作る変種: 名前 → margin（観測した min/max に掛ける倍率。1.5 が「1x」）
 SWEEP_MARGINS = {"3.75x": 5.625}   # 3.5x(margin5.25)も×判定。range sweep最後の1点(1x=1.5, 4x=6.0)
 MODELS = {tag: WORK / f"l20_{tag}_qdq.onnx" for tag in SWEEP_MARGINS}
 
 
 def emit(obj):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(obj, ensure_ascii=False), flush=True)
 
 
 def build_one(tag, margin):
+    """linear_20 の scale・zero point だけを「後続の観測範囲 × margin」から作り直したモデルを作る。
+
+    ① P12e の較正の後続の範囲と、その Q/DQ の名前・型を引き、fit で scale・zero point を作る
+    ② baseline の QDQ のその 2 つの初期化子だけを置き換え、ほかの初期化子とノードが変わっていないことを hash で確かめて保存する
+    """
     calib = json.loads((REP / "calibration_ranges.json").read_text(encoding="utf-8"))
     lo, hi = calib["ranges"]["later"][LINEAR20]
     qmap = json.loads((REP / "qparam_map.json").read_text(encoding="utf-8"))
@@ -95,6 +117,7 @@ def build_one(tag, margin):
 
 
 def build():
+    """SWEEP_MARGINS のすべてを作る。"""
     WORK.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     for tag, margin in SWEEP_MARGINS.items():
@@ -102,6 +125,7 @@ def build():
 
 
 def summarize(sc):
+    """score の結果を 1 行の要約にする。"""
     a = sc["ALL"]
     return (f"1位保持 {a['top1_keep']*100:5.1f}%  margin保持 {a['retention_mean']*100:6.1f}%  "
             f"最小margin {a['margin_min']:+6.2f}  KL {a['kl_mean']:.3f} | "
@@ -110,6 +134,7 @@ def summarize(sc):
 
 
 def evaluate():
+    """① 1x（= P12q の L2-L）の結果を再掲 → ② FP32 の基準 → ③ 各変種を teacher forcing と自由生成で評価して report.json に書く。"""
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)
@@ -149,6 +174,7 @@ def evaluate():
     emit({"phase": "evaluate", "wrote": str(OUT / "report.json")})
 
 
+# コマンドの入口。--phase build か evaluate のどちらか 1 段を流す
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["build", "evaluate"], required=True)

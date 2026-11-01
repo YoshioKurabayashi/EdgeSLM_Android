@@ -13,6 +13,17 @@ P12n: 56本(28層×SiLU(gate)×up出力/down_proj出力)を後続範囲にして
 変数を増やしすぎないため、KV range再較正(P12l)は混ぜない。pos0/pos1+の切り替えだけを見る。
 仮にこれで崩壊が消えれば、位置0のmassive activationにwide rangeが必要という仮説が強く支持される。
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】引数は無い（argparse を使わない）。
+# どの段か: StudyMemo 11.5 節の表「位置0 だけ元の範囲に戻す → 崩壊は消える（80.4%）。だが『音楽をかけて』だけ壊れる」。
+# 結果（results/P12o_20260916_pos0_wide_pos1_narrow.md）: 1位保持 80.4%・KL 0.304 で全面崩壊は消えた。
+#   ただし点B（音楽をかけて）の margin が +3.35 → −0.43 になり、自由生成でも turn1 が英語の自問自答を始めて壊れた。
+#   → mul と linear のどちらが主犯かを分ける mlp2_mul_linear_split.py（P12p）へ続く。
+# 入力:  baseline（SOURCE）、P12n で作った mlp2later_qdq.onnx（mlp2_all_layers_later.MODEL）、
+#        P12n の report.json（baseline と mlp2later の数値は再計算せずに再掲する）。
+# 出力:  results/P12o_20260916_pos0_wide_pos1_narrow/report.json
+# 動かし方: & $py -B app/pipeline/mlp2_pos0_split_eval.py
+# ---------------------------------------------------------------------------
 from pathlib import Path
 import json
 import sys
@@ -30,10 +41,12 @@ OPS_DIR = ROOT / "work/ops/qwen3_dec28c256"
 
 
 def emit(obj):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(obj, ensure_ascii=False), flush=True)
 
 
 def fmt(name, sc, gen):
+    """score の結果と自由生成の文を、画面に出す数行の文字列にまとめる（点B = 音楽、点A = 最初の分岐、BANANA/バナナ = System Prompt）。"""
     a = sc["ALL"]
     lines = [f"{name:12s} 1位保持 {a['top1_keep']*100:5.1f}%  margin保持 {a['retention_mean']*100:6.1f}%  "
              f"最小margin {a['margin_min']:+6.2f}  KL {a['kl_mean']:.3f} | "
@@ -45,6 +58,7 @@ def fmt(name, sc, gen):
 
 
 def main():
+    """P12n の数値を再掲し、新しく「位置0 = baseline、位置1以降 = mlp2later」の 2 モデル構成だけを採点・自由生成する。"""
     OUT.mkdir(parents=True, exist_ok=True)
     tok = tokenizer()
     pts = eval_points(tok)
@@ -59,6 +73,8 @@ def main():
     del fp32
     emit({"phase": "evaluate", "step": "fp32_reference_done"})
 
+    # Pipeline(fp32, first, later, mode): first（位置0）は既存範囲の baseline、later（位置1以降）は 56 本を後続範囲にしたモデル。
+    # FP32 の事前計算（fp32=None）や KV 範囲の較正し直しは混ぜない（変える変数を 1 つにする）。
     base = session(SOURCE)
     later = session(MODEL)
     pipe = Pipeline(None, base, later, "none")

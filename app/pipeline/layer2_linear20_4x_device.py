@@ -14,6 +14,17 @@ P12r: Hostで linear_20 のrangeを段階的に広げると、1x(narrow, margin1
 P12mと同じ層2部分モデル(add_17→add_26、3出力のl2ctl版)を使い、mul_41は変更しない
 (baseline のまま)。linear_20 だけ4xの scale/zero に差し替える。
 
+## 学習用の補足（2026-10-18 追記）
+
+- 段: Qwen3-0.6B の P12 系（StudyMemo 11.5 節・11.7 節）。P12r（linear20_range_sweep.py）の直後。中身は layer2_kv_narrow.py（P12m）の写しで、
+  変えるのが linear_20 の 1 本（4x の値）だけになったもの
+- 結果（results/P12s_20260916_layer2_linear20_4x_device.md）: 実機の add_26 の Host↔HTP 実数誤差は 21.95% → 18.67% にしか下がらず、
+  事前に決めた「18〜20% = 広げすぎ」の区分に入った（narrow の 8.61% と比べて改善はごく小さい）。
+  ホストで自由生成が直る範囲と、実機の差が縮む範囲が両立しない → P12t のまとめ（results/P12t_…_layer2_htp_tradeoff.md）
+- 入力: work/q3_l2/ の l2ctl_qdq.onnx・l2_inputs.npz・l2ctl_epctx.onnx、実機（adb と android_runner）
+- 出力: work/q3_l2/ の l2ctl_4x_qdq.onnx・l2ctl_4x_epctx.onnx・dev_<tag>/、
+  results/P12s_20260916_layer2_linear20_4x_device/ の build_audit.json・epctx_meta.json・compare.json
+- 下のコマンドは app/pipeline の中で動かす形（wrap の段は同じフォルダの wrap_epctx を import する）
 ## 使い方
 
   python layer2_linear20_4x_device.py --phase build     # Host側: 4x版QDQを作る
@@ -37,6 +48,7 @@ import onnx
 import onnxruntime as ort
 from onnx import numpy_helper
 
+# パスは Windows の絶対パスで固定。DEV は端末のアプリの置き場、ADB は adb.exe の場所
 ROOT = Path("D:/AI/source/n_chap5/EdgeSLM_Android")
 WORK = ROOT / "work/q3_l2"
 BASELINE = WORK / "l2ctl_qdq.onnx"
@@ -53,16 +65,19 @@ LINEAR20_4X = {"scale_name": "linear_20_scale", "zero_name": "linear_20_zero_poi
 
 
 def emit(obj):
+    """途中経過を 1 行の JSON で出す。"""
     print(json.dumps(obj, ensure_ascii=False), flush=True)
 
 
 def sess(p):
+    """ONNX を CPU EP で開く。"""
     so = ort.SessionOptions()
     so.log_severity_level = 3
     return ort.InferenceSession(str(p), so, providers=["CPUExecutionProvider"])
 
 
 def build():
+    """linear_20 の scale・zero point だけを 4x の値に置き換えた QDQ（FOURX）を作り、ホストで add_26 のコードの差を確かめる。"""
     OUT.mkdir(parents=True, exist_ok=True)
     q = LINEAR20_4X
     m = onnx.load(str(BASELINE), load_external_data=False)
@@ -95,12 +110,17 @@ def build():
 
 
 def adb(*a):
+    """adb を呼ぶ（Git Bash から動かしても /sdcard を Windows のパスに書き換えさせない）。"""
     env = dict(os.environ)
     env["MSYS2_ARG_CONV_EXCL"] = "/sdcard"
     return subprocess.run([ADB, *a], capture_output=True, text=True, env=env, errors="replace")
 
 
 def run_device(tag, epctx_path, feeds):
+    """入力と EPContext の ONNX を端末へ送って infer で 1 回実行し、出力を持ち帰る（layer2_kv_narrow.run_device と同じ）。
+
+    戻り値: ({出力名: 配列}, strict_no_cpu_fallback, ort_run_ms)。待つのは最大 180 秒
+    """
     d = WORK / "in"
     d.mkdir(exist_ok=True)
     files = {}
@@ -143,6 +163,7 @@ def run_device(tag, epctx_path, feeds):
 
 
 def wrap():
+    """context binary を EPContext の ONNX で包む（wrap_epctx.run。embed の既定 = 埋め込み）。"""
     OUT.mkdir(parents=True, exist_ok=True)
     assert FOURX.exists(), "先に --phase build"
     bins = list(CTXDIR.glob("*.bin"))
@@ -156,6 +177,7 @@ def wrap():
 
 
 def compare():
+    """baseline と 4x を、同じ入力でホストと実機で走らせ、add_26 の Host↔HTP 実数誤差を比べる（P12m の値も参考に並べる）。"""
     feeds = dict(np.load(WORK / "l2_inputs.npz"))
     k = "add_26_QuantizeLinear_Output"
 
@@ -177,6 +199,7 @@ def compare():
     dev_base, strict_b, ms_b = run_device("l2ctl", ROOT / "work/q3_l2/l2ctl_epctx.onnx", feeds)
     dev_4x, strict_4, ms_4 = run_device("l2ctl_4x", FOURX_EPCTX, feeds)
 
+    # 整数コードを同じ scale・zero point で実数に戻し、ホスト比の相対L2 と、コードの差の最大（段の数）を返す
     def real_rel(host_code, dev_code, s, z):
         h = (host_code.astype(np.float64) - z) * s
         d = (dev_code.astype(np.float64) - z) * s
@@ -204,6 +227,7 @@ def compare():
     print(f"\n-> {OUT / 'compare.json'}")
 
 
+# コマンドの入口。--phase で build / wrap / compare のどれか 1 段を流す
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--phase", choices=["build", "wrap", "compare"], required=True)

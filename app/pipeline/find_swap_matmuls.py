@@ -31,6 +31,14 @@ fp32 では重みが `Transpose` 経由で入るため（2026-09-12 / 09-13 に2
 
     python -m app.pipeline.find_swap_matmuls work/qwen_pm64/qwen05b_prefillmask_L24_S64_last.onnx
     python -m app.pipeline.find_swap_matmuls <model> --json out.json
+
+## 入力と出力（2026-10-18 追記）
+
+  入力 : 前処理の前の fp32 の ONNX（export したもの）。重みは読まない（load_external_data=False）。
+  出力 : 表示と（--json で）{"qk": [...], "pv": [...], "other": [...], "weight": [...]}（MatMul のノード名）。
+         "qk" の名前を spec の `swap_matmuls` に書くと、p2b_ops prepare（方式名に swap を含むとき）が
+         preprocess.run(..., swap_matmuls=…) に渡し、swap_actact_matmul_operands() が入れ替える。
+  検証 : seq16 の手作業のリストと完全に一致することを確かめてある（要件定義書 改訂 3.5 の ⑦）。
 """
 
 from __future__ import annotations
@@ -47,6 +55,14 @@ PASS_THROUGH = ("Transpose", "Reshape", "Identity", "Cast", "Unsqueeze", "Squeez
 
 
 def classify(model_path: str | Path) -> dict[str, list[str]]:
+    """モデルの MatMul を「重み固定 / QK^T / P×V / 不明」の 4 つに分ける。
+
+    引数: model_path（ONNX のパス）。戻り値: {"qk": [...], "pv": [...], "other": [...], "weight": [...]}
+    （どれも MatMul のノード名のリスト。グラフの並び順）。
+    判定の順は ① 重み固定 → ② 出力が Softmax に届く（QK^T）→ ③ 入力が Softmax から来る（P×V）→ ④ 不明。
+    QK^T を先に判定するので、両方に当たる MatMul があれば QK^T に入る。
+    """
+    # 準備: テンソル名 → それを出すノード（prod）、テンソル名 → それを使うノード（cons）、初期化子の名前
     m = onnx.load(str(model_path), load_external_data=False)
     g = m.graph
     prod = {o: n for n in g.node for o in n.output}
@@ -57,6 +73,8 @@ def classify(model_path: str | Path) -> dict[str, list[str]]:
     inits = {i.name for i in g.initializer}
 
     def is_weight(name: str, depth: int = 0) -> bool:
+        """name が初期化子か、形だけ変える op（PASS_THROUGH）を 6 段まで遡って初期化子に着くなら True。
+        fp32 の export では重みが Transpose 経由で MatMul に入るため、遡らないと見落とす。"""
         if name in inits:
             return True
         if depth > 6:
@@ -69,6 +87,7 @@ def classify(model_path: str | Path) -> dict[str, list[str]]:
         return False
 
     def reaches_softmax(name: str, depth: int = 0) -> bool:
+        """name を下流へたどり、Mul（スケール）・Add（マスク）だけを経て 5 段以内に Softmax に届けば True（QK^T の印）。"""
         if depth > 5:
             return False
         for c in cons.get(name, []):
@@ -80,6 +99,7 @@ def classify(model_path: str | Path) -> dict[str, list[str]]:
         return False
 
     def from_softmax(name: str, depth: int = 0) -> bool:
+        """name を上流へたどり、形だけ変える op を 4 段まで遡って Softmax の出力なら True（P×V の印）。"""
         if depth > 4:
             return False
         n = prod.get(name)
@@ -91,6 +111,7 @@ def classify(model_path: str | Path) -> dict[str, list[str]]:
             return from_softmax(n.input[0], depth + 1)
         return False
 
+    # 判定の本体: MatMul を 1 つずつ見て、上の 3 つの関数で振り分ける
     qk, pv, other, weight = [], [], [], []
     for n in g.node:
         if n.op_type != "MatMul":
@@ -107,6 +128,7 @@ def classify(model_path: str | Path) -> dict[str, list[str]]:
 
 
 def main() -> None:
+    """コマンドの入口。classify() の結果の本数と先頭の名前を表示し、--json があれば書き出す。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("model", type=Path)
     ap.add_argument("--json", type=Path, help="判定結果を書き出す")

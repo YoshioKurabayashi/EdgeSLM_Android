@@ -32,6 +32,15 @@ C-13 のあとも 24層では ホスト↔実機 が 16〜18% 残る。2層で�
   2. 指定した層だけを切り出す（`past_k_N`/`past_v_N`/`cos`/`sin`/`attn_mask` も入力になる）
   3. その層の**実際の入力分布**で較正データを作り、spec を書く
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: StudyMemo 3 章（層ごとの入力の大きさ。今のソースで同じ種類の数字を出すのはこの道具）・9 章。
+# 記録: results/P9_20260914_perchannel_device.md 35〜36 節。層ごとの入力の最大は層 8 で 1646.73、層 23 で 71.76 に下がる。
+#   同一入力での層単体の比較は、切り出した 1 層だけだと C-8 の壁（"Value 68, expected >= 73"）で context が作れず未完。
+# 入力:  work/qwen_dec24/qwen05b_decode_L24_C64.onnx（Qwen2.5 の 24 層 decode）、--eval-npz・--calib-npz。
+# 出力:  work/ops/declayer<N>/（fp32 モデルと spec）、work/qwen_dec24/{calib,eval}_layer<N>.npz。
+#   途中で work/qwen_dec24/_expose.onnx（層の境目を出力に足したもの）も書く。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -45,6 +54,7 @@ import onnx
 import onnxruntime as ort
 from onnx import helper, TensorProto
 
+# ROOT はプロジェクトの根。SRC は切る元の 24 層 decode（キャッシュ長 64）。
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "work/qwen_dec24/qwen05b_decode_L24_C64.onnx"
 OPS = ROOT / "work/ops"
@@ -64,11 +74,13 @@ def layer_boundaries(model: onnx.ModelProto) -> list[str]:
         ops = {c.op_type for c in cons[n.output[0]]}
         if "Pow" in ops:                   # 次の RMSNorm へ入る = 残差ストリーム
             stream.append(n.output[0])
+    # （RMSNorm の始まりは Pow（x²）なので、Pow へ入る Add ＝ 次の RMSNorm へ入る残差、と見分けている）
     # attn 残差 と mlp 残差 が交互に並ぶので、奇数番目（mlp 側）が層の出口
     return stream[1::2]
 
 
 def main() -> None:
+    """層の入口・出口を見つけ、実データで各層の本当の入力を取り出し、層ごとに切り出して spec を書く。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--layers", type=int, nargs="+", default=[0, 4, 8, 12, 16, 20, 23])
     ap.add_argument("--eval-npz", default="work/qwen_dec24/eval_dec24_big.npz")
@@ -87,6 +99,7 @@ def main() -> None:
     g = m.graph
     prod = {o: n for n in g.node for o in n.output}
     first = outs[0]
+    # （注: 下の n0 と cons は、その後で使われていない。層0 の入力は結局 Gather（埋め込み）の出力で決めている）
     n0 = prod[first]                       # 層0 の mlp 残差 Add
     # 層0 の入力は「層0 の attn 残差 Add の入力のうち、Add でない側」を辿る
     cons = collections.defaultdict(list)
@@ -100,6 +113,8 @@ def main() -> None:
 
     # ---- 実データで各層の入力を取り出す ----
     want = sorted({ins[L] for L in args.layers} | {outs[L] for L in args.layers})
+    # 欲しい境目のテンソルをグラフ出力に足した写しを作り、CPU で実データを流して値を集める（--limit 件まで）。
+    # 2GB を超えうるので外部データ形式で保存する。
     m2 = onnx.load(str(SRC))
     have = {o.name for o in m2.graph.output}
     for t in want:
@@ -123,6 +138,7 @@ def main() -> None:
                     acc[name].append(v)
         for L in args.layers:
             store = {ins[L]: np.concatenate(acc[ins[L]], 0)}
+            # その層の単体モデルに要る他の入力（RoPE・マスク・その層の KV キャッシュ）も同じ件数だけ写す。
             for k in ("cos", "sin", "attn_mask", f"past_k_{L}", f"past_v_{L}"):
                 if k in d:
                     store[k] = d[k][:n]

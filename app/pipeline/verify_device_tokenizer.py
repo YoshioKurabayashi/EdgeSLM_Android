@@ -24,6 +24,13 @@ Kotlin 側との対応:
   encodeInto()   → 特殊トークンを最左一致で切る再帰
   ★NFC 正規化は Kotlin 側に無い（HF は normalizer: NFC を持つ）
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】このファイルは関数を定義するだけでなく、import した時点で上から順に
+#   資材の読み込み → 31 ケースの照合 → 表示 を実行するスクリプト（main は無い）。
+# 入力:  資材ディレクトリ（第 1 引数。既定は EdgeSLM_AndroidDemo/host/out）の vocab.txt・merges.txt・specials.tsv、
+#        HF の Qwen/Qwen2.5-0.5B-Instruct のトークナイザ（基準）。regex モジュールが要る（標準の re では \p{L} が書けない）。
+# 出力:  画面の表（ケースごとに NFC なし／あり で HF と一致したか）。ファイルは書かない。
+# ---------------------------------------------------------------------------
 import sys, unicodedata
 from pathlib import Path
 import regex as re
@@ -42,6 +49,11 @@ PATTERN = re.compile(
 )
 
 def byte_to_char():
+    """GPT-2 のバイト → 文字の写像（256 個）を作る。
+
+    表示できるバイト（0x21〜0x7E・0xA1〜0xAC・0xAE〜0xFF）はそのままの文字、それ以外（空白・制御文字など）は
+    U+0100 以降の文字に順に割り当てる。BPE の語彙はこの文字で書かれている。
+    """
     direct = list(range(0x21, 0x7F)) + list(range(0xA1, 0xAD)) + list(range(0xAE, 0x100))
     out, n = {}, 0
     for b in range(256):
@@ -53,6 +65,8 @@ def byte_to_char():
 
 B2C = byte_to_char()
 
+# 資材を読む: vocab.txt は 1 行 1 語（行番号 = ID）、merges.txt は「左 右」の結合規則（行番号 = 優先順位）、
+# specials.tsv は「ID<TAB>特殊トークン文字列」。特殊トークンは長いものから試すよう並べ替える。
 vocab = ASSETS.joinpath("vocab.txt").read_text(encoding="utf-8").split("\n")
 if vocab and vocab[-1] == "": vocab.pop()
 tok2id = {t: i for i, t in enumerate(vocab)}
@@ -69,6 +83,11 @@ print(f"assets: vocab={len(vocab)} merges={len(ranks)} specials={len(specials)}"
 
 _cache = {}
 def bpe(token: str):
+    """BPE で 1 つの単語（バイト写像後の文字列）を語彙の記号の列に分ける。結果はキャッシュする。
+
+    手順: 隣り合う 2 記号の組のうち merges の順位が最小の組を選び、その組の出現箇所を左から全部まとめて結合する。
+    結合できる組が無くなるまでくり返す（Kotlin 側の bpe() と同じ）。
+    """
     if token in _cache: return _cache[token]
     word = list(token)
     while len(word) >= 2:
@@ -89,6 +108,10 @@ def bpe(token: str):
     return word
 
 def emit(piece, out):
+    """pre-tokenize で切った 1 片を UTF-8 のバイト → 写像の文字 → BPE → ID にして out に足す。
+
+    語彙に無い記号は 1 文字ずつの ID に分けて足す（Kotlin 側と同じ扱いにしている）。
+    """
     if not piece: return
     s = "".join(B2C[b] for b in piece.encode("utf-8"))
     for sym in bpe(s):
@@ -99,9 +122,14 @@ def emit(piece, out):
                 j = tok2id.get(c)
                 if j is not None: out.append(j)
 
+# NFC を入れるかどうかの切り替え（kt_encode() が毎回書き換える。グローバル変数）。
 NFC_IN_ORDINARY = True   # HF と同じ順序: 特殊トークン分割 → NFC → pre-tokenize
 
 def encode_ordinary(text, out):
+    """特殊トークンを含まない文字列を ID にする。必要なら NFC 正規化し、PATTERN で切った片ごとに emit する。
+
+    PATTERN に当たらない隙間があれば、その部分もそのまま 1 片として emit する。
+    """
     if not text: return
     if NFC_IN_ORDINARY: text = unicodedata.normalize("NFC", text)
     cursor = 0
@@ -112,6 +140,7 @@ def encode_ordinary(text, out):
     if cursor < len(text): emit(text[cursor:], out)
 
 def encode_into(text, out):
+    """文字列の中で一番左にある特殊トークンで切り、前を普通に、特殊トークンを 1 つの ID に、後ろを再帰で処理する。"""
     if not text: return
     best_pos, best_sp = -1, None
     for sp in specials:
@@ -126,6 +155,7 @@ def encode_into(text, out):
     encode_ordinary(text, out)
 
 def kt_encode(text, nfc=False):
+    """端末の Kotlin 実装を再現した encode。nfc=True で NFC 正規化を入れた場合を試す。戻り値: ID のリスト。"""
     global NFC_IN_ORDINARY
     NFC_IN_ORDINARY = nfc
     out = []
@@ -167,6 +197,8 @@ CASES = [
     ("結合記号", "a\u0301\u0302\u0303b"),
 ]
 
+# ---------------- 照合 ----------------
+# 基準は HF のトークナイザ（add_special_tokens=False で、特殊トークンを自分で足さない）。
 from transformers import AutoTokenizer
 hf = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
 

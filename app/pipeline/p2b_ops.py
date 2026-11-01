@@ -17,6 +17,29 @@
   prepare  : S2 前処理 → S3 キャリブレーション → S4 量子化 → C-1/C-5 検証
   finalize : S8 EPContext ラッパー → C-2/C-3/C-4 検証
 間の S5〜S7 は scripts/build_context.sh（QAIRT 環境）が担当する。
+
+（2026-10-18 追記: 学習用の説明）
+■ 位置づけ
+  当初は P2b（単体 op の検証）の道具だったが、いまは本番（実モデル）の S2〜S4 の本体でもある
+  （StudyMemo 13.1 節「p2b_ops.py prepare ── S2 前処理 → S4 量子化 → C-1 の検査」）。
+■ 入力（work/ops/<name>/<name>.spec.json）で読む項目
+  model（元の fp32 ONNX）、swap_matmuls（左右を入れ替える MatMul の名前。find_swap_matmuls.py で作る）、
+  per_channel_weights（重みを per-channel に）、calib_npz（実データの較正。make_*_data.py で作る）、
+  skip_c13（C-13 の自動修正を飛ばす）、inputs[].int_max（整数入力の上限）など。
+■ 方式（--scheme）の読み方
+  a16w8 / a8w8          : 活性化 16bit / 8bit、重み int8（quantize_qdq.ACTIVATION）
+  名前に swap           : QK^T の左右を入れ替える（C-8 対策。StudyMemo 5.3 節）
+  名前に rms            : RMSNorm を max で割る書き換え（C-11。StudyMemo 5.1 節）
+  名前に rhs8           : act×act の MatMul の右辺を uint8 に（C-8）
+  a16w8_mixed / in8 / out16 / lhs8 : P2b〜P3 で試した C-8 の回避の型（記録として残っている）
+■ 出力
+  prepare : <name>_folded.onnx・<name>_prepped.onnx（S2）、<name>_<scheme>_qdq.onnx（S4）、
+            status_prepare_<scheme>.json（段ごとの成否と検査の結果）
+  finalize: <name>_<scheme>_epctx.onnx（S8）、status_finalize_<scheme>.json
+■ 動かし方
+  python -m app.pipeline.p2b_ops prepare  --name <名前> --scheme a16w8_rms_swap
+  python -m app.pipeline.p2b_ops finalize --name <名前> --scheme <方式> --ctx-dir work/ops/<名前>/ctx
+  終了コードは verdict が ready_* なら 0、それ以外は 1。
 """
 
 from __future__ import annotations
@@ -33,26 +56,35 @@ from app.pipeline import calib, preprocess, quantize_qdq, verify_artifacts, wrap
 
 
 def _write(path: Path, obj: dict) -> None:
+    """obj を JSON（日本語はそのまま、字下げ 2）で path に書く。フォルダが無ければ作る。"""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def _spec(work: Path, name: str) -> dict:
+    """work/<name>/<name>.spec.json を読んで辞書で返す（モデルのパスや方式ごとの指定が入っている）。"""
     return json.loads((work / name / f"{name}.spec.json").read_text(encoding="utf-8"))
 
 
 def _int_max(spec: dict) -> dict[str, int]:
+    """spec の inputs から {整数入力の名前: 上限} を作る（calib.build_multi_reader に渡す）。"""
     return {i["name"]: i["int_max"] for i in spec["inputs"] if "int_max" in i}
 
 
 def act_act_matmul_sides(prepped: Path) -> tuple[list[str], list[str], list[str]]:
     """活性化×活性化 MatMul の (左入力, 右入力, 出力) を別々に返す。
 
-    QNN HTP の MatMul 対応は **uint16×uint16 だけが不可**で、
-    **uint16×uint8 / uint8×uint16 は可**とされている。つまり
-    「両方 8bit に落とす」以外に「**片側だけ 8bit**」という選択肢がある。
+    QNN HTP の MatMul 対応は **uint16×uint16 が不可**で、
+    **uint16×uint8（左 16bit・右 8bit）だけが可**である。つまり
+    「両方 8bit に落とす」以外に「**右辺だけ 8bit**」という選択肢がある。
+    ★2026-10-18 訂正: 旧「**uint16×uint8 / uint8×uint16 は可**とされている」。引用した対応表の
+    記述で、2026-09-13 に実機で確かめると **u8×u16 は不可**（非対称。要件定義書 C-8・StudyMemo 2.7 節）。
+    8bit にできるのは常に右辺なので、使うのは戻り値の右辺（downgrade_actact_rhs・a16w8_rhs8）。
     片側を 16bit に残せれば、出力も 16bit に保てる可能性がある——
     これが効けば attention スコアの分解能問題（C-8 の代償）が根本から消える。
+
+    引数: prepped（前処理後の ONNX）。戻り値: (左入力の名前, 右入力の名前, 出力の名前) の 3 つのリスト。
+    「act×act」は、入力のどちらも初期化子（重み）でない MatMul / Gemm のこと（attention の QK^T と P×V）。
     """
     model = onnx.load(str(prepped))
     inits = {i.name for i in model.graph.initializer}
@@ -106,7 +138,15 @@ def act_act_matmul_tensors(prepped: Path, inputs_only: bool = False) -> list[str
 
 
 def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
-    """S2 → S4。段ごとに成否を記録し、落ちても例外を外へ投げない。"""
+    """S2 → S4。段ごとに成否を記録し、落ちても例外を外へ投げない。
+
+    引数: work（work/ops）、name（モデルの名前）、scheme（方式。モジュールの説明を参照）、
+          n_random（実データが無いときの乱数較正の件数）。
+    戻り値: 記録の辞書 st。"stages" に段ごとの成否、"checks" に C-1・C-5、"verdict" に結論
+          （ready_for_convert / fail_S2_preprocess / fail_S4_quantize / fail_C1_float_segment）。
+    段ごとに try で囲み、落ちたらその段の名前で verdict を付けて返す（どの段で落ちたかを残すため）。
+    """
+    # ① spec を読み、記録の器と出力のファイル名を用意する
     d = work / name
     spec = _spec(work, name)
     st: dict = {"name": name, "scheme": scheme, "stages": {},
@@ -122,6 +162,8 @@ def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
     prepped = d / f"{name}_prepped.onnx"
     qdq = d / f"{name}_{scheme}_qdq.onnx"
 
+    # ② S2 前処理: BatchNorm の畳み込み・quant_pre_process・NPU 向けの書き換え（C-9・C-10・C-11・左右入替）。
+    #   書き換えの順は preprocess.run() が決める（StudyMemo 5.0 節）
     # --- S2 前処理 ---
     try:
         # scheme 名に "_swap" が付いていたら QK^T の左右を入れ替える（C-8 対策）。
@@ -144,6 +186,8 @@ def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
         st["verdict"] = "fail_S2_preprocess"
         return st
 
+    # ③ S3/S4 の準備: 方式の名前から「ORT に渡す上書き（overrides）」を組み立てる。
+    #   base_scheme は ORT に渡す素の方式（a16w8 / a8w8）、converts は型をそろえる変換ノードを挿させるか
     # --- S3/S4 キャリブレーション + 量子化 ---
     overrides = None
     base_scheme = scheme
@@ -186,6 +230,9 @@ def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
             st["mixed_precision"] = {"downgraded_to_u8": rhs, "count": len(rhs),
                                      "strategy": scheme, "add_qtype_converts": False,
                                      "kept_u16": lhs + outs}
+    # ★2026-10-18 注: TensorQuantOverrides で右辺を uint8 に指定しても、get_qnn_qdq_config が uint16 のまま
+    #   出すことがあった（2026-09-14、downgrade_actact_rhs.py の説明）。そのため本番は S4 の後に
+    #   downgrade_actact_rhs で QDQ を直接書き換える。a16w8_lhs8 は C-8 で通らない側（u8×u16）
     elif scheme in ("a16w8_rhs8", "a16w8_lhs8"):
         # ★片側だけ 8bit にする（ChatGPT の指摘で試験）。
         #   QNN HTP は uint16×uint8 を許すとされるので、
@@ -233,6 +280,8 @@ def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
         st["per_channel_weights"] = {"requested": len(axes), "axis": 1}
         print(f"  重みを per-channel にする指定: {len(axes)} 本（axis=1）")
 
+    # ④ float のグラフ入力で、Q 以外へ直接入るもの（KV キャッシュの past_k など）に uint16 を明示して
+    #   Q/DQ を挿させる。既に別の指定がある入力はそのまま（setdefault）
     gin = _float_graph_inputs(prepped)
     if gin:
         overrides = dict(overrides or {})
@@ -240,6 +289,8 @@ def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
             overrides.setdefault(t, [{"quant_type": _QT.QUInt16}])
         st["forced_input_quant"] = gin
 
+    # ⑤ 較正の読み手を作り、量子化する。実データ（calib_npz）があればそれを、無ければ乱数＋合成パターン。
+    #   その後、生成物を数える検査（per-channel）と C-13 の自動修正を行う
     try:
         if spec.get("calib_npz"):
             # ★実データ較正。乱数較正との違いは致命的になりうる:
@@ -309,6 +360,7 @@ def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
                 if before["count"]:
                     print(f"  C-13: RMSNorm gamma {before['count']} 本 — はみ出しなし")
 
+        # 量子化後のノード数と Q/DQ の数を記録する（前の版との比較用）
         m = onnx.load(str(qdq))
         ops = [n.op_type for n in m.graph.node]
         st["stages"]["S4_quantize"] = {
@@ -325,6 +377,8 @@ def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
         st["verdict"] = "fail_S4_quantize"
         return st
 
+    # ⑥ 出口の検査。C-1（float の区間）と C-5（BatchNorm）はモデルだけで判定できるのでここで見る。
+    #   C-2〜C-4 は context 生成の後でないと分からないので finalize() で見る
     # --- C-1 / C-5（モデル単体で判定できる分）---
     c1 = verify_artifacts.check_c1_no_float_segments(qdq)
     c5 = verify_artifacts.check_c5_no_batchnorm(qdq)
@@ -341,7 +395,14 @@ def prepare(work: Path, name: str, scheme: str, n_random: int) -> dict:
 
 
 def finalize(work: Path, name: str, scheme: str, ctx_dir: Path, sdk_version: str) -> dict:
-    """S8 + C-2/C-3/C-4。build_context.sh が成功した場合のみ呼ばれる想定。"""
+    """S8 + C-2/C-3/C-4。build_context.sh が成功した場合のみ呼ばれる想定。
+
+    引数: ctx_dir（build_context.sh の出力ディレクトリ）、sdk_version（EPContext に書く QAIRT の版）。
+    戻り値: 記録の辞書（"verdict" は ready_for_device / fail_S6_context / fail_S8_epctx / fail_constraint_check）。
+    ★注意（2026-10-18 追記）: wrap_epctx.run() を既定の embed=True（embed_mode=1）で呼ぶ。小さな単体 op
+    では問題ないが、大きなモデルは端末で二重持ちになり SIGKILL される（C-12）。実モデルの配備は
+    deploy_pm64.py（embed=False）などを使う。context binary が複数あれば名前順で最初のものを包む。
+    """
     d = work / name
     qdq = d / f"{name}_{scheme}_qdq.onnx"
     st: dict = {"name": name, "scheme": scheme, "stages": {}}
@@ -352,6 +413,7 @@ def finalize(work: Path, name: str, scheme: str, ctx_dir: Path, sdk_version: str
         st["verdict"] = "fail_S6_context"
         return st
 
+    # build_context.sh が残すメタデータ（S7）と、実際に流したコマンドの記録（C-3・C-4 の検査に使う）
     meta = next(iter(sorted(ctx_dir.glob("*_meta.json"))), None)
     cmds_file = next(iter(sorted(ctx_dir.glob("*_commands.txt"))), None)
     cmds = cmds_file.read_text(encoding="utf-8").splitlines() if cmds_file else []
@@ -368,6 +430,7 @@ def finalize(work: Path, name: str, scheme: str, ctx_dir: Path, sdk_version: str
         st["verdict"] = "fail_S8_epctx"
         return st
 
+    # C-4 は「C-1 を満たすモデルにだけ --preserve_io_datatype を付けたか」なので、C-1 を測り直して渡す
     c1 = verify_artifacts.check_c1_no_float_segments(qdq)
     checks = {"C-2": verify_artifacts.check_c2_socmodel_zero(meta) if meta else None,
               "C-3": verify_artifacts.check_c3_no_backend_config(cmds),
@@ -382,6 +445,7 @@ def finalize(work: Path, name: str, scheme: str, ctx_dir: Path, sdk_version: str
 
 
 def main() -> None:
+    """コマンドの入口。prepare / finalize を選んで実行し、記録を status_<段>_<方式>.json に書いて要約を表示する。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("stage", choices=["prepare", "finalize"])
     ap.add_argument("--work", type=Path, default=Path("work/ops"))

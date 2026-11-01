@@ -16,6 +16,25 @@ QNN HTP は signed per-channel の Conv QDQ と BatchNorm の併存を拒否し
 
 順序は「BN 畳み込み → quant_pre_process」。畳み込みで生まれた Mul/Add を
 定数畳み込みがさらに簡約でき、形状推論は最終トポロジに対して走らせるべきため。
+
+（2026-10-18 追記: 学習用の説明）
+■ いまの S2 の中身
+  BatchNorm の畳み込みに加えて、NPU（HTP v68）で通す・精度を保つための「答えは同じで途中計算だけ
+  変える」書き換え（Graph Rewrite）をここで行う（StudyMemo 5 章）。run() が呼ぶ順は
+    ① clamp_extreme_constants      C-9  マスクの -3.4e38 を -60 へ
+    ② rewrite_expand_to_concat     C-10 Expand を Concat の繰り返しへ
+    ③ fold_scale_into_matmul       スケールを MatMul の前へ（効果は無かったが等価なので既定で入る）
+    ④ stabilize_softmax            既定 off（悪化したため）
+    ⑤ swap_actact_matmul_operands  C-8 QK^T の左右入替（swap_matmuls に名前があるものだけ）
+    ⑥ normalize_rmsnorm_input      C-11 RMSNorm を max で割ってから計算（norm_rmsnorm=True のとき）
+  の後に BatchNorm の畳み込み → quant_pre_process（ORT の最適化と形状推論）。
+■ 入力と出力
+  入力: export した fp32 の ONNX。出力: 書き換え後（*_clamped.onnx）・BN 畳み込み後（folded）・
+  前処理後（prepped。S4 の入力）の ONNX と、何を書き換えたかの要約（辞書）。
+■ 動かし方
+  本番は p2b_ops prepare の中から run() が呼ばれる（方式名に rms・swap があると ⑤⑥ が入る）。
+  単体: python -m app.pipeline.preprocess --src <model.onnx> --workdir <出力フォルダ>
+  （単体では ①〜③ だけ。⑤⑥ は入らない）
 """
 
 from __future__ import annotations
@@ -30,7 +49,11 @@ from onnxruntime.quantization.shape_inference import quant_pre_process
 
 
 def _unique(base: str, inits: dict, graph: onnx.GraphProto) -> str:
-    """既存の initializer / tensor 名と衝突しない名前を返す。"""
+    """既存の initializer / tensor 名と衝突しない名前を返す。
+
+    base が空いていればそのまま、使われていれば base_1, base_2, … と番号を足す。
+    inits（これから足す予定の名前の辞書）・初期化子・ノードの出力名のどれとも重ならないようにする。
+    """
     taken = set(inits) | {i.name for i in graph.initializer}
     for n in graph.node:
         taken.update(n.output)
@@ -67,6 +90,9 @@ def clamp_extreme_constants(model: onnx.ModelProto,
     グラフの意味は変わらない。softmax を通せばどちらも 0 になるためである。
     **変えたことは必ず記録する**（黙って値を書き換えるのが一番危ない）。
     """
+    # 引数: model（その場で書き換える）、replace_with（負の極端値の置き換え先。正の極端値は符号を反転した値）、
+    #       threshold（絶対値がこれ以上なら「極端」とみなす。既定 1e30）。戻り値: 置き換えた初期化子ごとの記録。
+    # 見るのは初期化子（重み・定数の表）だけで、Constant ノードの中の値は見ない（コードからの読み取り）
     changed: list[dict] = []
     for init in model.graph.initializer:
         if init.data_type not in (onnx.TensorProto.FLOAT,
@@ -118,6 +144,11 @@ def rewrite_expand_to_concat(model: onnx.ModelProto) -> list[dict]:
     の場合は**書き換えず残す**。黙って別の意味のグラフにするより、
     端末で落ちて気付くほうがよい。
     """
+    # 引数: model（その場で書き換える）。戻り値: 書き換えた Expand ごとの記録（入力の形・目標・Concat の軸と回数）。
+    # ① 形状推論で各テンソルの形を集める。失敗したら元のモデルのまま（グラフの入出力と初期化子の形だけ）で進む。
+    #   ★注意（2026-10-18 追記。コードからの読み取り・推定）: 2GB を超えるモデルは形状推論そのものが失敗し、
+    #   中間テンソルの形が分からないので、Expand は「形が分からない」として書き換えずに残る。
+    #   戻り値（expand_rewrites）の件数で、書き換えが本当に起きたかを確かめること
     try:
         inferred = onnx.shape_inference.infer_shapes(model)
     except Exception:
@@ -137,6 +168,8 @@ def rewrite_expand_to_concat(model: onnx.ModelProto) -> list[dict]:
     new_nodes: list[onnx.NodeProto] = []
     changed: list[dict] = []
 
+    # ② Expand を 1 つずつ見て、「サイズ 1 の軸を n 倍に広げる」形なら Concat に置き換える。
+    #   target（広げた後の形）は初期化子で与えられている場合だけ扱う
     for node in g.node:
         if node.op_type != "Expand" or len(node.input) < 2:
             new_nodes.append(node)
@@ -180,6 +213,7 @@ def rewrite_expand_to_concat(model: onnx.ModelProto) -> list[dict]:
             "concat_axes": [{"axis": a, "repeat": r} for a, r in axes],
         })
 
+    # ③ ノードの並びを入れ替え、2GB 以下なら ONNX の検査器で形式を確かめる
     if changed:
         del g.node[:]
         g.node.extend(new_nodes)
@@ -203,6 +237,12 @@ def fold_scale_into_matmul(model: onnx.ModelProto) -> list[dict]:
     近似は一切していない。
 
     条件を満たさない形（s がテンソル、Mul が MatMul 以外を受ける等）は触らない。
+
+    ★2026-10-18 注: 上の「なぜ効くか」は当時の見込みで、実測では効果が無かった
+    （層 1 枚の相対 L2 30.3819% → 30.3904%。StudyMemo 5.6 節）。量子化されるのはスケール後の値
+    （mul_8）で、Mul を前へ移してもスケール後のレンジは変わらないため。厳密に等価で害も無いので、
+    run() の既定（fold_scale=True）で今も本番にかかっている（StudyMemo 5.0 節）。
+    引数: model（その場で書き換える）。戻り値: 移した組ごとの記録（MatMul・Mul の名前とスカラーの値）。
     """
     inits = {i.name: numpy_helper.to_array(i) for i in model.graph.initializer}
     g = model.graph
@@ -245,6 +285,8 @@ def fold_scale_into_matmul(model: onnx.ModelProto) -> list[dict]:
                         "mul": node.name or "(no name)",
                         "scalar": float(inits[scalar[0]].reshape(-1)[0])})
 
+    # ノードの付け替えで「使う前に作られている」順（トポロジ順）が崩れるので並べ直す。
+    # 入力が全部そろったノードから順に取り出す（カーンの方法の素朴な形）
     if changed:
         # Mul が MatMul より前に来るようトポロジ順を直す
         order, seen = [], set()
@@ -269,7 +311,11 @@ def fold_scale_into_matmul(model: onnx.ModelProto) -> list[dict]:
 
 
 def stabilize_softmax(model: onnx.ModelProto) -> list[dict]:
-    """`Softmax(x)` を `Softmax(x - ReduceMax(x))` へ書き換える（C-11）。
+    """`Softmax(x)` を `Softmax(x - ReduceMax(x))` へ書き換える（診断用。既定では使わない）。
+
+    ★2026-10-18 訂正: 旧見出しは「（C-11）」。要件定義書の C-11 は RMSNorm の書き換え
+    （`normalize_rmsnorm_input`）で、この softmax の書き換えに C の番号は無い。
+    `run(..., stabilize=True)` のときだけかかる（今のパイプラインに True で呼ぶ所は無い）。
 
     **softmax は行ごとに定数を引いても値が変わらない**（`softmax(x) = softmax(x-c)`）。
     fp32 では数値安定化のための定石だが、**量子化ではもっと効く**。
@@ -288,6 +334,11 @@ def stabilize_softmax(model: onnx.ModelProto) -> list[dict]:
     **スコアそのものの L2 誤差は 0.49% しかない**（大きい値がノルムを支配するため）。
     テンソル単体の誤差だけ見ていると、attention が壊れていることに気付けない。
     **量子化の良し悪しは「その先で何に使われるか」まで見て判断する。**
+
+    （2026-10-18 追記）ただしパイプラインに入れると層全体の相対 L2 は 30.4% → 41.6% に悪化した。
+    スコアは MatMul の出力の時点で既に 8bit になっており、後で行最大を引いても手遅れで、足した
+    ReduceMax / Sub の量子化誤差だけが乗るため（StudyMemo 5.6 節、run() の ④ の注記）。
+    引数: model（その場で書き換える）。戻り値: 書き換えた Softmax ごとの記録（名前と軸）。
     """
     g = model.graph
     new_nodes: list[onnx.NodeProto] = []
@@ -330,6 +381,7 @@ def stabilize_softmax(model: onnx.ModelProto) -> list[dict]:
     return changed
 
 
+# ---- 保存と健全性の検査の小道具（2GB を超えるモデルの扱い）----
 # protobuf の 2GB 制限。これを超えるモデルは外部データ形式でしか保存できない。
 PROTOBUF_LIMIT = 2_000_000_000
 
@@ -356,6 +408,7 @@ def _save(model: onnx.ModelProto, path: Path) -> None:
     `StopIteration`（opset_import が空）で落ちて初めて気付いた）。
     大きいモデルは最初から外部データ形式で書く。
     """
+    # 外部データ形式: 1024 バイト以上の初期化子を <path>.data の 1 ファイルにまとめ、.onnx には場所だけ書く
     path.parent.mkdir(parents=True, exist_ok=True)
     if not _fits_protobuf(model):
         onnx.save(model, str(path), save_as_external_data=True,
@@ -391,10 +444,19 @@ def swap_actact_matmul_operands(model: onnx.ModelProto,
 
     `A × B = (B^T × A^T)^T` は厳密に等価なので、これで**左右を入れ替えれば
     8bit 側を K から Q にできる**。代償は Transpose が3つ増えること。
+    （2026-10-18 追記）効果は実測済み: end-to-end top-1 66.5% → 80.7%、実機 17.42ms → 14.29ms
+    （Transpose を足したのに速い。要件定義書 C-8、StudyMemo 5.3 節）。
 
     `only` にノード名を渡すと、その MatMul だけを書き換える
     （PV の MatMul は右辺 V のレンジが元々狭いので、触らない方がよい）。
+    名前は export ごとに変わるので、find_swap_matmuls.py でグラフから選んで spec に書く。
+
+    引数: model（その場で書き換える）、only（対象の MatMul のノード名の集合。None なら act×act の全部）。
+    戻り値: 入れ替えた MatMul ごとの記録（元の左辺・右辺・テンソルの階数）。
     """
+    # ① 各テンソルの階数（次元の数）を集める。最後の 2 軸を入れ替える Transpose の perm を作るのに使う。
+    #   ★注意（2026-10-18 追記。推定）: 形状推論が失敗すると（2GB 超など）中間テンソルの階数が分からず、
+    #   下の「r < 2 なら触らない」で入替が黙って飛ばされうる。戻り値の件数で確かめること
     try:
         inferred = onnx.shape_inference.infer_shapes(model)
     except Exception:
@@ -428,6 +490,9 @@ def swap_actact_matmul_operands(model: onnx.ModelProto,
             seen += 1
         return t in inits
 
+    # ② 対象の MatMul（重みを含まない・only に名前がある）を
+    #   Transpose(B) と Transpose(A) → MatMul(B^T, A^T) → Transpose(結果) の 4 ノードに置き換える。
+    #   最後の Transpose の出力名は元の MatMul の出力名にするので、下流は付け替え不要
     new_nodes: list[onnx.NodeProto] = []
     changed: list[dict] = []
 
@@ -501,6 +566,16 @@ def normalize_rmsnorm_input(model: onnx.ModelProto, eps_new: float = 1e-12) -> l
     数学的には厳密に等価だが、**m が 0 のトークン**（全要素ゼロ）では
     元の式と挙動が変わる。実モデルでは起きないが、起きれば NaN になるので
     `_base` との数値比較で必ず確認すること。
+    ★2026-10-18 訂正: 旧「数学的には厳密に等価」「起きれば NaN になる」。
+      ・eps を固定の 1e-12 に置き換えているので厳密な等価ではない（厳密には eps/m² が要る）。
+        fp32 で書き換え前後を比べると相対 L2 0.22%・top-1 100%（StudyMemo 5.2 節、要件定義書 C-11）。
+      ・m には下限 1e-6 を足している（下の「★max に小さい下限を足す」。要件定義書 改訂 3.2 の ④）ので、
+        全ゼロのトークンでも 1/m は有限で、出力は 0 になる（NaN にはならない）。
+
+    引数: model（その場で書き換える）、eps_new（置き換える eps。既定 1e-12）。
+    戻り値: 書き換えた RMSNorm ごとの記録（Pow の名前・入力 x・差し替えた Mul の数）。
+    export された RMSNorm は 1 つの op ではなく Pow → ReduceMean → Add → Sqrt → Reciprocal → Mul
+    の並びなので、「指数 2 の Pow の出力が ReduceMean に入る」形を目印に探す（StudyMemo 1.3 節）。
     """
     g = model.graph
     inits = {i.name: numpy_helper.to_array(i) for i in g.initializer}
@@ -526,6 +601,7 @@ def normalize_rmsnorm_input(model: onnx.ModelProto, eps_new: float = 1e-12) -> l
             continue
         x = pw.input[0]
 
+        # 足すノードの名前を決める（abs・max・1/max・xs）。ReduceMax の軸は最後の軸（-1、隠れ次元）
         # 同じ x を使う Mul（x * rsqrt(...)）を探す。これも xs へ差し替える
         base = pw.name or f"rms{len(changed)}"
         ab, mx, rmx, xs = (f"{base}_abs", f"{base}_max", f"{base}_rmax", f"{base}_xs")
@@ -560,6 +636,8 @@ def normalize_rmsnorm_input(model: onnx.ModelProto, eps_new: float = 1e-12) -> l
                         np.array(eps_new, dtype=np.asarray(inits[inp]).dtype), e2))
                     add.input[i] = e2
 
+        # 分子側の x も xs に替えないと、分母（xs で計算）と食い違って m 倍ずれる。
+        # 相手の入力が Reciprocal / Sqrt / Div から来る Mul だけを「正規化の掛け算」とみなす
         # x * rsqrt(...) の x を xs に差し替える
         swapped = 0
         for c in consumers.get(x, []):
@@ -597,11 +675,18 @@ def normalize_rmsnorm_input(model: onnx.ModelProto, eps_new: float = 1e-12) -> l
 
 
 def count_batchnorm(model: onnx.ModelProto) -> int:
+    """モデルに残っている BatchNormalization の数（C-5 の検査用）。"""
     return sum(1 for n in model.graph.node if n.op_type == "BatchNormalization")
 
 
 def fold_batchnorm(src: Path, dst: Path) -> int:
-    """独立した BatchNormalization を Mul+Add へ畳み込む。畳み込んだ件数を返す。"""
+    """独立した BatchNormalization を Mul+Add へ畳み込む。畳み込んだ件数を返す。
+
+    引数: src（読む ONNX）、dst（書き出し先）。戻り値: 畳み込んだ件数。
+    係数はモジュールの説明の式（scale = gamma / sqrt(var + eps)、shift = beta - mean * scale）。
+    形は NCHW（チャネルが軸 1）を前提に [1, C, 1, 1] で掛ける。LLM には BatchNorm が無いので
+    主に P1・P2 の CNN 向け（LLM では 0 件のまま通り抜ける）。
+    """
     model = onnx.load(str(src))
     graph = model.graph
     inits = {i.name: numpy_helper.to_array(i) for i in graph.initializer}
@@ -659,7 +744,15 @@ def run(src: Path, folded_path: Path, prepped_path: Path,
         mask_replace: float = MASK_REPLACE, fold_scale: bool = True,
         stabilize: bool = False, swap_matmuls: set[str] | None = None,
         norm_rmsnorm: bool = False) -> dict:
-    """S2 全体。結果の要約を返す。"""
+    """S2 全体。結果の要約を返す。
+
+    引数: src（export した ONNX）、folded_path（BN 畳み込み後の書き出し先）、prepped_path（前処理後の
+          書き出し先＝S4 の入力）、mask_replace（C-9 の置き換え先）、fold_scale（③）、stabilize（④）、
+          swap_matmuls（⑤ の対象の名前）、norm_rmsnorm（⑥）。
+    戻り値: 書き換えごとの記録・BatchNorm の数の推移・形状推論の方式・出力パスの辞書。
+    書き換えが 1 つでもあれば、書き換え後を <folded の名前>_clamped.onnx に保存し、以降はそれを元にする。
+    最後に BatchNorm が残っていれば C-5 違反として止める。
+    """
     # ① 極端な定数の置き換えを**最初に**やる。BN 畳み込みや定数畳み込みが
     #    これらの値を別の initializer へ伝播させる前に潰しておく必要がある。
     m0 = onnx.load(str(src))
@@ -667,8 +760,10 @@ def run(src: Path, folded_path: Path, prepped_path: Path,
     # ② Expand → Concat の書き換え（C-10）。量子化より前にやる:
     #    量子化後だと Q/DQ を挟んだ形を壊さずに書き換えるのが難しくなる。
     expanded = rewrite_expand_to_concat(m0)
-    # ③ スケールを MatMul の前へ移す。C-8 の回避で 8bit にせざるを得ない
-    #    attention スコアの分解能を、等価変形だけで 8倍にできる。
+    # ③ スケールを MatMul の前へ移す。
+    #    ★2026-10-18 訂正: 旧「C-8 の回避で 8bit にせざるを得ない attention スコアの分解能を、
+    #    等価変形だけで 8倍にできる。」。実測では効果なし（30.3819% → 30.3904%、StudyMemo 5.6 節）。
+    #    量子化されるのはスケール後の値で、移してもそのレンジは変わらないため。等価で害も無いので既定で残している。
     scaled = fold_scale_into_matmul(m0) if fold_scale else []
     # ④ softmax の前で行ごとの最大値を引く。**既定では無効**。
     #    数学的には等価で、numpy 上の単独試算では劇的に効く（softmax 誤差
@@ -680,6 +775,8 @@ def run(src: Path, folded_path: Path, prepped_path: Path,
     softmaxes = stabilize_softmax(m0) if stabilize else []
     # ⑤ QK^T の左右を入れ替える。C-8 で 8bit にせざるを得ないのは常に右辺なので、
     #    レンジの狭い方（Q）を右辺へ持ってくる。既定は off（効果を測ってから判断）。
+    #    （2026-10-18 追記: 効果は測定済み（top-1 66.5% → 80.7%）。本番は p2b_ops が方式名に swap が
+    #    あるとき spec の swap_matmuls を渡して入れる）
     swapped = swap_actact_matmul_operands(m0, only=swap_matmuls) if swap_matmuls else []
     # ⑥ RMSNorm をトークンごとの max で正規化してから計算する（C-11）。
     #    x² のレンジが 280万 → 1 になり、通常チャンネルが潰れなくなる。
@@ -690,6 +787,7 @@ def run(src: Path, folded_path: Path, prepped_path: Path,
         _save(m0, src)
 
     before = count_batchnorm(onnx.load(str(src)))
+    # BatchNorm を畳み込む（C-5）。前後の個数を数えて記録する
     n = fold_batchnorm(src, folded_path)
     after_fold = count_batchnorm(onnx.load(str(folded_path)))
 
@@ -716,6 +814,8 @@ def run(src: Path, folded_path: Path, prepped_path: Path,
     ext = dict(save_as_external_data=True, all_tensors_to_one_file=True,
                external_data_location=prepped_path.name + ".data") if big else {}
 
+    # quant_pre_process（ORT の前処理: グラフの最適化と形状推論）。まず symbolic（記号を含む形状推論）で試し、
+    # 例外が出たら通常の形状推論に切り替えてやり直す。どちらで通ったかを symbolic として記録する
     symbolic = True
     try:
         quant_pre_process(
@@ -738,6 +838,7 @@ def run(src: Path, folded_path: Path, prepped_path: Path,
     _assert_sane(prepped_path, "S2 quant_pre_process")
     after_prep = count_batchnorm(onnx.load(str(prepped_path)))
 
+    # 何をしたかを全部記録に残す（黙って書き換えないため）
     result = {
         "clamped_constants": clamped,
         "expand_rewrites": expanded,
@@ -763,6 +864,8 @@ def run(src: Path, folded_path: Path, prepped_path: Path,
 
 
 def main() -> None:
+    """コマンドの入口。--src と --workdir を受けて run() を（①〜③ と BN 畳み込みだけで）流し、要約を表示する。
+    出力は <workdir>/02_folded.onnx・02_prepped.onnx（と書き換えがあれば 01_clamped_clamped.onnx）。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--src", type=Path, required=True)
     ap.add_argument("--workdir", type=Path, required=True)

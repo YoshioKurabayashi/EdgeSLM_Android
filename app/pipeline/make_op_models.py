@@ -18,6 +18,15 @@
   work/ops/<name>/<name>_fp32.onnx  … モデル本体
   work/ops/<name>/<name>.spec.json  … 入力仕様・狙い・期待（パイプラインが読む）
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: P2b「Transformer の部品ごとに v68 の HTP で通るか」（基本設計② 6.1 節・StudyMemo 1.5 節「どの層の制約か」）。
+#   記録: results/P2b_20260912_op_matrix_host.md・op_matrix_device.md・real_form.md（実機は 15/15 が全ノード NPU）。
+#   ここで作った部品の結果が C-1〜C-10 の制約（StudyMemo 5 章の Graph Rewrite）の出どころになった。
+# 出力:  --out（既定 work/ops）/<名前>/<名前>_fp32.onnx と <名前>.spec.json、--out/manifest.json。
+# 動かし方: & $PY2 -m app.pipeline.make_op_models --list（一覧）／--only block_real（1 つだけ）／引数なし（全部）
+#   その後 p2b_ops prepare（S2〜S4）→ build_context.sh（S5〜S7）→ 端末の op_check。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -43,19 +52,23 @@ VOCAB = 512
 # 量子化は inf を表現できず、活性化の値域が壊れて全体の分解能を失う。
 MASK_NEG = -60.0
 
+# 重みの乱数は seed 0 で固定（毎回同じモデルを作る。比較をやり直せるように）。
 RNG = np.random.default_rng(0)
 
 
 def _w(name: str, shape: tuple[int, ...], scale: float = 0.05) -> onnx.TensorProto:
+    """平均 0・標準偏差 scale の正規乱数の重み（float32）の初期化子を作る。"""
     return numpy_helper.from_array(
         RNG.normal(0.0, scale, shape).astype(np.float32), name)
 
 
 def _c(name: str, arr) -> onnx.TensorProto:
+    """定数（形・型は arr のまま）の初期化子を作る。"""
     return numpy_helper.from_array(np.asarray(arr), name)
 
 
 def _vi(name: str, shape, dtype=TensorProto.FLOAT):
+    """グラフの入出力の型と形の宣言（固定形状だけ。QNN EP は動的形状を扱えない）を作る。"""
     return helper.make_tensor_value_info(name, dtype, list(shape))
 
 
@@ -68,6 +81,7 @@ class Builder:
         self._n = 0
 
     def add(self, op, ins, outs, name=None, domain="", **attrs):
+        """ノードを 1 つ足し、最初の出力の名前を返す（次の部品に渡しやすくするため）。名前が無ければ通し番号で付ける。"""
         self._n += 1
         node = helper.make_node(
             op, list(ins), list(outs), name or f"{op.lower()}_{self._n}",
@@ -76,6 +90,7 @@ class Builder:
         return outs[0]
 
     def init(self, t: onnx.TensorProto) -> str:
+        """初期化子を足し、その名前を返す。"""
         self.inits.append(t)
         return t.name
 
@@ -154,6 +169,7 @@ def _rope_slice(b: Builder, x: str, tag: str, seq: int, hd: int,
     rotate_half を私は `Split` で書いたが、実物は **`Slice` ×2**。
     """
     half = hd // 2
+    # cos/sin の値は op が通るかを見るためのもので、本物の RoPE の周波数の並びとは違う（推定。精度は見ていない）。
     cos = np.cos(np.arange(seq)[:, None] / (10000 ** (np.arange(hd) / hd)))
     sin = np.sin(np.arange(seq)[:, None] / (10000 ** (np.arange(hd) / hd)))
     b.init(_c(f"{tag}_cos", cos.reshape(1, 1, seq, hd).astype(np.float32)))
@@ -172,6 +188,10 @@ def _rope_slice(b: Builder, x: str, tag: str, seq: int, hd: int,
 
 
 def _causal_mask(b: Builder, name: str, q_len: int, k_len: int) -> str:
+    """因果マスク [1, 1, q_len, k_len] を定数で作る（見てはいけない未来の位置に MASK_NEG、それ以外 0）。
+
+    k_len が q_len より長い時は、右寄せ（最後の query が最後の key に揃う）で並べる。
+    """
     m = np.zeros((1, 1, q_len, k_len), dtype=np.float32)
     off = k_len - q_len
     for i in range(q_len):
@@ -595,6 +615,7 @@ def m_gqa_concat(b: Builder):
 
 
 # name -> (builder, 狙い, 優先度, 標準opsetか)
+# 優先度の「Gate」は、それが通れば P2b を合格とする関門のモデル。標準 opset 外（False）は checker を通さない。
 MODELS = {
     "matmul_weight": (m_matmul_weight, "重み固定 MatMul。本線 A16W8 の成立確認", "最高", True),
     "matmul_act":    (m_matmul_act, "両辺が活性化の MatMul（QK^T / PV）。(u16,u16) の可否", "最高", True),
@@ -623,10 +644,12 @@ MODELS = {
 
 
 def build_one(name: str, out_dir: Path) -> dict:
+    """名前の部品モデルを組み立てて保存し、パイプラインが読む spec（入力の形・型・狙い）を書いて返す。"""
     fn, note, prio, standard = MODELS[name]
     b = Builder()
     inputs, outputs = fn(b)
 
+    # ① 標準 opset 17 と、使った独自ドメイン（com.microsoft など）を宣言する。IR は 9 に固定。
     opsets = [helper.make_opsetid("", 17)]
     domains = sorted({n.domain for n in b.nodes if n.domain})
     for d in domains:
@@ -659,6 +682,7 @@ def build_one(name: str, out_dir: Path) -> dict:
             out.append(e)
         return out
 
+    # ② spec: p2b_ops が読む。shape_config は縮小した形の値（どの形で試したかの記録）。
     spec = {
         "name": name,
         "note": note,
@@ -681,6 +705,7 @@ def build_one(name: str, out_dir: Path) -> dict:
 
 
 def main() -> None:
+    """--list なら一覧を出すだけ。そうでなければ指定（既定は全部）のモデルを作って manifest.json を書く。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", type=Path, default=Path("work/ops"))
     ap.add_argument("--only", nargs="*", help="生成する名前（既定: 全部）")

@@ -29,6 +29,12 @@ Qwen2.5 は `max_position_embeddings=32768` なので、そこまでは理屈の
 
 端末に入っていた 64行のテーブルと、この式の出力が最大差 2.1e-06 で一致することを
 確認済み（2026-09-14）。
+
+## 出力（2026-10-18 追記）
+
+`<out-dir>/cos_table_l<rows>.bin`・`sin_table_l<rows>.bin`: float32 の [rows, head_dim] をヘッダ無しで並べたもの。
+行 p が位置 p の cos / sin。端末は 1 行（head_dim 個）を読んで decode の cos / sin 入力 [1,1,1,hd] に渡す。
+解説: StudyMemo（EdgeSLM_Android）10.3「RoPE の位置」。
 """
 
 from __future__ import annotations
@@ -40,6 +46,13 @@ import numpy as np
 
 
 def build(rows: int, head_dim: int = 64, theta: float = 1000000.0):
+    """位置 0〜rows−1 の cos / sin の表を作る（HF の Qwen2 の rotary と同じ式）。
+
+    周波数 inv[j] = 1 / theta^(2j/head_dim)（j = 0〜head_dim/2−1）、角度 = 位置 × inv。
+    前半と後半に同じ値を並べる（rotate_half が前半と後半を組にして回すため）。
+    計算は float64 で行い、最後に float32 にする。theta は Qwen2.5 の rope_theta（1e6）。
+    戻り値: (cos, sin)。どちらも [rows, head_dim] の float32。
+    """
     inv = 1.0 / (theta ** (np.arange(0, head_dim, 2, dtype=np.float64) / head_dim))
     ang = np.arange(rows, dtype=np.float64)[:, None] * inv[None, :]
     cos = np.concatenate([np.cos(ang), np.cos(ang)], -1).astype(np.float32)
@@ -48,6 +61,7 @@ def build(rows: int, head_dim: int = 64, theta: float = 1000000.0):
 
 
 def main() -> None:
+    """表を作って .bin に書き、--verify-against があれば既存の表（先頭の行）との最大差を表示する。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--rows", type=int, default=2048)
     ap.add_argument("--head-dim", type=int, default=64)

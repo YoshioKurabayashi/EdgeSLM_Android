@@ -24,6 +24,14 @@ r"""マスク入力版 prefill（seq=S）の較正／評価データを作る。
 `--eval` は**較正と別の文**を使う。同じ文で較正して同じ文で評価すると
 量子化誤差を過小評価する。
 """
+# ---------------------------------------------------------------------------
+# 【補足（学習用、2026-10-18 追記）】上の docstring は --help にそのまま出るので、補足はこのコメントに書く。
+# どの段か: 本番の流れの「データ」（app/pipeline/README.md 1 節）。窓 64 の prefill（P5、results/P5_20260913_window64.md）
+#   で新しく作った。評価データも同じ生成器で作って揃えている（要件定義書 3.5 の ⑦）。
+# 入力:  HF のモデルとトークナイザ（--model-id）、make_calib_data.py の TEXTS / EVAL_TEXTS、このファイルの PROMPTS。
+# 出力:  --out の npz（input_ids [N, S] int64・cos/sin [N, …]・attn_mask [N, …]・n_valid [N]）と .meta.json。
+#        cos/sin・attn_mask の形は export_qwen_decode の rope_cos_sin・build_mask が返す形のまま（1 件ぶんを N 個に複製）。
+# ---------------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -35,11 +43,13 @@ from pathlib import Path
 import numpy as np
 import torch
 
+# app/ を import の探し先に足し、export_qwen_decode（マスク・RoPE）と make_calib_data（文の一覧）を共有する。
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from pipeline.export_qwen_decode import build_mask, load, rope_cos_sin  # noqa: E402
 from pipeline.make_calib_data import EVAL_TEXTS, TEXTS  # noqa: E402
 
+# パディングに使う ID（マスクで塞ぐので値そのものは計算に効かない想定）。
 PAD_ID = 0
 
 # 生成で実際に来る短いプロンプト。有効長のばらつきを作るために使う。
@@ -78,6 +88,10 @@ def windows_from_text(ids: list[int], seq: int) -> list[list[int]]:
 
 
 def main() -> None:
+    """4 種類の窓（短いプロンプト・短い文・満了した窓・中間の長さ）を集め、マスク・RoPE と一緒に npz に書く。
+
+    「種別」は pad（パディングあり）と full（満了）。meta.json に種別ごとの件数と有効長の一覧を残す。
+    """
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--model-id", default="Qwen/Qwen2.5-0.5B-Instruct")
     ap.add_argument("--seq", type=int, default=64)
@@ -133,6 +147,7 @@ def main() -> None:
     if args.max_samples:
         rows = rows[:args.max_samples]
 
+    # ⑤ 配列にまとめる。マスクは有効長ごとに build_mask で作る（右詰め。端末の dynamic_mask と同じ約束）。
     ids_a = np.array([r[1] for r in rows], dtype=np.int64)
     msk_a = np.stack([build_mask(r[2], S)[0] for r in rows]).astype(np.float32)
     cos_a = np.repeat(cos, len(rows), axis=0).astype(np.float32)

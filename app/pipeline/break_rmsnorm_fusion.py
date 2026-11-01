@@ -31,6 +31,14 @@ HTP 自前のカーネルが走る。同じ入力でホストと **13.53%** ず�
 効かず、DLC には `RmsNorm` が残った（2026-09-14）。
 真因は融合そのものではなく **gamma のエンコーディング不整合（C-13）** だったので、
 この道具は使わずに済んだ。**同じ道を辿らないための記録として残している。**
+（2026-10-18 追記）学習用の補足:
+
+- 段: P9（実機で RMSNorm の後がずれる件の二分探索。StudyMemo 9 章・1 章の枠「融合を崩そうとした道具」）。
+  真因 C-13 は fix_norm_gamma.py が直す。DLC の中身を見る道具は dlc_audit.py
+- 入力: QDQ の ONNX（--qdq）。重みは中に埋め込んで保存するので、2GB を超えるモデルには使えない（層 1 枚・数層の大きさ向け）
+- 出力: 書き換えた ONNX（--out）と、画面に「変えた箇所・足した出力」の数
+- --expose の既定の名前（pow_2・mean_1・add_5・val_120）は、当時の層 1 枚のモデルの中間テンソルの名前。
+  別のモデルでは名前が違うので、自分で指定する（名前が無ければ何も足さずに終わる）
 """
 
 from __future__ import annotations
@@ -42,6 +50,8 @@ import onnx
 
 
 def expose(src: Path, dst: Path, names: list[str]) -> dict:
+    # （2026-10-18 追記）引数: src = 元の QDQ、dst = 書き出し先、names = 出したい中間テンソルの名前（量子化前の名前）。
+    #   戻り値: {"added": 実際に出力に足したテンソル名のリスト}
     """中間テンソルをグラフ出力にも追加して、融合パターンを崩す。
 
     計算は一切変えない。**融合されたかどうかだけを変える**ので、
@@ -70,6 +80,12 @@ def expose(src: Path, dst: Path, names: list[str]) -> dict:
 
 
 def run(src: Path, dst: Path) -> dict:
+    """`--mode pow` の本体: 指数が 2 の Pow を Mul(x, x) に置き換えて保存する（2026-10-18 追記）。
+
+    src, dst : 元の QDQ と書き出し先。戻り値: {"changed": 置き換えた Pow の出力名のリスト}
+    指数は QDQ では量子化された定数になっているので、DequantizeLinear を 1 段だけ遡って値を復元してから 2 と比べる。
+    結果は崩れなかった（上の説明。converter は Mul(x, x) も二乗と見なした）
+    """
     m = onnx.load(str(src))
     g = m.graph
     inits = {t.name: t for t in g.initializer}
@@ -88,6 +104,7 @@ def run(src: Path, dst: Path) -> dict:
             q = nh.to_array(inits[n.input[0]]).astype(np.float64)
             sc = nh.to_array(inits[n.input[1]]).astype(np.float64)
             zp = nh.to_array(inits[n.input[2]]).astype(np.float64) if len(n.input) > 2 else 0.0
+            # 逆量子化の式: 実数 = (整数 − zero point) × scale（StudyMemo 2 章）
             return (q - zp) * sc
         return None
 
@@ -111,6 +128,7 @@ def run(src: Path, dst: Path) -> dict:
 
 
 def main() -> None:
+    """コマンドの入口。--mode pow なら run、expose（既定）なら expose を呼び、変えた数を出す。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--qdq", type=Path, required=True)
     ap.add_argument("--out", type=Path, required=True)

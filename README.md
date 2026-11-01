@@ -10,6 +10,25 @@ Sony Xperia 5 III SOG05（Snapdragon 888 / SM8350 / HTP v68）上で、Qualcomm 
 - **主成果物はコードではなく実測記録**（`DoC/フェーズ記録_Pn.md`）
 - **2026-09-19 以降は参照専用。** 次の検証（Qwen2.5-1.5B の搭載）は [EdgeSLM_AndroidScale](../EdgeSLM_AndroidScale) で行う
 
+## 中間データの退避（2026-10-17）
+
+容量確保のため、`work/`（約200GB）を丸ごとバックアップ用ドライブへ移動した。D: 側には残っていない。
+
+| 項目 | 内容 |
+|---|---|
+| 移動元 | `D:\AI\source\n_chap5\EdgeSLM_Android\work` |
+| 移動先 | `F:\AI_BackUP\n_chap5\EdgeSLM_Android\work` |
+| 方法 | `robocopy /E /MOVE`（ログ: `F:\AI_BackUP\move_log.txt`） |
+| 中身 | モデル変換の各段階の中間ファイル（`ops/`：ONNX・QDQ・DLC など）、原因調査用の中間値・KV の記録（`oracle_*`・`devacc_*`・`p12*`・`p13*`）、較正データ |
+| 判断 | 調査の結論は `DoC/`・`results/` に記録済み（GitHub 登録済み）。他プロジェクトから `work/` の参照はない（`EdgeSLM_AndroidScale/specs/reference/` の雛形 2 件にパスの記載があるのみで、実行時には読まれない） |
+| 残したもの | `.venv/`（EdgeSLM_Android 系の他プロジェクトが共用の Python 環境として使用中のため移動しない）、ソース・記録類 |
+
+このプロジェクトの検証を再実行する場合は、先に `work/` を戻す。
+
+```powershell
+robocopy "F:\AI_BackUP\n_chap5\EdgeSLM_Android\work" "D:\AI\source\n_chap5\EdgeSLM_Android\work" /E /MOVE /R:3 /W:5 /MT:8
+```
+
 ## 最新の調査（2026-09-17・**Qwen3 調査はクローズ**）
 
 **[P14: Qwen3-0.6B 移植調査のクローズ](results/P14_20260917_qwen3_closing.md) — 到達点・確定した制約・未解決の整理。**
@@ -115,11 +134,13 @@ Qwen2.5-0.5B を Reference Model として残しクローズした。
 | **[results/P2b_20260912_real_form.md](results/P2b_20260912_real_form.md)** | **本物の export 形で通した記録**。手書きモデルが4箇所外れていたこと、**C-9**（マスク定数 -3.4e38）と**C-10**（v68 は `Expand` をロードできない）の発見、C-1 検証器の穴の修正。実機 22/22 |
 | **[results/P2b_20260912_op_matrix_device.md](results/P2b_20260912_op_matrix_device.md)** | **同・端末実行**。15/15 `pass_strict`。**Transformer 1ブロックが KVキャッシュ込みで NPU 全ノード動作**。この規模の所要時間は固定費であって性能ではない、という読み方の注意も |
 | **[DoC/StudyMemo.md](DoC/StudyMemo.md)** | **学習メモの目次**。6編に分割: [01 レイヤ構造とツールチェーン](DoC/StudyMemo/01_レイヤ構造とツールチェーン.md)（ONNX / ORT / QNN EP / HTP の切り分け・EPContext）/ [02 量子化の基礎](DoC/StudyMemo/02_量子化の基礎.md)（QDQ の数式・`step=42.7`・per-tensor / per-channel・A16W8・`u16×u8`）/ [03 Transformer の中で何が起きたか](DoC/StudyMemo/03_Transformerの中で何が起きたか.md)（residual stream / RMSNorm / massive activation）/ [04 原因の特定と指標の読み方](DoC/StudyMemo/04_原因の特定と指標の読み方.md)（Oracle 実験・**指標の罠3つ**）/ [05 Graph Rewrite](DoC/StudyMemo/05_GraphRewrite.md)（等価変形4例・ε の扱い）/ [06 ログの読み方と原則](DoC/StudyMemo/06_ログの読み方と原則.md)（**実ログ6例**・6つの原則） |
+| **[DoC/StudyMemo/13_ソースと動かし方.md](DoC/StudyMemo/13_ソースと動かし方.md)・[14_コードで読む検証.md](DoC/StudyMemo/14_コードで読む検証.md)** | **StudyMemo とソースの紐づけ（2026-10-14）**。13 章は「どの節をどのファイルのどの関数がやっているか・どのコマンドで確かめるか」の地図、14 章は検証ごとの実際のコードの抜き出しと 1 行ずつの解説。どちらも `app/study/make_code_tour.py` がテンプレート（`app/study/tour/`）と実際のソースから作る生成物（`& .venv\Scripts\python.exe -B -m app.study.make_code_tour`、`--check` で目印がソースに見つかるかだけ確かめる）。`app/study/ex01〜ex05` はスマホも GPU も要らない演習（numpy だけ。本物のソースの関数を書き写さずに取り出して使う `app/study/_src.py`） |
 | **[DoC/試行錯誤の記録.md](DoC/試行錯誤の記録.md)** | **何を試してなぜ失敗しどう直したか**。誤りを10の型に整理（「成果物ができた＝成功」6件／症状が真因を示さない4件／見る場所を間違えた6件 等）。**効かなかった対策**も再試行防止のため記録 |
 | **[DoC/検証結果まとめ.md](DoC/検証結果まとめ.md)** | **最初に読む文書**。到達点・実測値（性能/容量/熱/精度）・**v68 制約 C-1〜C-12**・**踏んだ誤りの型**・未決事項・成果物の地図を横断的に集約 |
 | [DoC/要件定義書.md](DoC/要件定義書.md) | 目的・スコープ・機能要件・フェーズ計画。3.3節に事前調査で確認した技術前提を集約（**3.3.1 固定事実＝再調査不要 / 3.3.2 バージョン依存事実＝使用版変更時に再確認 / 3.3.3 P1のビルド要件**）。**3.4節は v68 で失敗する禁止事項 C-1〜C-7 + エラーコード表**で、実装前の必読箇所 |
 | [DoC/基本設計①_計測ハーネス設計.md](DoC/基本設計①_計測ハーネス設計.md) | FR-1 / FR-11 の実装設計。計測スキーマ・測定プロトコル（単発測定の禁止）・全レコードに付与する測定条件。**4章のデータ源は P0-a の実測待ちで TBD** |
 | [DoC/基本設計②_量子化・変換パイプライン設計.md](DoC/基本設計②_量子化・変換パイプライン設計.md) | FR-4 / FR-6 / FR-7 / FR-13 の実装設計。fp32 ONNX → QDQ → DLC → context binary → EPContext の工程定義、**C-1〜C-5 の機械的検証**（5章）、Transformer 構成要素の重点検証計画（6章）。**ホスト側のみで端末に依存しない** |
+| [DoC/コンポーネント構成図.html](DoC/コンポーネント構成図.html) | **全体のコンポーネント構成図**（2026-10-23）。PC の変換パイプライン（export → S2 書き換え → S4 量子化 → QAIRT → 配備）・受け渡し（adb）・端末の実行アプリ（Kotlin → JNI → job/session → ORT＋QNN EP → HTP v68）・調べる道具・派生プロジェクトを 1 枚に。各部品に StudyMemo の章の番号。ブラウザで開く |
 | [DoC/基本設計③_実行用アプリ設計.md](DoC/基本設計③_実行用アプリ設計.md) | 端末側の実行形態。**UIなし最小 Service + JNI + C++ 推論コア**の構成、ジョブ仕様、ファイル配置、段階的な作り方。**設計の主軸は「再ビルドを要する変更を最小化する」**（Gradle ビルドがユーザー実行になるため） |
 | [DoC/参考実装_ZipDepth解説.md](DoC/参考実装_ZipDepth解説.md) | **ZipDepth とは何か・ソース構成・NPUを使う設定の実体**。**2章に用語集**（Gradle / APK / AAR / NDK / JNI / FastRPC / skel / EPContext 等）。6章に P1 の実測値。後から「これ何だったか」を思い出すための文書 |
 | [DoC/環境構築記録.md](DoC/環境構築記録.md) | **環境構築の全記録**。配置・バージョン・再現手順に加え、**4章「つまずいた点と解決」**（QAIRT が Windows では Python 3.10 必須である件など8件）と付録の再構築チェックリスト |

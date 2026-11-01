@@ -27,6 +27,18 @@ attention の QK^T を
 素の A16W8 QDQ モデル（全部 uint16）を入力に、
 活性化×活性化 MatMul の**片側入力だけ** Q/DQ を uint8 に作り替える。
 スケールは既存のレンジから再計算するので、表している値域は変わらない。
+
+## 学習用の補足（2026-10-18 追記）
+
+- 段: P3 の続き（results/P3_20260913_mixed_matmul.md）。C-8 を実測で書き直した: v68 は uint16×uint16 と uint8×uint16 が不可、
+  **左辺 uint16 × 右辺 uint8 なら通る**。効果は end-to-end の top-1 50.0% → 80.7%、実機 17.42ms → 14.29ms（同じ md）。
+  StudyMemo 1 章の枠・2.7 節「u16 × u8（C-8）」の実物
+- 後継: 本番の流れでは downgrade_actact_rhs.py（C-8 の後処理）が右辺を uint8 に落とす。この道具は最初の切り分け用
+- 入力: 素の A16W8 QDQ（--src。活性化が全部 uint16）。出力: 片側を uint8 に作り替えた QDQ（--out）と、画面の一覧
+  （MatMul・テンソル・値域・uint16 と uint8 の刻み）
+- 動かし方: python -m app.pipeline.force_mixed_matmul --src work/ops/<名前>/<名前>_a16w8_rms_swap_qdq.onnx
+      --out work/ops/<名前>/<名前>_final_qdq.onnx --side rhs
+  （名前は例。--side lhs は逆向きの確認用。上の表のとおり v68 では通らない）
 """
 
 from __future__ import annotations
@@ -38,11 +50,13 @@ import numpy as np
 import onnx
 from onnx import TensorProto, numpy_helper
 
+# uint16 と uint8 の整数の最大値（非対称量子化の qmax）
 U16_MAX = 65535
 U8_MAX = 255
 
 
 def _range_of(scale: np.ndarray, zp: np.ndarray, qmax: int) -> tuple[float, float]:
+    """scale・zero point（最初の要素）から、表せる値の範囲 [(0 − zp)×scale, (qmax − zp)×scale] を返す。"""
     s = float(np.asarray(scale).reshape(-1)[0])
     z = float(np.asarray(zp).reshape(-1)[0])
     lo = (0 - z) * s
@@ -51,6 +65,16 @@ def _range_of(scale: np.ndarray, zp: np.ndarray, qmax: int) -> tuple[float, floa
 
 
 def force(src: Path, dst: Path, side: str = "rhs") -> dict:
+    """活性化×活性化の MatMul の片側（side が "rhs" なら第 2 入力）の Q/DQ を、同じ値域のまま uint8 に作り替える。
+
+    src, dst : 元の QDQ と書き出し先。side : "rhs" か "lhs"
+    戻り値   : {"changed": 書き換えた所の記録のリスト, "out": 書き出し先}
+    ① MatMul ごとに、どちらかの入力が重み（DQ/Q を最大 4 段遡って初期化子に着く）なら飛ばす
+    ② 対象の側の DQ の前の Q を見つけ、zero point が 16bit のときだけ、値域を保った uint8 の scale・zp を作る
+    ③ 新しい初期化子（名前の末尾 _u8）を足し、その Q と DQ をそれに向ける（既存の初期化子は書き換えない）
+    （2026-10-18 注）その Q の出力を別の DQ も使っていると、そちらは uint16 の scale のまま残る（推定。
+     QK^T・PV の右辺は 1 か所でしか使わない形なので当時は問題にならなかったと思われる）
+    """
     model = onnx.load(str(src))
     g = model.graph
     inits = {i.name: i for i in g.initializer}
@@ -96,6 +120,7 @@ def force(src: Path, dst: Path, side: str = "rhs") -> dict:
 
         lo, hi = _range_of(arr[s_name], arr[z_name], U16_MAX)
         # 同じ値域を uint8 で表す。値域は変えない（変えると別のモデルになる）
+        # 刻みは 65535/255 = 257 倍に粗くなる（値域は同じ）。zero point は四捨五入するだけで範囲の内側に丸め直さない
         new_scale = np.float32((hi - lo) / U8_MAX)
         new_zp = np.uint8(int(round(-lo / float(new_scale))))
 
@@ -114,6 +139,7 @@ def force(src: Path, dst: Path, side: str = "rhs") -> dict:
             "u8_step": round(float(new_scale), 6),
         })
 
+    # 保存は重みを埋め込む形（2GB を超えるモデルでは失敗する）
     # 値の型が変わるので value_info の型注釈は消しておく（残すと checker が矛盾を指摘する）
     del g.value_info[:]
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -122,6 +148,7 @@ def force(src: Path, dst: Path, side: str = "rhs") -> dict:
 
 
 def main() -> None:
+    """コマンドの入口。force を呼んで、書き換えた箇所と刻みの変化を一覧で出す。"""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--src", type=Path, required=True, help="素の A16W8 QDQ モデル")
     ap.add_argument("--out", type=Path, required=True)

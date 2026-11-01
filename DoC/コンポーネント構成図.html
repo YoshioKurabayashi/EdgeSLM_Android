@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EdgeSLM_Android — コンポーネント構成図</title>
+<meta name="description" content="EdgeSLM_Android（StudyMemo の土台）の全体構成：PC の変換パイプライン・受け渡し・端末の実行アプリ・調べる道具と、派生プロジェクトとの関係">
+<!--
+  EdgeSLM_Android コンポーネント構成図（2026-10-23 作成）
+  目的: StudyMemo（DoC/StudyMemo/01〜14 章）が前提にしているシステム全体を 1 枚で見られるようにする。
+  根拠: DoC/基本設計②_量子化・変換パイプライン設計.md・DoC/基本設計③_実行用アプリ設計.md・DoC/検証環境と手法.md・
+        app/pipeline/README.md・StudyMemo 13 章（地図）・実際のソース（android_runner/・app/pipeline/・scripts/）。
+  2026-10-23 更新: 各部品の下のソースに「何をするファイルか」の 1 行を足した（説明は各ソースの冒頭の docstring・コメントから取った）。
+  書き方: 1 ファイルで完結（外部の読み込みなし）。ブラウザでそのまま開く。色は EdgeSLM/DoC/基本設計_アーキテクチャ構成図.html に合わせた。
+-->
+<style>
+  :root {
+    --paper: #EEF0F1; --surface: #FFFFFF; --surface-2: #F4F6F7;
+    --ink: #171B1E; --ink-muted: #5B6469; --ink-faint: #838C90;
+    --border: #D9DEE1; --border-soft: #E6E9EA;
+    --accent: #A85423; --accent-soft: #F2E3D4; --accent-soft-ink: #7A3D16;
+    --fw: #2C6A64; --fw-soft: #DCEDE9; --fw-soft-ink: #1D4A45;
+    --vendor: #3F5C8A; --vendor-soft: #DFE6F0; --vendor-soft-ink: #2A4568;
+    --probe: #7A6A8A; --probe-soft: #E7E1EE; --probe-soft-ink: #4F4364;
+    --data: #6B7570; --data-soft: #E7E9E4; --data-soft-ink: #4C534E;
+    --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Yu Gothic UI", "Meiryo", "Helvetica Neue", Arial, sans-serif;
+    --shadow: 0 1px 2px rgba(23,27,30,.06), 0 8px 24px -12px rgba(23,27,30,.14);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #12151A; --surface: #1A1F26; --surface-2: #212832;
+      --ink: #E7EAE4; --ink-muted: #9CA6A0; --ink-faint: #6E7A76;
+      --border: #2B323B; --border-soft: #232A32;
+      --accent: #E2874A; --accent-soft: #3A2A1D; --accent-soft-ink: #F3C89A;
+      --fw: #6FB0A8; --fw-soft: #1E3532; --fw-soft-ink: #A9D8D1;
+      --vendor: #8FB0E0; --vendor-soft: #223047; --vendor-soft-ink: #C2D6F2;
+      --probe: #B7A5CC; --probe-soft: #2C2637; --probe-soft-ink: #DCCFEE;
+      --data: #97A19B; --data-soft: #232722; --data-soft-ink: #C4CBC5;
+      --shadow: 0 1px 2px rgba(0,0,0,.35), 0 8px 24px -12px rgba(0,0,0,.55);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-sans); line-height: 1.55; }
+  .page { max-width: 1380px; margin: 0 auto; padding: 32px 20px 56px; display: flex; flex-direction: column; gap: 22px; }
+  .masthead { display: flex; flex-direction: column; gap: 8px; }
+  .masthead-top { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: .72rem; color: var(--ink-faint); letter-spacing: .06em; text-transform: uppercase; }
+  h1 { font-size: 1.6rem; margin: 0; letter-spacing: -.01em; }
+  .tagline { color: var(--ink-muted); margin: 0; max-width: 90ch; font-size: .95rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: .8rem; color: var(--ink-muted); }
+  .sw { width: 12px; height: 12px; border-radius: 3px; }
+  .sw--custom { background: var(--accent); } .sw--fw { background: var(--fw); } .sw--vendor { background: var(--vendor); }
+  .sw--probe { background: var(--probe); } .sw--data { background: transparent; border: 1.5px dashed var(--data); }
+
+  .diagram { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(220px,.55fr) minmax(0,1fr); gap: 16px; align-items: start; }
+  @media (max-width: 1100px) { .diagram { grid-template-columns: 1fr; } }
+  .col { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .col-head { padding: 12px 16px; border-bottom: 1px solid var(--border-soft); font-family: var(--font-mono); font-weight: 700; font-size: .92rem; display: flex; flex-direction: column; gap: 2px; }
+  .col-sub { font-family: var(--font-sans); font-weight: 400; font-size: .74rem; color: var(--ink-faint); }
+  .col-body { padding: 14px; display: flex; flex-direction: column; }
+  .arrow { text-align: center; color: var(--ink-faint); font-family: var(--font-mono); font-size: .8rem; height: 22px; line-height: 22px; }
+  .arrow::before { content: "↓ "; }
+  .node { border: 1px solid var(--border); border-left-width: 4px; border-radius: 8px; padding: 9px 11px; background: var(--surface-2); display: flex; flex-direction: column; gap: 3px; }
+  .node--custom { border-left-color: var(--accent); background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface-2)); }
+  .node--fw { border-left-color: var(--fw); }
+  .node--vendor { border-left-color: var(--vendor); background: color-mix(in srgb, var(--vendor-soft) 40%, var(--surface-2)); }
+  .node--probe { border-left-color: var(--probe); }
+  .node--data { border-style: dashed; border-left-style: dashed; border-left-color: var(--data); background: transparent; }
+  .nh { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .nn { font-weight: 650; font-size: .88rem; }
+  .ch { font-family: var(--font-mono); font-size: .68rem; padding: 1px 6px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-soft-ink); white-space: nowrap; }
+  .nd { font-size: .77rem; color: var(--ink-muted); }
+  .nf { font-family: var(--font-mono); font-size: .7rem; color: var(--ink-faint); word-break: break-all; }
+  /* 2026-10-23 追加: ソースのファイル名と「何をするファイルか」の 1 行 */
+  .files { list-style: none; margin: 4px 0 0; padding: 6px 0 0; border-top: 1px dotted var(--border); display: flex; flex-direction: column; gap: 3px; }
+  .files li { font-size: .74rem; color: var(--ink-muted); line-height: 1.45; padding-left: .8em; text-indent: -.8em; }
+  .files li::before { content: "▸ "; color: var(--ink-faint); }
+  .files code { font-family: var(--font-mono); font-size: .72rem; font-weight: 650; color: var(--ink); word-break: break-all; margin-right: .5em; }
+  .grp { border: 1px dashed var(--border); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .grp-label { font-family: var(--font-mono); font-size: .7rem; color: var(--ink-faint); letter-spacing: .03em; }
+  .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
+  @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+  .cbadge { display: inline-block; font-family: var(--font-mono); font-size: .66rem; padding: 0 5px; border-radius: 4px; background: var(--vendor-soft); color: var(--vendor-soft-ink); margin-right: 3px; }
+  .side { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--border-soft); }
+  .side-label { font-family: var(--font-mono); font-size: .7rem; color: var(--ink-faint); }
+  .side p, .side ul { margin: 4px 0 0; font-size: .77rem; color: var(--ink-muted); }
+  .side ul { padding-left: 1.1em; }
+  .mid .node { margin-bottom: 0; }
+  .lr { text-align: center; color: var(--ink-faint); font-family: var(--font-mono); font-size: .76rem; padding: 6px 0; }
+
+  section { display: flex; flex-direction: column; gap: 12px; }
+  h2 { font-family: var(--font-mono); font-size: 1rem; margin: 0; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .card h3 { margin: 0 0 4px; font-size: .88rem; }
+  .card p { margin: 0; font-size: .79rem; color: var(--ink-muted); }
+  table { border-collapse: collapse; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: .8rem; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  th { background: var(--surface-2); font-family: var(--font-mono); font-size: .74rem; color: var(--ink-muted); }
+  td code, .nd code, p code { font-family: var(--font-mono); font-size: .74rem; }
+  .side p code, .nd code { word-break: break-all; }
+  .tablewrap { overflow-x: auto; }
+  .footer { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--font-mono); font-size: .7rem; color: var(--ink-faint); border-top: 1px solid var(--border); padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="masthead">
+    <div class="masthead-top"><span>Component Overview · EdgeSLM_Android</span><span>2026-10-23 作成（プロジェクトは 2026-09-19 から参照専用）</span></div>
+    <h1>EdgeSLM_Android コンポーネント構成図</h1>
+    <p class="tagline">Qwen2.5-0.5B（24 層）を Snapdragon 888（HTP v68）の NPU だけで動かすための構成。PC で「書き出す → 書き換える → 量子化する → QAIRT で変換する」流れと、端末で「job を受けて ONNX Runtime ＋ QNN EP で HTP に流す」アプリ、その間の受け渡しを 1 枚にした。各部品の右上の番号は、対応する <strong>StudyMemo の章</strong>。各部品の下の ▸ の行は、その部品を作っているソースと、そのファイルが何をするか。</p>
+  </header>
+
+  <div class="legend" aria-label="凡例">
+    <span class="legend-item"><span class="sw sw--custom"></span>自作（このプロジェクトのソース）</span>
+    <span class="legend-item"><span class="sw sw--fw"></span>既存のフレームワーク（PyTorch・transformers・ONNX・ONNX Runtime）</span>
+    <span class="legend-item"><span class="sw sw--vendor"></span>Qualcomm の SDK・ハード（QAIRT・QNN・FastRPC・HTP）</span>
+    <span class="legend-item"><span class="sw sw--probe"></span>調べる・測る道具（本番の流れには入らない）</span>
+    <span class="legend-item"><span class="sw sw--data"></span>受け渡すファイル</span>
+  </div>
+
+  <div class="diagram">
+
+    <!-- ───────── PC ───────── -->
+    <div class="col">
+      <div class="col-head">PC（Windows）— 変換パイプライン<span class="col-sub">app/pipeline/・scripts/。venv: Python 3.12 ＋ onnx・onnxruntime 1.30・torch／QAIRT 用 Python 3.10／Git Bash</span></div>
+      <div class="col-body">
+
+        <div class="node node--fw">
+          <div class="nh"><span class="nn">元のモデル Qwen2.5-0.5B-Instruct</span><span class="ch">1・3</span></div>
+          <div class="nd">HF の重み（transformers）。配線の正しさの基準（HF の logits）にも使う。後半（P12〜）は Qwen3 でも同じ道具を使った</div>
+        </div>
+        <div class="arrow">部品（埋め込み・各層・最後の正規化・lm_head）を借りる</div>
+
+        <div class="grp">
+          <span class="grp-label">書き出し（export）— 書き出す「中身」は自作、ONNX にする「道具」は既存</span>
+          <div class="node node--custom">
+            <div class="nh"><span class="nn">組み直したモデル</span><span class="ch">1.6・10</span></div>
+            <div class="nd">重みは本物・配線は自前の torch のモジュール。HF の KV キャッシュは長さが伸びる（動的な形）ので、QNN が扱える固定長のテンソル入出力 [1, KV, L, D] に組み直す（左シフト＋マスク −60、cos/sin は入力、attention は明示の MatMul）。past は Slice ではなく Concat に入れる順（C-1 を避ける）。HF と logits を突き合わせて検算（<code>--verify-only</code>）</div>
+            <ul class="files">
+            <li><code>export_qwen_decode.py</code>書き出しの本体。decode（1 トークン＋固定長 KV）と prefill を組み直して ONNX にする。HF と logits を突き合わせる検算（verify）もここ</li>
+            <li><code>export_qwen.py</code>最初の書き出し（P3 準備）。本物の Qwen を ONNX にして、実際に出てくる op を数える。attention は eager を強制</li>
+            <li><code>make_rope_table.py</code>端末に置く RoPE の cos/sin の表を作る。head_dim がモデルで違う（Qwen2.5 は 64、Qwen3 は 128）ので、モデルを変えたら作り直す</li>
+          </ul>
+          </div>
+          <div class="node node--fw">
+            <div class="nh"><span class="nn">torch.onnx.export（PyTorch の書き出し器）</span><span class="ch">1.3・1.5</span></div>
+            <div class="nd">上のモジュールを ONNX に変換する既存の道具。dynamo の書き出し・opset 21・形は固定（dynamic_axes なし）。opset 21 には RMSNorm の演算が無いので分解された形で出る。最初から opset 21 にするのは、2GB を超えるモデルで ORT の opset 変換が落ちるのを避けるため</div>
+            <span class="nf">torch.onnx.export(..., opset_version=21, dynamo=True, dynamic_axes=None)</span>
+          </div>
+        </div>
+        <div class="arrow">＋ 較正・評価のデータ</div>
+
+        <div class="node node--custom">
+          <div class="nh"><span class="nn">較正・評価のデータ（実データ）</span><span class="ch">2・8</span></div>
+          <div class="nd">本物の文で作る（乱数だと範囲が桁違い）。decode は teacher forcing で各ステップの KV を作る</div>
+          <ul class="files">
+            <li><code>make_decode_calib.py</code>decode 用。fp32 の decode を実テキストで 1 トークンずつ回し（teacher forcing）、各ステップの入力 52 本（うち KV 48 本）を記録する</li>
+            <li><code>make_calib_data.py</code>prefill 用。本物の文をトークンにして較正データを作る（乱数では値域が実際と違う）</li>
+            <li><code>make_prefillmask_data.py</code>マスク入力版 prefill（右詰め＋attn_mask）の較正・評価データを作る</li>
+            <li><code>calib.py</code>S3。量子化器にデータを渡す読み出し口。入力の名前と形をモデルから読む。値域の端を出すため合成パターンも混ぜる</li>
+          </ul>
+        </div>
+        <div class="arrow">p2b_ops prepare（spec.json の方式で）</div>
+
+        <div class="grp">
+          <span class="grp-label">S2〜S4 前処理と量子化の本体 — p2b_ops.py（段ごとに記録・検査）</span>
+          <ul class="files" style="border-top:0;padding-top:0;margin-top:0">
+            <li><code>p2b_ops.py</code>この段のまとめ役。prepare が下の書き換え → 量子化 → 検査を順に呼び、どの段で落ちたかを記録する。finalize は変換（S5〜S7）の後に包んで C-2〜C-4 を検査する</li>
+          </ul>
+          <div class="grid2">
+            <div class="node node--custom">
+              <div class="nh"><span class="nn">S2 グラフの書き換え</span><span class="ch">5・3</span></div>
+              <div class="nd">C-9 マスク定数・C-10 Expand→Concat・C-11 RMSNorm を max で割る・QK<sup>T</sup> の左右入替・スケールを前へ</div>
+              <ul class="files">
+                <li><code>preprocess.py</code>S2 の書き換えの関数と入口の run()。C-9 極端な定数を有限値に（clamp_extreme_constants）・C-10（rewrite_expand_to_concat）・C-11（normalize_rmsnorm_input）・左右入替（swap_actact_matmul_operands）・スケールを前へ（fold_scale_into_matmul）・BatchNorm の畳み込み</li>
+                <li><code>find_swap_matmuls.py</code>左右を入れ替える MatMul（QK<sup>T</sup>）をグラフから自動で見つける</li>
+              </ul>
+            </div>
+            <div class="node node--fw">
+              <div class="nh"><span class="nn">S4 QDQ 量子化（A16W8）</span><span class="ch">2・7</span></div>
+              <div class="nd">ORT の量子化器（get_qnn_qdq_config）が Q/DQ を挿す。活性 uint16・重み int8（per-channel）</div>
+              <ul class="files">
+                <li><code>quantize_qdq.py</code>S4 の本体。get_qnn_qdq_config で QNN 向けの設定を作り、ORT の量子化器（onnxruntime.quantization）で Q/DQ を挿す</li>
+              </ul>
+            </div>
+            <div class="node node--custom">
+              <div class="nh"><span class="nn">S4 検査と修正</span><span class="ch">7・9</span></div>
+              <div class="nd">重みが本当に per-channel か数える／C-13 RMSNorm の gamma を符号付き 16bit に収める</div>
+              <ul class="files">
+                <li><code>weight_percg.py</code>重みを per-channel にする指定を作り、出来たモデルで本当にそうなったか数える（指定したのに 390 本すべて per-tensor だったため）</li>
+                <li><code>fix_norm_gamma.py</code>RMSNorm の gamma を符号付き 16bit に収まる形で量子化し直す（C-13）</li>
+              </ul>
+            </div>
+            <div class="node node--custom">
+              <div class="nh"><span class="nn">C-1〜C-5 の検査</span><span class="ch">2.8</span></div>
+              <div class="nd">float の区間が残っていないか など、端末で落ちる形を PC で止める</div>
+              <ul class="files">
+                <li><code>verify_artifacts.py</code>C-1〜C-5 の違反を機械で数え、違反したノードを並べる。失敗したら次の段へ進ませない（端末で error 1002 になってからでは遅い）</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="arrow">後処理</div>
+
+        <div class="node node--custom">
+          <div class="nh"><span class="nn">C-8 act×act の右辺を uint8 に</span><span class="ch">2.7</span></div>
+          <div class="nd">v68 は u16×u16 の MatMul を作れない（u16×u8 だけ通る）。scale と zero point を計算し直す</div>
+          <ul class="files">
+            <li><code>downgrade_actact_rhs.py</code>act×act の MatMul の右辺だけを uint8 に落とし、scale と zero point を計算し直す（C-8）</li>
+            <li><code>force_mixed_matmul.py</code>（旧版）u16×u8 なら本当に通るかを確かめるため、QDQ を直接書き換えた最初の道具</li>
+          </ul>
+        </div>
+        <div class="arrow">QDQ の ONNX（*_final_qdq.onnx）</div>
+
+
+        <div class="node node--vendor">
+          <div class="nh"><span class="nn">S5〜S7 QAIRT で変換（約 1 時間）</span><span class="ch">1.4・12</span></div>
+          <div class="nd"><span class="cbadge">S5</span>qairt-converter: QDQ → DLC（ここで RMSNorm の分解形が RmsNorm 1 つに融合される）<br><span class="cbadge">S6</span>qnn-context-binary-generator: DLC → v68 の context binary（.bin）</div>
+          <ul class="files">
+            <li><code>scripts/build_context.sh</code>S5〜S7 を流す。QDQ の ONNX → DLC → context binary → メタデータ。QAIRT 用の Python 3.10 で動かす（本体の venv と numpy・opencv が共存できないため）。QAIRT は D:\QAIRT（2.48.0）</li>
+          </ul>
+        </div>
+        <div class="arrow">push の前の関門</div>
+
+        <div class="node node--custom">
+          <div class="nh"><span class="nn">DLC の型とエンコーディングの突き合わせ</span><span class="ch">6・9</span></div>
+          <div class="nd">qairt-dlc-info の出力を読み、型で表せない値（C-13 など）を送る前に止める</div>
+          <ul class="files">
+            <li><code>dlc_audit.py</code>qairt-dlc-info の出力を読み、HTP が実際に実行する表現（DLC）の型とエンコーディングを検査する。ONNX 側の設定は見ない</li>
+          </ul>
+        </div>
+        <div class="arrow">S8・配備</div>
+
+        <div class="node node--custom">
+          <div class="nh"><span class="nn">包む → md5 照合 → push → probe</span><span class="ch">1.4・6</span></div>
+          <div class="nd">context binary を EPContext の ONNX で包む（embed_mode=0、C-12）。生成器・PC・端末の 3 点で md5 を照合してから送る</div>
+          <ul class="files">
+            <li><code>deploy_pm64.py</code>配備の手順を 1 本に固定したもの。生成器の出力が安定したか確認 → DLC の検査 → 包む → md5 を 3 点で照合して push → probe まで。生成途中の .bin を送って 1 時間を無駄にした失敗を繰り返さないため</li>
+            <li><code>wrap_epctx.py</code>S8。context binary を ORT の QNN EP が読める EPContext の ONNX で包む（ここでは run(..., embed=False) で呼ぶ）</li>
+          </ul>
+        </div>
+
+        <div class="side">
+          <span class="side-label">調べる・測る道具（PC 側。本番の流れには入らない）</span>
+          <div class="grid2" style="margin-top:6px">
+            <div class="node node--probe">
+              <div class="nh"><span class="nn">実機で測って持ち帰る</span><span class="ch">4・8</span></div>
+              <ul class="files">
+                <li><code>device_accuracy.py</code>端末の NPU で評価セットを流し、精度と生の出力を持ち帰る（HTP が実際にどう計算するかは、ホストでは分からないため）</li>
+                <li><code>generate_on_device.py</code>端末の NPU で文章を生成する最短の経路。KV キャッシュを使わず、24 層 prefill（seq=16）の窓をずらしながら毎トークン infer の job を送る</li>
+              </ul>
+            </div>
+            <div class="node node--probe">
+              <div class="nh"><span class="nn">比べる・分解する</span><span class="ch">4・8</span></div>
+              <ul class="files">
+                <li><code>ab_host_device.py</code>同じ評価セットで fp32／ホスト QDQ／実機 HTP の 3 者を比べる（device_accuracy が保存した出力を読む）</li>
+                <li><code>error_decompose.py</code>実機の誤差を「量子化による分」と「HTP 側の分」に分ける（間にホスト QDQ を挟む）</li>
+                <li><code>accuracy_logits.py</code>最後の logits で精度を測る（層ごとの L2 誤差では、どのトークンを選ぶかが分からないため）</li>
+              </ul>
+            </div>
+            <div class="node node--probe">
+              <div class="nh"><span class="nn">量子化を部分的に外す</span><span class="ch">4・7</span></div>
+              <ul class="files">
+                <li><code>oracle_exclude.py</code>どのテンソルの量子化を外すと精度が戻るかを調べる。量子化をやり直すので遅く、入力 1 本のモデルだけ</li>
+                <li><code>oracle_qdq.py</code>同じことを QDQ モデルの上で直接やる。やり直しが要らず、入力 52 本の decode も扱える</li>
+              </ul>
+            </div>
+            <div class="node node--probe">
+              <div class="nh"><span class="nn">層・ステップで切り分ける</span><span class="ch">3・8・9・11</span></div>
+              <ul class="files">
+                <li><code>split_layer.py</code>本物のデコーダ層 1 枚を Attention 側と FFN 側に割り、どちらがずれを作るか調べる</li>
+                <li><code>split_layers_n.py</code>24 層 decode を層ごとに切り出し、本物の入力でホスト↔実機を比べる準備をする</li>
+                <li><code>decode_error_profile.py</code>decode の誤差がいつ（ステップ）・どこで（層）増えるかを、teacher forcing で同じ入力にそろえて測る</li>
+                <li><code>layer2_probe.py ほか P12〜P13 の probe</code>Qwen3 で、ホストと HTP の整数が最初に食い違う演算を探す</li>
+              </ul>
+            </div>
+            <div class="node node--probe">
+              <div class="nh"><span class="nn">文脈の持ち方をホストで試す</span><span class="ch">10</span></div>
+              <ul class="files">
+                <li><code>sliding_decode_host.py</code>端末と同じ窓ずらしの decode をホストで回し、文章の崩れが窓のせいか量子化のせいかを分ける</li>
+                <li><code>sink_compare_host.py</code>fp32 だけで、先頭のトークンを残す（attention sink）と崩れが防げるかを確かめる</li>
+                <li><code>context_policy_host.py</code>固定サイズの KV に何を残すか（文脈の持ち方）を fp32 で比べる</li>
+                <li><code>prefix_recall_test.py</code>先頭に置いた事実を、窓が埋まった後でも思い出せるかを測る</li>
+              </ul>
+            </div>
+            <div class="node node--probe">
+              <div class="nh"><span class="nn">使えないと分かった道具</span><span class="ch">9</span></div>
+              <ul class="files">
+                <li><code>qnn_cpu_compare.py</code>同じ DLC を QNN の CPU backend で回し、「DLC までは無事か」を切り分けようとした。CPU backend に RmsNorm・Gather が無く、グラフが組めなかった</li>
+                <li><code>break_rmsnorm_fusion.py</code>RMSNorm を融合されない形に書き換えようとした（数学的には同じ）。どちらの手でも融合は崩れず、真因は C-13 だった</li>
+                <li><code>fix_cache_qparams.py</code>KV の入口（past）と出口（present）の量子化パラメータをそろえる。はみ出しは 0 本になったが、生成の一致はほぼ変わらなかった</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── 受け渡し ───────── -->
+    <div class="col mid">
+      <div class="col-head">受け渡し<span class="col-sub">USB の adb。APK を作り直さずにモデルと job を差し替える（基本設計③ 2 章）</span></div>
+      <div class="col-body">
+        <div class="node node--data">
+          <div class="nh"><span class="nn">モデル</span><span class="ch">1.4</span></div>
+          <div class="nd"><code>&lt;tag&gt;_epctx.onnx</code>（数百バイト）＋ context binary <code>.bin</code>（24 層で約 772MB）</div>
+          <span class="nf">→ files/models/</span>
+        </div>
+        <div class="lr">adb push →</div>
+        <div class="node node--data">
+          <div class="nh"><span class="nn">job 仕様と入力</span><span class="ch">13</span></div>
+          <div class="nd"><code>job.json</code>（task・モデル・EP の設定）と入力の <code>.bin</code>（infer のとき）</div>
+          <span class="nf">→ files/jobs/</span>
+        </div>
+        <div class="lr">adb shell am start -n …/.RunnerActivity →</div>
+        <div class="node node--data">
+          <div class="nh"><span class="nn">結果</span><span class="ch">6</span></div>
+          <div class="nd"><code>last_result.json</code>・<code>last_describe.json</code>・出力の <code>.bin</code>・logcat</div>
+          <span class="nf">← files/out/（adb pull）→ results/</span>
+        </div>
+        <div class="side">
+          <span class="side-label">端末の置き場所</span>
+          <p><code>/sdcard/Android/data/org.edgeslm.runner/files/</code>。adb shell とアプリの両方が読み書きできる唯一の現実的な場所（<code>/data/local/tmp</code> はアプリから読めない）。</p>
+        </div>
+        <div class="side">
+          <span class="side-label">端末を外から見る（計測ハーネス、基本設計①）</span>
+          <p>thermal zone・cooling device・CPU クロック・メモリ（dma-buf）を adb で読む。電力プロファイルは制御できないので記録だけ。</p>
+          <ul class="files">
+            <li><code>scripts/run_runner.sh</code>PC から端末のアプリを動かす。APK を入れる・モデルを送る・job を流して結果を回収する</li>
+            <li><code>scripts/p0a_collect.sh</code>端末の素性（thermal zone の構成・QNN/FastRPC の有無・/data/local/tmp で実行できるか）を 1 回でまとめて集める（P0-a）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ───────── 端末 ───────── -->
+    <div class="col">
+      <div class="col-head">端末 — 実行アプリ org.edgeslm.runner<span class="col-sub">Xperia 5 III（SOG05）・Snapdragon 888 / SM8350・HTP v68・Android 13・RAM 8GB／android_runner/</span></div>
+      <div class="col-body">
+
+        <div class="node node--custom">
+          <div class="nh"><span class="nn">RunnerActivity → RunnerService</span><span class="ch">13</span></div>
+          <div class="nd">am start の入口（extras: job・overrides）。UI なしの Foreground Service が job.json を読み、JNI を呼び、結果を files/out/ に書く。ロジックは持たせない</div>
+          <ul class="files">
+            <li><code>RunnerActivity.kt</code>画面を持たない入口。Android 12 以降は裏から Foreground Service を起動できないので、ここ（前面）から起動する</li>
+            <li><code>RunnerService.kt</code>job.json を読み、JNI を呼び、返ってきた JSON をファイルに書く。それ以外の処理は持たない</li>
+            <li><code>JsonInject.kt</code>Kotlin でしか取れない 2 つのパス（base_dir・native_lib_dir）を job に足し、extras の上書きを当てる</li>
+          </ul>
+        </div>
+        <div class="arrow">JNI（引数も戻り値も JSON 文字列）</div>
+
+        <div class="node node--custom">
+          <div class="nh"><span class="nn">JNI の境界</span><span class="ch">13</span></div>
+          <div class="nd">nativeCreate／Describe／RunJob／Cancel／Destroy／Versions の 6 つ。項目を足しても Kotlin を触らずに済む形</div>
+          <ul class="files">
+            <li><code>NativeBridge.kt</code>Kotlin 側の JNI の宣言。引数・戻り値を JSON 文字列にそろえ、項目を足しても APK を作り直さずに済むようにする</li>
+            <li><code>edgeslm_jni.cpp</code>C++ 側の JNI。JSON 文字列と C++ の呼び出しをつなぐだけで、処理の中身は置かない</li>
+          </ul>
+        </div>
+        <div class="arrow"></div>
+
+        <div class="grp">
+          <span class="grp-label">C++ の推論の中心（runner/）</span>
+          <div class="node node--custom">
+            <div class="nh"><span class="nn">job の実行</span><span class="ch">1.1・6</span></div>
+            <div class="nd">task で分ける: probe（開いて配置を返す）／bench（反復と統計）／op_check（単体の op のモデルを次々開いて可否）／infer（入力の .bin を流して出力を書く）</div>
+            <ul class="files">
+              <li><code>job.cpp</code>run_job() が job の task を見て処理を分け、結果を JSON で返す（task の一覧と理由は job.h）</li>
+            </ul>
+          </div>
+          <div class="node node--custom">
+            <div class="nh"><span class="nn">セッション</span><span class="ch">1.1・9</span></div>
+            <div class="nd">ORT のセッションを QNN EP で開く。<code>disable_cpu_ep_fallback=1</code>（strict）で開けたら「全ノード NPU」（pass_strict）。開けなかったら、どこかが CPU に回る形だと分かる</div>
+            <ul class="files">
+              <li><code>session.cpp／session.h</code>ORT を dlopen で読み、QNN EP（HTP）でモデルを開いて推論する。開いたときの配置と入出力の形を describe() で返す</li>
+            </ul>
+          </div>
+        </div>
+        <div class="arrow"></div>
+
+        <div class="node node--fw">
+          <div class="nh"><span class="nn">ONNX Runtime ＋ QNN Execution Provider</span><span class="ch">1.1</span></div>
+          <div class="nd">ONNX を読んで演算を振り分ける。EPContext のノードは中の context binary をそのまま QNN に渡す（この経路では ORT は演算を作り直さない）</div>
+          <ul class="files">
+            <li><code>libs/onnxruntime-android-qnn-1.27.0.aar</code>既存の ONNX Runtime（libonnxruntime.so）と QNN EP。中身は変えずにそのまま使う</li>
+          </ul>
+        </div>
+        <div class="arrow"></div>
+
+        <div class="node node--vendor">
+          <div class="nh"><span class="nn">QNN HTP バックエンド</span><span class="ch">1.1・12</span></div>
+          <div class="nd">APK に同梱し、QAIRT 2.48 で版をそろえる（FR-12）。<code>useLegacyPackaging</code>（C-6: skel に実ファイルのパスが要る）・<code>uses-native-library</code> で libcdsprpc.so を宣言（C-7）</div>
+          <span class="nf">jniLibs/arm64-v8a/</span>
+          <ul class="files">
+            <li><code>libQnnHtp.so</code>HTP バックエンドの本体（CPU 側）。QNN EP はこれを読む</li>
+            <li><code>libQnnHtpPrepare.so</code>グラフを HTP 向けに組み立てる部分（その場でグラフを準備するときに使う）</li>
+            <li><code>libQnnHtpV68Stub.so</code>CPU 側から DSP 側の Skel を呼ぶ窓口（v68 用）</li>
+            <li><code>libQnnHtpV68Skel.so</code>DSP（CDSP）の上で実際に計算する部分（v68 用）</li>
+            <li><code>libQnnSystem.so</code>context binary のメタデータを読む補助</li>
+          </ul>
+        </div>
+        <div class="arrow">FastRPC（libcdsprpc.so）</div>
+
+        <div class="node node--vendor">
+          <div class="nh"><span class="nn">CDSP → HTP v68（NPU）</span><span class="ch">2・9</span></div>
+          <div class="nd">署名なし（unsigned PD）で動かす。融合した RmsNorm などを整数で計算する。v68 の制約（C-1 float 不可・C-8 u16×u16 不可・C-13 gamma は符号付き 16bit）が PC 側の書き換えを決めた</div>
+          <span class="nf">libQnnHtpV68Skel.so（DSP 側）</span>
+        </div>
+
+        <div class="side">
+          <span class="side-label">基本設計③との違い（実際のソース）</span>
+          <ul>
+            <li>設計では runner の中に EdgeSLM-cpp 由来の生成パイプライン（tokenizer・kv_cache・sampler・generation_loop）を置く予定だったが、<strong>このプロジェクトの android_runner は probe・bench・op_check・infer の 4 つだけ</strong>。</li>
+            <li>端末での生成（generate・generate_kv）・端末のトークナイザ・会話をまたぐ KV の持ち回し・画面は <strong>EdgeSLM_AndroidDemo</strong> に移った（StudyMemo 10 章）。この時点の生成は、PC から infer の job を毎トークン送る「窓ずらし」（generate_on_device.py）。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>このプロジェクトから派生したもの（箱だけ）</h2>
+    <div class="cards">
+      <div class="card"><h3>EdgeSLM ／ EdgeSLM-cpp</h3><p>前段。PC での推論基盤（Python）と、その C++ 移植。基本設計③が端末へ移す予定だった生成パイプラインの元。</p></div>
+      <div class="card"><h3>EdgeSLM_AndroidDemo</h3><p>端末だけで会話するデモアプリ。job.cpp に generate・generate_kv、Kotlin のトークナイザ、KvCarry（会話をまたぐ KV）、画面を足した。以後のアプリ（下の 4 つ）の複製元。</p></div>
+      <div class="card"><h3>EdgeSLM_AndroidScale</h3><p>モデルを大きくする（1.5B・Qwen3・W4）。メモリの上限（約 1,710MiB）・位置0・K の中心化。量子化の道具は写しで受け継ぐ。Android のソースは持たず、端末側は EdgeSLM_AndroidDemo のアプリに拡張を足して使う（★2026-10-23 訂正: 旧「android アプリも写しで受け継ぐ」。Scale に Android のソースは無い）。</p></div>
+      <div class="card"><h3>EdgeSLM_AndroidHead ／ Gemma4Head</h3><p>LLM の h に分類ヘッドを付けて端末で判定（ルーター）。学習・評価は EdgeSLM_MultiHead_Multi。</p></div>
+      <div class="card"><h3>EdgeSLM_AndroidGemma4 ／ VLM ／ VLMSpec</h3><p>Gemma 4 E2B を 35 層のかたまりに分けて載せる・画像を入れる・投機的デコード。QAT の丸め（SRQ）の再現が加わる。C-14 は VLM で見つかった制約（★2026-10-23 訂正: 旧「C-14 が加わる」を 3 つまとめて書いていた）。</p></div>
+      <div class="card"><h3>共通の写し</h3><p>app/pipeline の量子化の道具（preprocess・quantize_qdq・p2b_ops・fix_norm_gamma・downgrade_actact_rhs・verify_artifacts・wrap_epctx など）と、アプリの C++（session・memprobe・progress・edgeslm_jni）は Android のアプリを持つ派生に写して使っている（Scale は持たない）。各派生の写しの中身は、それぞれの DoC/コンポーネント構成図.html。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>部品と StudyMemo の章の対応</h2>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th>章</th><th>主に扱う部品</th><th>入口になるソース</th></tr></thead>
+      <tbody>
+        <tr><td>1 レイヤ構造とツールチェーン</td><td>ONNX・ORT・QNN EP・QNN・HTP の層の分け方、QDQ、RmsNorm の融合、流れ ①〜⑨、EPContext（C-12）、decode の順の入れ替え</td><td><code>session.cpp</code>・<code>preprocess.py</code>・<code>build_context.sh</code>・<code>wrap_epctx.py</code>・<code>export_qwen_decode.py</code></td></tr>
+        <tr><td>2 量子化の基礎</td><td>QDQ の式・A16W8・C-8・C-1・較正</td><td><code>quantize_qdq.py</code>・<code>calib.py</code>・<code>downgrade_actact_rhs.py</code>・<code>verify_artifacts.py</code></td></tr>
+        <tr><td>3 Transformer の中で何が起きたか</td><td>残差の巨大な値（massive activation）と RMSNorm</td><td><code>make_calib_data.py</code>・<code>split_layers_n.py</code>・<code>preprocess.py</code></td></tr>
+        <tr><td>4 原因の特定と指標の読み方</td><td>Oracle 実験・指標・誤差の分解</td><td><code>oracle_exclude.py</code>・<code>oracle_qdq.py</code>・<code>accuracy_logits.py</code>・<code>error_decompose.py</code></td></tr>
+        <tr><td>5 Graph Rewrite</td><td>S2 の書き換え（C-9・C-10・C-11・左右入替）</td><td><code>preprocess.py</code>・<code>find_swap_matmuls.py</code></td></tr>
+        <tr><td>6 ログの読み方と原則</td><td>変換・端末のログ、成果物の同一性（md5）</td><td><code>deploy_pm64.py</code>・<code>dlc_audit.py</code>・<code>p2b_build_ops.sh</code></td></tr>
+        <tr><td>7 重みの量子化</td><td>per-channel・重みの検査・Oracle での切り分け</td><td><code>quantize_qdq.py</code>・<code>weight_percg.py</code>・<code>oracle_qdq.py</code></td></tr>
+        <tr><td>8 比較を成立させる</td><td>decode の較正・teacher forcing・3 者比較</td><td><code>make_decode_calib.py</code>・<code>decode_error_profile.py</code>・<code>ab_host_device.py</code></td></tr>
+        <tr><td>9 実機に合わせる</td><td>C-13・層の切り出し・DLC の監査</td><td><code>fix_norm_gamma.py</code>・<code>split_layer.py</code>・<code>dlc_audit.py</code></td></tr>
+        <tr><td>10 文脈をどう持つか</td><td>固定長 KV・RoPE の表・窓・sink（実装の続きは Demo）</td><td><code>export_qwen_decode.py</code>・<code>make_rope_table.py</code>・<code>sliding_decode_host.py</code></td></tr>
+        <tr><td>11 解けない問題を見極める</td><td>Qwen3 での切り分け（P12〜P13）</td><td><code>layer2_probe.py</code>・<code>v_l11_17_device_probe.py</code>・<code>kv_range_recal.py</code> ほか</td></tr>
+        <tr><td>12 新しいモデルを載せるかの判断</td><td>端末の事前調査・変換・較正データ</td><td><code>p0a_collect.sh</code>・<code>build_context.sh</code>・<code>make_calib_data.py</code></td></tr>
+        <tr><td>13・14 ソースと動かし方・コードで読む検証</td><td>この図の各部品のソースの行番号・コマンド・結果ファイル</td><td><code>app/study/</code>（生成物）</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>参照: DoC/基本設計②_量子化・変換パイプライン設計.md</span>
+    <span>DoC/基本設計③_実行用アプリ設計.md</span>
+    <span>DoC/基本設計①_計測ハーネス設計.md</span>
+    <span>DoC/検証環境と手法.md</span>
+    <span>DoC/要件定義書.md（C-1〜C-14）</span>
+    <span>app/pipeline/README.md</span>
+    <span>DoC/StudyMemo/13_ソースと動かし方.md</span>
+  </footer>
+</div>
+</body>
+</html>
